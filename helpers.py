@@ -13,39 +13,38 @@ fn_path = os.path.dirname(os.path.realpath(__file__))
 
 
 def get_config(config_file):
+    _config_file = os.path.join(fn_path, config_file)
     try:
-        with open(config_file, 'r') as c:
+        with open(_config_file, 'r') as c:
             config = json.loads(c.read())
             return config
     except Exception as config_err:
         raise ReferenceError(
-            f'Failed to load config file "{config_file}": {config_err}')
+            f'Failed to load config file "{_config_file}": {config_err}')
 
 
 def get_sf_rest_connection(config):
-    config_complete = os.path.join(fn_path, config)
-    config = get_config(config_complete)
+    _config = get_config(config)
 
     sf_rest = sf_rest_api.Connection(
-        username=config['sf_username'],
-        password=config['sf_password']+config['sf_security_token'],
-        grant_type=config['sf_grant_type'],
-        client_id=config['sf_client_id'],
-        client_secret=config['sf_client_secret'],
-        sandbox=config['sf_sandbox'])
+        username=_config['sf_username'],
+        password=_config['sf_password']+_config['sf_security_token'],
+        grant_type=_config['sf_grant_type'],
+        client_id=_config['sf_client_id'],
+        client_secret=_config['sf_client_secret'],
+        sandbox=_config['sf_sandbox'])
 
     return sf_rest
 
 
 def get_sf_bulk_connection(config):
-    config_complete = os.path.join(fn_path, config)
-    config = get_config(config_complete)
+    _config = get_config(config)
 
     sf_bulk = sf_bulk_api.Connection(
-        username=config['sf_username'],
-        password=config['sf_password'],
-        security_token=config['sf_security_token'],
-        sandbox=config['sf_sandbox'])
+        username=_config['sf_username'],
+        password=_config['sf_password'],
+        security_token=_config['sf_security_token'],
+        sandbox=_config['sf_sandbox'])
 
     return sf_bulk
 

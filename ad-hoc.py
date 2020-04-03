@@ -4,108 +4,81 @@
 # %% Imports
 import csv
 import helpers as h
+from faker import Faker
+import os
 
 
 # %% Variables
-source_config = './config/prs.prd.json'
-target_config = './config/prs.stg.json'
+env_path = './config/'
+env_config = 'env.map.json'
+tdm_config = './template.json'
 
 # %% Main
 
 
+def main1():
+    print(get_fake("fake.date_of_birth"))
+    print(get_fake("fake.ein"))
+    print(get_fake("fake.email"))
+
+    return 'Done'
+
+
 def main():
-    results = do_query()
-    # results = do_bulk()
-    # results = do_bulk_delete()
+    _tdm_config = h.get_config(tdm_config)
+    env_map = h.get_config(env_path+env_config)
 
-    print(results)
+    source = _tdm_config['source']
+    # target = _tdm_config['target']
+    data = _tdm_config['data']
 
-    return results
+    sf_rest_source = h.get_sf_rest_connection(env_path+env_map[source])
 
+    for row in data:
+        query = build_soql(row["object"], row["fields"],
+                           row["where"], row["orderby"], row["limit"])
+        results = sf_rest_source.soql_query(query)
 
-# %% Queries
+        for mask in row["masks"]:
+            print(mask['field'])
+            print(get_fake(mask['mask']))
+        print(results)
 
+    sf_rest_source.close_connection()
 
-def do_query():
-    query = ('select '
-             'Id, Name, RecordType.Name, copado__Business_Analyst__r.Name, copado__Developer__r.Name, '
-             'copado__Epic__r.copado__Epic_Title__c, copado__userStory_Role__c, copado__userStory_need__c, '
-             'copado__userStory_reason__c, copado__Functional_Specifications__c, copado__Priority__c, '
-             'copado__Release__r.Name, copado__Sprint__r.Name, copado__Status__c, '
-             'copado__Story_Points_SFDC__c '
-             'from copado__User_Story__c limit 5')
-
-    results = sf_rest.soql_query(query)
-
-    return results
+    return 'Done'
 
 
-# %% Bulk
+# %% Functions
 
 
-def do_bulk():
-    input_file = './data/role.csv'
-    _job_type = 'INSERT'  # INSERT, UPSERT, UPDATE, DELETE
-    _object_name = 'Role_Master__c'
-    # YOU CAN LEAVE THIS FIELD EMPTY FOR INSERT OPERATIONS.
-    _primary_key = ''
+def build_soql(sobject, fields, where="", orderby="", limit=0):
+    _select = 'select ' + ','.join(fields)
+    _from = f' from {sobject}'
+    _where = ''
+    _orderby = ''
+    _limit = ''
 
-    # Load data from CSV into dictionary and clean values.
-    with open(input_file, 'r', newline='') as i:
-        input_data = [line for line in csv.reader(i, delimiter=',')]
-        fields = input_data.pop(0)
-    fmt_data = [dict(zip(fields, row)) for row in input_data]
-    for record in fmt_data:
-        for key, val in record.items():
-            # Convert any None-type values to empty string.
-            if val is None:
-                record[key] = ''
-            # Convert any non-strings values into strings.
-            elif not isinstance(val, str):
-                record[key] = str(val)
+    if len(where) > 0:
+        _where = ' where ' + where
+    if len(orderby) > 0:
+        _orderby = ' order by ' + orderby
+    if limit > 0:
+        _limit = ' limit ' + str(limit)
 
-    # Split records into batches of 5000.
-    batches = h.chunk_records(fmt_data, 5000)
-
-    # Iterate through batches of data, run job, & print results.
-    for batch in batches:
-        batch_results = sf_bulk.create_and_run_bulk_job(
-            job_type=_job_type,
-            object_name=_object_name,
-            primary_key=_primary_key,
-            data=batch)
-        n_success = 0
-        n_error = 0
-        for result in batch_results:
-            if result.success != 'true':
-                n_error += 1
-                print(
-                    f'Record Failed in Batch {batch}: {result.error}. Record ID: {result.id}.')
-            else:
-                n_success += 1
-        return f'Batch Completed with {n_success} successes and {n_error} failures.'
+    return _select+_from+_where+_orderby+_limit
 
 
-def do_bulk_delete():
-    query = 'select Id from Role_Master__c'
+def get_fake(method):
+    fake = Faker()
+    mask = {
+        "fake.date_of_birth": fake.date_of_birth(minimum_age=21, maximum_age=115),
+        "fake.ein": fake.ein(),
+        "fake.email": fake.email()
+    }
 
-    id_list = sf_rest.soql_query(query)
-
-    bulk_results = sf_bulk.create_and_run_delete_job('Role_Master__c', id_list)
-
-    return bulk_results
-
-
-# %% Connection
-# sf_rest_prd = get_sf_rest_connection(source_config)
-# sf_bulk_prd = get_sf_bulk_connection(source_config)
-
-sf_rest = h.get_sf_rest_connection(source_config)
-sf_bulk = h.get_sf_bulk_connection(source_config)
+    return mask[method]
 
 
 # %% Run main
 print(main())
-
-# %% Close Salesforce connection
-sf_rest.close_connection()
