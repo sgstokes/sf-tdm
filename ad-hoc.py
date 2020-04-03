@@ -4,15 +4,10 @@
 # %% Imports
 import csv
 import helpers as h
-import sf_rest_api
-import sf_bulk_api
-import os
-import pandas as pd
 
 
 # %% Variables
-config = './config/prs.stg.json'
-fn_path = os.path.dirname(os.path.realpath(__file__))
+target_config = './config/prs.stg.json'
 
 # %% Main
 
@@ -37,7 +32,7 @@ def do_query():
              'copado__userStory_reason__c, copado__Functional_Specifications__c, copado__Priority__c, '
              'copado__Release__r.Name, copado__Sprint__r.Name, copado__Status__c, '
              'copado__Story_Points_SFDC__c '
-             'from copado__User_Story__c')
+             'from copado__User_Story__c limit 5')
 
     results = sf_rest.soql_query(query)
 
@@ -102,39 +97,12 @@ def do_bulk_delete():
 
 # %% Connection
 
-def get_sf_rest_connection(config):
-    config_complete = os.path.join(fn_path, config)
-    config = h.get_config(config_complete)
-
-    sf_rest = sf_rest_api.Connection(
-        username=config['sf_username'],
-        password=config['sf_password']+config['sf_security_token'],
-        grant_type=config['sf_grant_type'],
-        client_id=config['sf_client_id'],
-        client_secret=config['sf_client_secret'],
-        sandbox=config['sf_sandbox'])
-
-    return sf_rest
-
-
-def get_sf_bulk_connection(config):
-    config_complete = os.path.join(fn_path, config)
-    config = h.get_config(config_complete)
-
-    sf_bulk = sf_bulk_api.Connection(
-        username=config['sf_username'],
-        password=config['sf_password'],
-        security_token=config['sf_security_token'],
-        sandbox=config['sf_sandbox'])
-
-    return sf_bulk
-
 # sf_rest_prd = get_sf_rest_connection('./config/prs.prd.json')
 # sf_bulk_prd = get_sf_bulk_connection('./config/prs.prd.json')
 
 
-sf_rest = get_sf_rest_connection('./config/prs.prd.json')
-sf_bulk = get_sf_bulk_connection('./config/prs.prd.json')
+sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
+sf_bulk = h.get_sf_bulk_connection('./config/prs.prd.json')
 
 
 # %% Run main
