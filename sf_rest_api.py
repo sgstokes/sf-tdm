@@ -75,7 +75,20 @@ class Connection(object):
     def describe_fields(self, sobject, print_keys=False):
         try:
             fields = [
-                'label', 'name', 'nameField', 'compoundFieldName', 'controllerName', 'custom', 'externalId', 'nillable', 'calculated', 'mask'
+                'autoNumber',
+                'calculated',
+                'compoundFieldName',
+                'controllerName',
+                'custom',
+                'externalId',
+                'label',
+                'mask',
+                'name',
+                'nameField',
+                'nillable',
+                'referenceTo',
+                'relationshipName',
+                'updateable'
             ]
 
             return self.describe_object(sobject, 'fields', fields, print_keys)
@@ -83,26 +96,22 @@ class Connection(object):
             raise ValueError(
                 f'Failed to describe "{sobject}".\nError: {describe_err}')
 
-    def describe_object(self, sobject, key, fields=None, print_keys=False):
+    def describe_object(self, sobject, key, fields=[], print_keys=False):
         try:
             details = self.session.get(
-                self.base_url + '/sobjects/{}/describe'.format(sobject)).json()
+                self.base_url + '/sobjects/{}/describe'.format(sobject)).json()[key]
             if print_keys:
-                print('\ndetail.keys\n', details.keys())
-                print('\n'+key+'.keys\n', details[key][0].keys())
-            if fields == None:
-                fields = details[key][0].keys()
-
-            records = [
-                {key: value for key, value in record.items() if key in fields}
-                for record in details['fields']
-            ]
-            return records
+                print('\n' + key + ' keys\n', details[0].keys())
+            for record in details:
+                [record.pop(_key) for _key in list(record.keys())
+                 if fields and _key not in fields]
+                record.update({'sobject': sobject})
+            return details
         except Exception as describe_err:
             raise ValueError(
                 f'Failed to describe "{sobject}".\nError: {describe_err}')
 
-    def get_results(self, url):
+    def get_response(self, url):
         try:
             results = self.session.get(self.instance_url + url)
 
