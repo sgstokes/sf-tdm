@@ -11,17 +11,14 @@ import pandas as pd
 
 
 # %% Variables
-config = './config/prs.prd.json'
-excel_out = True
+config = './config/prs.stg.json'
 fn_path = os.path.dirname(os.path.realpath(__file__))
-results = None
 
 # %% Main
 
 
 def main():
-    # results = do_query()
-    results = do_describe()
+    results = do_query()
     # results = do_bulk()
     # results = do_bulk_delete()
 
@@ -34,11 +31,6 @@ def main():
 
 
 def do_query():
-    query = 'select Id, Name from Role_Master__C'
-
-    # USING SCOPE allPrivate'
-    # query = 'SELECT FolderName, Name, Format, Owner.Name, CreatedDate, LastRunDate, IsDeleted FROM Report'
-
     query = ('select '
              'Id, Name, RecordType.Name, copado__Business_Analyst__r.Name, copado__Developer__r.Name, '
              'copado__Epic__r.copado__Epic_Title__c, copado__userStory_Role__c, copado__userStory_need__c, '
@@ -49,33 +41,8 @@ def do_query():
 
     results = sf_rest.soql_query(query)
 
-    # %% Data wrangling
-    results = [
-        h.flatten_dict(record)
-        for record in results
-    ]
-
     return results
 
-# %% Describes
-
-
-def do_describe():
-    # fields = [
-    #     'label', 'name', 'nameField', 'compoundFieldName', 'controllerName', 'custom', 'externalId', 'nillable', 'calculated', 'defaultValue', 'mask'
-    # ]
-    #
-    # results = sf_rest.describe_object('Opportunity_Reporting__c',
-    #                              key='fields',
-    #                              fields=fields,
-    #                              print_keys=True)
-    # results = sf_rest.describe_object('Contact',
-    #                              key='childRelationships',
-    #                              fields=['relationshipName'],
-    #                              print_keys=True)
-    results = sf_rest.describe_fields('Account')
-
-    return results
 
 # %% Bulk
 
@@ -153,8 +120,7 @@ sf_bulk = sf_bulk_api.Connection(
 
 # %% Run main
 
-
-results = main()
+print(main())
 
 # %% Close Salesforce connection
 sf_rest.close_connection()
