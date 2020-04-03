@@ -1,0 +1,35 @@
+{
+  "source": "PRD",
+  "target": "STG",
+  "data": [
+    {
+      "sequence": "1",
+      "operation": "insert",
+      "type": "sobject",
+      "object": "Account",
+      "fields": [
+        "Id",
+        "Name",
+        "Type",
+        "RecordTypeId",
+        "ParentId",
+        "BillingAddress"
+      ]
+    },
+    {
+      "sequence": "2",
+      "operation": "insert",
+      "type": "sobject",
+      "object": "Contact",
+      "fields": [
+        "Id",
+        "Name",
+        "Type",
+        "RecordTypeId",
+        "ParentId",
+        "MailingAddress",
+        "Phone"
+      ]
+    }
+  ]
+}

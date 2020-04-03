@@ -7,6 +7,7 @@ import helpers as h
 
 
 # %% Variables
+source_config = './config/prs.prd.json'
 target_config = './config/prs.stg.json'
 
 # %% Main
@@ -96,17 +97,14 @@ def do_bulk_delete():
 
 
 # %% Connection
+# sf_rest_prd = get_sf_rest_connection(source_config)
+# sf_bulk_prd = get_sf_bulk_connection(source_config)
 
-# sf_rest_prd = get_sf_rest_connection('./config/prs.prd.json')
-# sf_bulk_prd = get_sf_bulk_connection('./config/prs.prd.json')
-
-
-sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
-sf_bulk = h.get_sf_bulk_connection('./config/prs.prd.json')
+sf_rest = h.get_sf_rest_connection(source_config)
+sf_bulk = h.get_sf_bulk_connection(source_config)
 
 
 # %% Run main
-
 print(main())
 
 # %% Close Salesforce connection
