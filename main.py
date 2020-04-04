@@ -53,7 +53,7 @@ def main():
                                    fields, where, orderby, limit, masks)
             if source_data:
                 sf_bulk_target.create_and_run_bulk_job(
-                    'Upsert', obj, primaryKey, source_data)
+                    'Upsert', obj, externalID, source_data)
 
         if operation in ['test']:
             if relationships:

@@ -3,14 +3,15 @@
   "target": "DEV200404",
   "data": [{
     "sequence": "1",
-    "operation": "test",
+    "operation": "refresh",
     "type": "sobject",
     "object": "Account",
     "primaryKey": "Id",
-    "externalId": "DM_External_ID__c",
+    "externalId": "Id",
     "fields": [
       "Name",
       "Type",
+      "RecordTypeId",
       "BillingStreet",
       "BillingCity",
       "BillingState",
@@ -70,7 +71,7 @@
       "Web_Address__c",
       "LID__LinkedIn_Company_Id__c"
     ],
-    "where": "Legacy_ID__c in ('0013900001PP4E7AAL', '00170000010p2tdAAA')",
+    "where": "",
     "orderby": "",
     "limit": 500,
     "relationships": [{
@@ -78,7 +79,7 @@
       "relationshipName": "Parent",
       "fieldName": "ParentId",
       "externalId": "DM_External_ID__c"
-    }, {
+    },{
       "object": "Party_Brand__c",
       "relationshipName": "Party_Brand__r",
       "fieldName": "Party_Brand__c",
