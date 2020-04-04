@@ -63,8 +63,8 @@ def main():
             source_data_1 = get_data(sf_rest_source, obj,
                                      fields_1, where_1, orderby, limit, masks)
             if source_data_1:
-                sf_bulk_target.create_and_run_bulk_job(
-                    'Upsert', obj, externalID, source_data_1)
+                do_bulk(sf_bulk_target, 'Upsert', obj,
+                        externalID, source_data_1)
 
             fields_2 = [externalID,
                         f'{self_relationshipName}.{self_externalId}']
@@ -79,10 +79,12 @@ def main():
             source_data_2 = get_data(sf_rest_source, obj, fields_2, where_2)
             source_data_2 = [h.flatten_dict(record)
                              for record in source_data_2]
+            parent_count = 0
             for rec in source_data_2:
                 if rec.get(self_relationshipName, -1) != -1:
                     source_data_2.remove(rec)
                 else:
+                    parent_count += 1
                     fields_2.append(
                         f'{self_relationshipName}_{self_externalId}')
                     {rec.pop(_key) for _key in list(rec.keys())
@@ -90,9 +92,9 @@ def main():
                     rec[f'{self_relationshipName}.{self_externalId}'] = rec.pop(
                         f'{self_relationshipName}_{self_externalId}')
 
-            if source_data_2:
-                sf_bulk_target.create_and_run_bulk_job(
-                    'Upsert', obj, externalID, source_data_2)
+            if source_data_2 and parent_count > 0:
+                do_bulk(sf_bulk_target, 'Upsert', obj,
+                        externalID, source_data_2)
 
             target_data = get_data(sf_rest_target, obj, [
                                    f'count({primaryKey}) Ct'])
@@ -135,6 +137,29 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
         _limit = ' limit ' + str(limit)
 
     return _select+_from+_where+_orderby+_limit
+
+
+def do_bulk(sf_bulk, job_type, object_name, primary_key, data):
+    # Split records into batches of 5000.
+    batches = h.chunk_records(data, 5000)
+
+    # Iterate through batches of data, run job, & print results.
+    for batch in batches:
+        batch_results = sf_bulk.create_and_run_bulk_job(
+            job_type=job_type,
+            object_name=object_name,
+            primary_key=primary_key,
+            data=batch)
+        n_success = 0
+        n_error = 0
+        for result in batch_results:
+            if result.success != 'true':
+                n_error += 1
+                print(
+                    f'Record Failed in Batch {batch}: {result.error}. Record ID: {result.id}.')
+            else:
+                n_success += 1
+        return f'Batch Completed with {n_success} successes and {n_error} failures.'
 
 
 # %% Run main
