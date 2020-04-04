@@ -83,15 +83,16 @@ def main():
             for rec in source_data_2:
                 if rec.get(self_relationshipName, -1) != -1:
                     source_data_2.remove(rec)
-                else:
-                    parent_count += 1
-                    fields_2.append(
-                        f'{self_relationshipName}_{self_externalId}')
-                    {rec.pop(_key) for _key in list(rec.keys())
-                        if fields_2 and _key not in fields_2}
-                    rec[f'{self_relationshipName}.{self_externalId}'] = rec.pop(
-                        f'{self_relationshipName}_{self_externalId}')
+            for rec in source_data_2:
+                parent_count += 1
+                fields_2.append(
+                    f'{self_relationshipName}_{self_externalId}')
+                {rec.pop(_key) for _key in list(rec.keys())
+                    if fields_2 and _key not in fields_2}
+                rec[f'{self_relationshipName}.{self_externalId}'] = rec.pop(
+                    f'{self_relationshipName}_{self_externalId}')
 
+            print(source_data_2)
             if source_data_2 and parent_count > 0:
                 do_bulk(sf_bulk_target, 'Upsert', obj,
                         externalID, source_data_2)
