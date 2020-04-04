@@ -8,10 +8,13 @@ import os
 import sf_rest_api
 import sf_bulk_api
 import time
+from faker import Faker
 
+# %% Variables
 fn_path = os.path.dirname(os.path.realpath(__file__))
 
 
+# %% Functions
 def get_config(config_file):
     _config_file = os.path.join(fn_path, config_file)
     try:
@@ -21,6 +24,20 @@ def get_config(config_file):
     except Exception as config_err:
         raise ReferenceError(
             f'Failed to load config file "{_config_file}": {config_err}')
+
+
+def get_fake(method):
+    fake = Faker()
+    mask = {
+        "fake.company": fake.company(),
+        "fake.date_of_birth": fake.date_of_birth(minimum_age=21, maximum_age=115),
+        "fake.ein": fake.ein(),
+        "fake.email": fake.email(),
+        "fake.name": fake.name(),
+        "fake.ssn": fake.ssn()
+    }
+
+    return mask[method]
 
 
 def get_sf_rest_connection(config):

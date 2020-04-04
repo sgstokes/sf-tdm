@@ -4,7 +4,6 @@
 # %% Imports
 import csv
 import helpers as h
-from faker import Faker
 import os
 
 
@@ -15,13 +14,6 @@ tdm_config = './template.json'
 
 # %% Main
 
-
-def main_fake():
-    print(get_fake('fake.date_of_birth'))
-    print(get_fake('fake.ein'))
-    print(get_fake('fake.email'))
-
-    return 'Done'
 
 
 def main():
@@ -63,10 +55,10 @@ def get_data(sf_rest, row):
 
     records = sf_rest.soql_query(query)
 
-    if len(masks) > 0:
+    if masks:
         for record in records:
             for field, fake_method in masks.items():
-                record.update({field: str(get_fake(fake_method))})
+                record.update({field: str(h.get_fake(fake_method))})
 
     return records
 
@@ -86,17 +78,6 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
         _limit = ' limit ' + str(limit)
 
     return _select+_from+_where+_orderby+_limit
-
-
-def get_fake(method):
-    fake = Faker()
-    mask = {
-        "fake.date_of_birth": fake.date_of_birth(minimum_age=21, maximum_age=115),
-        "fake.ein": fake.ein(),
-        "fake.email": fake.email()
-    }
-
-    return mask[method]
 
 
 # %% Run main
