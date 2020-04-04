@@ -64,7 +64,7 @@ def main():
                                      fields_1, where_1, orderby, limit, masks)
             if source_data_1:
                 do_bulk_job(sf_bulk_target, 'Upsert', obj,
-                            externalID, source_data_1)
+                            source_data_1, externalID)
 
             fields_2 = [externalID,
                         f'{self_relationshipName}.{self_externalId}']
@@ -95,7 +95,7 @@ def main():
             print(source_data_2)
             if source_data_2 and parent_count > 0:
                 do_bulk_job(sf_bulk_target, 'Upsert', obj,
-                            externalID, source_data_2)
+                            source_data_2, externalID)
 
             target_data = get_data(sf_rest_target, obj, [
                                    f'count({primaryKey}) Ct'])
