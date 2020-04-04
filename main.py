@@ -46,7 +46,7 @@ def main():
         if operation in ['refresh', 'deleteAll']:
             delete_data = get_data(sf_rest_target, obj, [primaryKey])
             if delete_data:
-                sf_bulk_target.create_and_run_delete_job(obj, delete_data)
+                do_bulk_job(sf_bulk_target, 'Delete', obj, delete_data)
 
         if operation in ['refresh', 'insert']:
             if relationships:
@@ -63,8 +63,8 @@ def main():
             source_data_1 = get_data(sf_rest_source, obj,
                                      fields_1, where_1, orderby, limit, masks)
             if source_data_1:
-                do_bulk(sf_bulk_target, 'Upsert', obj,
-                        externalID, source_data_1)
+                do_bulk_job(sf_bulk_target, 'Upsert', obj,
+                            externalID, source_data_1)
 
             fields_2 = [externalID,
                         f'{self_relationshipName}.{self_externalId}']
@@ -94,8 +94,8 @@ def main():
 
             print(source_data_2)
             if source_data_2 and parent_count > 0:
-                do_bulk(sf_bulk_target, 'Upsert', obj,
-                        externalID, source_data_2)
+                do_bulk_job(sf_bulk_target, 'Upsert', obj,
+                            externalID, source_data_2)
 
             target_data = get_data(sf_rest_target, obj, [
                                    f'count({primaryKey}) Ct'])
@@ -140,18 +140,23 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
     return _select+_from+_where+_orderby+_limit
 
 
-def do_bulk(sf_bulk, job_type, object_name, primary_key, data):
+def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=""):
     # Split records into batches of 5000.
     batches = h.chunk_records(data, 5000)
 
     # Iterate through batches of data, run job, & print results.
     for batch in batches:
         print(len(batch))
-        batch_results = sf_bulk.create_and_run_bulk_job(
-            job_type=job_type,
-            object_name=object_name,
-            primary_key=primary_key,
-            data=batch)
+        if job_type == 'Delete':
+            batch_results = sf_bulk.create_and_run_delete_job(
+                object_name=object_name, data=batch)
+        else:
+            batch_results = sf_bulk.create_and_run_bulk_job(
+                job_type=job_type,
+                object_name=object_name,
+                primary_key=primary_key,
+                data=batch)
+
         n_success = 0
         n_error = 0
 
