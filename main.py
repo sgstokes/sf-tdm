@@ -30,14 +30,16 @@ def main():
         operation = row['operation']
         obj = row['object']
         primaryKey = row['primaryKey']
+        externalID = row['externalId']
         fields = row['fields']
         where = row['where']
         orderby = row['orderby']
         limit = row['limit']
+        relationships = row['relationships']
         masks = row['masks']
 
         print('\n', '*'*80, f'\n{operation} -- {source}>>{target} -- {obj}\n')
-        if operation in ['execute']:
+        if operation in ['execute', 'upsert']:
             print(f'{operation} is a future operation.  Not currently supported.')
             continue
 
@@ -51,10 +53,21 @@ def main():
                                    fields, where, orderby, limit, masks)
             if source_data:
                 sf_bulk_target.create_and_run_bulk_job(
-                    'Insert', obj, primaryKey, source_data)
+                    'Upsert', obj, primaryKey, source_data)
 
-        target_data = get_data(sf_rest_target, obj, ['count(Id) Ct'])
-        print('\n', target_data)
+        if operation in ['test']:
+            if relationships:
+                for relationship in relationships:                    
+                    for key, value in relationship.items():
+                        print(f'{key}:{value}')
+
+            # target_data = get_data(sf_rest_target, obj, [f'count({primaryKey}) Ct'])
+            target_data = 'test'
+            print('\n', target_data)
+
+        if operation != 'test':
+            target_data = get_data(sf_rest_target, obj, [f'count({primaryKey}) Ct'])
+            print(f'\n{target_data} -- {externalID}')
 
     sf_rest_source.close_connection()
     sf_rest_target.close_connection()

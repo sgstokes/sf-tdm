@@ -12,9 +12,10 @@ import helpers as h
 
 
 def main():
-    sf_rest = h.get_sf_rest_connection('./config/prs.dev200404.json')
+    sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
 
-    query = "select Id, Name, RecordTypeId, EIN__c from Account where name like 'Zero%'"
+    query = "select Id, Name, ParentId, Parent.Legacy_ID__c, EIN__c from Account where Legacy_ID__c in ('0013900001PP4E7AAL', '00170000010p2tdAAA')"
+    # query = "select Id, Name, ParentId, EIN__c from Account where Parent in ('0013900001PP4E7AAL', '00170000010p2tdAAA')"
 
     results = sf_rest.soql_query(query)
     sf_rest.close_connection()

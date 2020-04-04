@@ -3,14 +3,14 @@
   "target": "DEV200404",
   "data": [{
     "sequence": "1",
-    "operation": "refresh",
+    "operation": "test",
     "type": "sobject",
     "object": "Account",
     "primaryKey": "Id",
+    "externalId": "DM_External_ID__c",
     "fields": [
       "Name",
       "Type",
-      "ParentId",
       "BillingStreet",
       "BillingCity",
       "BillingState",
@@ -70,26 +70,19 @@
       "Web_Address__c",
       "LID__LinkedIn_Company_Id__c"
     ],
-    "where": "",
-    "orderby": "Name DESC NULLS LAST",
+    "where": "Legacy_ID__c in ('0013900001PP4E7AAL', '00170000010p2tdAAA')",
+    "orderby": "",
     "limit": 500,
-    "externalIds": [
-      "BIS_External_ID__c",
-      "Client_External_ID__c",
-      "Partner_External_ID__c",
-      "Custodian_External_ID__c",
-      "Trading_Partner_External_ID__c",
-      "Advisor_External_ID__c",
-      "Legacy_ID__c"
-    ],
     "relationships": [{
       "object": "Account",
       "relationshipName": "Parent",
-      "fieldName": "ParentId"
+      "fieldName": "ParentId",
+      "externalId": "DM_External_ID__c"
     }, {
       "object": "Party_Brand__c",
       "relationshipName": "Party_Brand__r",
-      "fieldName": "Party_Brand__c"
+      "fieldName": "Party_Brand__c",
+      "externalId": "DM_External_ID__c"
     }],
     "masks": {
       "EIN__c": "fake.ein"
