@@ -17,57 +17,60 @@ tdm_config = './template.json'
 
 
 def main_fake():
-    print(get_fake("fake.date_of_birth"))
-    print(get_fake("fake.ein"))
-    print(get_fake("fake.email"))
+    print(get_fake('fake.date_of_birth'))
+    print(get_fake('fake.ein'))
+    print(get_fake('fake.email'))
 
     return 'Done'
 
 
 def main():
-    sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
-    results = sf_rest.get_response('/sobjects/')
-
-    print(results.url)
-    print(results.text)
-
-    sf_rest.close_connection()
-
-    return 'Done'
-
-
-def main1():
     _tdm_config = h.get_config(tdm_config)
     env_map = h.get_config(env_path+env_config)
 
     source = _tdm_config['source']
-    # target = _tdm_config['target']
+    target = _tdm_config['target']
     data = _tdm_config['data']
 
     sf_rest_source = h.get_sf_rest_connection(env_path+env_map[source])
+    sf_rest_target = h.get_sf_rest_connection(env_path+env_map[target])
 
     for row in data:
-        query = build_soql(row["object"], row["fields"],
-                           row["where"], row["orderby"], row["limit"])
-        _masks = row["masks"]
+        print('\n', '*'*80, '\n', row['operation']+'-'+row['object'], '\n')
+        if row['operation'] in ['execute', 'refresh']:
+            print(
+                f'{row["operation"]} is a future operation.  Not currently supported')
+            continue
 
-        records = sf_rest_source.soql_query(query)
+        source_data = get_data(sf_rest_source, row)
+        target_data = get_data(sf_rest_target, row)
 
-        for record in records:
-            for field, fake_method in _masks.items():
-                record.update({field: str(get_fake(fake_method))})
-
-        print('\n', records)
+        print('\n', source_data)
+        print('\n', target_data)
 
     sf_rest_source.close_connection()
+    sf_rest_target.close_connection()
 
     return 'Done'
 
 
 # %% Functions
 
+def get_data(sf_rest, row):
+    query = build_soql(row['object'], row['fields'],
+                       row['where'], row['orderby'], row['limit'])
+    _masks = row['masks']
 
-def build_soql(sobject, fields, where="", orderby="", limit=0):
+    records = sf_rest.soql_query(query)
+
+    for record in records:
+        for field, fake_method in _masks.items():
+            record.update({field: str(get_fake(fake_method))})
+
+    return records
+
+
+def build_soql(sobject, fields, where='', orderby='', limit=0):
     _select = 'select ' + ','.join(fields)
     _from = f' from {sobject}'
     _where = ''
