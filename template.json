@@ -3,7 +3,7 @@
   "target": "STG",
   "data": [{
       "sequence": "1",
-      "operation": "refresh",
+      "operation": "execute",
       "type": "sobject",
       "object": "Party_Brand__c",
       "fields": [

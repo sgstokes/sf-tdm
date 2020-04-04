@@ -39,7 +39,7 @@ def main():
         print('\n', '*'*80, '\n', row['operation']+'-'+row['object'], '\n')
         if row['operation'] in ['execute', 'refresh']:
             print(
-                f'{row["operation"]} is a future operation.  Not currently supported')
+                f'{row["operation"]} is a future operation.  Not currently supported.')
             continue
 
         source_data = get_data(sf_rest_source, row)
@@ -59,13 +59,14 @@ def main():
 def get_data(sf_rest, row):
     query = build_soql(row['object'], row['fields'],
                        row['where'], row['orderby'], row['limit'])
-    _masks = row['masks']
+    masks = row['masks']
 
     records = sf_rest.soql_query(query)
 
-    for record in records:
-        for field, fake_method in _masks.items():
-            record.update({field: str(get_fake(fake_method))})
+    if len(masks) > 0:
+        for record in records:
+            for field, fake_method in masks.items():
+                record.update({field: str(get_fake(fake_method))})
 
     return records
 
