@@ -106,16 +106,14 @@
         "Legacy_ID__c"
       ],
       "relationships": [{
-          "type": "self",
-          "relationshipName": "Parent",
-          "fieldName": "ParentId"
-        },
-        {
-          "type": "other",
-          "relationshipName": "Party_Brand__r",
-          "fieldName": "Party_Brand__c"
-        }
-      ],
+        "object": "Account",
+        "relationshipName": "Parent",
+        "fieldName": "ParentId"
+      }, {
+        "object": "Party_Brand__c",
+        "relationshipName": "Party_Brand__r",
+        "fieldName": "Party_Brand__c"
+      }],
       "masks": {
         "EIN__c": "fake.ein"
       }

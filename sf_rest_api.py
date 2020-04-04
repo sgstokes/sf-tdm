@@ -47,7 +47,8 @@ class Connection(object):
         try:
             # replace spaces with "+" and execute soql query
             results = self.session.get(
-                self.base_url + f'/query/?q={query_string}'.replace(' ', '+')).json()
+                self.base_url +
+                f'/query/?q={query_string}'.replace(' ', '+').replace('%', '%25')).json()
             if int(results['totalSize']) > 0:
                 records = [
                     {key: value for key, value in record.items() if key !=
