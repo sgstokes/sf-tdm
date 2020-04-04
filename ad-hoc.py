@@ -16,7 +16,7 @@ tdm_config = './template.json'
 # %% Main
 
 
-def main1():
+def main_fake():
     print(get_fake("fake.date_of_birth"))
     print(get_fake("fake.ein"))
     print(get_fake("fake.email"))
@@ -25,6 +25,18 @@ def main1():
 
 
 def main():
+    sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
+    results = sf_rest.get_response('/sobjects/')
+
+    print(results.url)
+    print(results.text)
+
+    sf_rest.close_connection()
+
+    return 'Done'
+
+
+def main1():
     _tdm_config = h.get_config(tdm_config)
     env_map = h.get_config(env_path+env_config)
 
@@ -37,12 +49,15 @@ def main():
     for row in data:
         query = build_soql(row["object"], row["fields"],
                            row["where"], row["orderby"], row["limit"])
-        results = sf_rest_source.soql_query(query)
+        _masks = row["masks"]
 
-        for mask in row["masks"]:
-            print(mask['field'])
-            print(get_fake(mask['mask']))
-        print(results)
+        records = sf_rest_source.soql_query(query)
+
+        for record in records:
+            for field, fake_method in _masks.items():
+                record.update({field: str(get_fake(fake_method))})
+
+        print('\n', records)
 
     sf_rest_source.close_connection()
 

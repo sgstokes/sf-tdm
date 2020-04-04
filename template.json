@@ -1,8 +1,7 @@
 {
   "source": "PRD",
   "target": "STG",
-  "data": [
-    {
+  "data": [{
       "sequence": "1",
       "operation": "refresh",
       "type": "sobject",
@@ -17,13 +16,13 @@
         "Start_Date__c"
       ],
       "where": "",
-      "orderby": "", 
+      "orderby": "",
       "limit": 1,
-      "externalIds":[
+      "externalIds": [
         "DM_External__c"
       ],
       "relationships": [],
-      "masks": []
+      "masks": {}
     },
     {
       "sequence": "2",
@@ -95,9 +94,9 @@
         "LID__LinkedIn_Company_Id__c"
       ],
       "where": "",
-      "orderby": "", 
+      "orderby": "",
       "limit": 1,
-      "externalIds":[
+      "externalIds": [
         "BIS_External_ID__c",
         "Client_External_ID__c",
         "Partner_External_ID__c",
@@ -106,13 +105,20 @@
         "Advisor_External_ID__c",
         "Legacy_ID__c"
       ],
-      "relationships": [
-        { "type": "self", "relationshipName": "Parent", "fieldName": "ParentId" },
-        { "type": "other", "relationshipName": "Party_Brand__r", "fieldName": "Party_Brand__c" }
+      "relationships": [{
+          "type": "self",
+          "relationshipName": "Parent",
+          "fieldName": "ParentId"
+        },
+        {
+          "type": "other",
+          "relationshipName": "Party_Brand__r",
+          "fieldName": "Party_Brand__c"
+        }
       ],
-      "masks": [
-        { "field": "EIN__c", "mask": "fake.ein"}
-      ]
+      "masks": {
+        "EIN__c": "fake.ein"
+      }
     },
     {
       "sequence": "1",
@@ -183,20 +189,27 @@
         "LID__No_longer_at_Company__c"
       ],
       "where": "",
-      "orderby": "", 
+      "orderby": "",
       "limit": 1,
-      "externalIds":[
+      "externalIds": [
         "BIS_IndivId__c",
         "Legacy_ID__c"
       ],
-      "relationships": [
-        { "type": "self", "relationshipName": "ReportsTo", "fieldName": "ReportsToId" },
-        { "type": "other", "relationshipName": "Account", "fieldName": "AccountId" }
+      "relationships": [{
+          "type": "self",
+          "relationshipName": "ReportsTo",
+          "fieldName": "ReportsToId"
+        },
+        {
+          "type": "other",
+          "relationshipName": "Account",
+          "fieldName": "AccountId"
+        }
       ],
-      "masks": [
-        { "field": "Email", "mask": "fake.email"},
-        { "field": "Birthdate", "mask": "fake.date_of_birth"}
-      ]
+      "masks": {
+        "Email": "fake.email",
+        "Birthdate": "fake.date_of_birth"
+      }
     }
   ]
 }
