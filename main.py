@@ -145,6 +145,7 @@ def do_bulk(sf_bulk, job_type, object_name, primary_key, data):
 
     # Iterate through batches of data, run job, & print results.
     for batch in batches:
+        print(len(batch))
         batch_results = sf_bulk.create_and_run_bulk_job(
             job_type=job_type,
             object_name=object_name,
@@ -152,14 +153,15 @@ def do_bulk(sf_bulk, job_type, object_name, primary_key, data):
             data=batch)
         n_success = 0
         n_error = 0
-        for result in batch_results:
-            if result.success != 'true':
-                n_error += 1
-                print(
-                    f'Record Failed in Batch {batch}: {result.error}. Record ID: {result.id}.')
-            else:
-                n_success += 1
-        return f'Batch Completed with {n_success} successes and {n_error} failures.'
+
+    for result in batch_results:
+        if result.success != 'true':
+            n_error += 1
+            print(
+                f'Record Failed in Batch {batch}: {result.error}. Record ID: {result.id}.')
+        else:
+            n_success += 1
+    return f'Batch Completed with {n_success} successes and {n_error} failures.'
 
 
 # %% Run main
