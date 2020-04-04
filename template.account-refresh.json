@@ -7,11 +7,12 @@
     "type": "sobject",
     "object": "Account",
     "primaryKey": "Id",
-    "externalId": "Id",
+    "externalId": "Legacy_ID__c",
     "fields": [
       "Name",
       "Type",
       "RecordTypeId",
+      "ParentId",
       "BillingStreet",
       "BillingCity",
       "BillingState",
@@ -71,18 +72,18 @@
       "Web_Address__c",
       "LID__LinkedIn_Company_Id__c"
     ],
-    "where": "",
+    "where": "Legacy_ID__c in ('0013900001PP4E7AAL', '00170000010p2tdAAA')",
     "orderby": "",
     "limit": 500,
     "relationships": [{
       "object": "Account",
       "relationshipName": "Parent",
-      "fieldName": "ParentId",
-      "externalId": "DM_External_ID__c"
+      "field": "ParentId",
+      "externalId": "Legacy_ID__c"
     },{
       "object": "Party_Brand__c",
       "relationshipName": "Party_Brand__r",
-      "fieldName": "Party_Brand__c",
+      "field": "Party_Brand__c",
       "externalId": "DM_External_ID__c"
     }],
     "masks": {

@@ -31,8 +31,8 @@ def main():
         obj = row['object']
         primaryKey = row['primaryKey']
         externalID = row['externalId']
-        fields = row['fields']
-        where = row['where']
+        fields_0 = row['fields']
+        where_0 = row['where']
         orderby = row['orderby']
         limit = row['limit']
         relationships = row['relationships']
@@ -49,25 +49,54 @@ def main():
                 sf_bulk_target.create_and_run_delete_job(obj, delete_data)
 
         if operation in ['refresh', 'insert']:
-            source_data = get_data(sf_rest_source, obj,
-                                   fields, where, orderby, limit, masks)
-            if source_data:
-                sf_bulk_target.create_and_run_bulk_job(
-                    'Upsert', obj, externalID, source_data)
-
-        if operation in ['test']:
             if relationships:
-                for relationship in relationships:                    
-                    for key, value in relationship.items():
-                        print(f'{key}:{value}')
+                for relationship in relationships:
+                    if relationship['object'] == obj:
+                        self_field = relationship['field']
+                        self_relationshipName = relationship['relationshipName']
+                        self_externalId = relationship['externalId']
 
-            # target_data = get_data(sf_rest_target, obj, [f'count({primaryKey}) Ct'])
-            target_data = 'test'
+            fields_1 = fields_0
+            where_1 = where_0
+            fields_1.pop(fields_1.index(self_field))
+
+            source_data_1 = get_data(sf_rest_source, obj,
+                                     fields_1, where_1, orderby, limit, masks)
+            if source_data_1:
+                sf_bulk_target.create_and_run_bulk_job(
+                    'Upsert', obj, externalID, source_data_1)
+
+            fields_2 = [externalID,
+                        f'{self_relationshipName}.{self_externalId}']
+
+            externalID_data = []
+            for rec in source_data_1:
+                externalID_data.append(rec[externalID])
+
+            externalID_data = "('" + "', '".join(externalID_data) + "')"
+            where_2 = f'{externalID} in {externalID_data}'
+
+            source_data_2 = get_data(sf_rest_source, obj, fields_2, where_2)
+            source_data_2 = [h.flatten_dict(record)
+                             for record in source_data_2]
+            for rec in source_data_2:
+                if rec.get(self_relationshipName, -1) != -1:
+                    source_data_2.remove(rec)
+                else:
+                    fields_2.append(
+                        f'{self_relationshipName}_{self_externalId}')
+                    {rec.pop(_key) for _key in list(rec.keys())
+                        if fields_2 and _key not in fields_2}
+                    rec[f'{self_relationshipName}.{self_externalId}'] = rec.pop(
+                        f'{self_relationshipName}_{self_externalId}')
+
+            if source_data_2:
+                sf_bulk_target.create_and_run_bulk_job(
+                    'Upsert', obj, externalID, source_data_2)
+
+            target_data = get_data(sf_rest_target, obj, [
+                                   f'count({primaryKey}) Ct'])
             print('\n', target_data)
-
-        if operation != 'test':
-            target_data = get_data(sf_rest_target, obj, [f'count({primaryKey}) Ct'])
-            print(f'\n{target_data} -- {externalID}')
 
     sf_rest_source.close_connection()
     sf_rest_target.close_connection()
@@ -92,7 +121,7 @@ def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
 
 
 def build_soql(sobject, fields, where='', orderby='', limit=0):
-    _select = 'select ' + ','.join(fields)
+    _select = 'select ' + ', '.join(fields)
     _from = f' from {sobject}'
     _where = ''
     _orderby = ''
