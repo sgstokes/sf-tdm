@@ -13,22 +13,17 @@ h.setup_logging(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 log.debug('Logging is configured.')
 
-# %% Variables
-env_path = './config/'
-env_config = 'env.map.json'
-tdm_config = './template.account-refresh.json'
 
-# %% Main
+# %% Functions
 
 
-def main1():
+def run_template1():
     log.debug(h.dtm())
-    
 
     return 'Done'
 
 
-def main():
+def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
     try:
         _tdm_config = h.get_config(tdm_config)
         env_map = h.get_config(env_path+env_config)
@@ -58,7 +53,7 @@ def main():
         masks = row['masks']
 
         log.info(f'{operation} -- {source}>>{target} -- {obj}\n')
-        if operation in ['execute', 'upsert']:
+        if operation in ['delete', 'execute', 'upsert']:
             log.info(
                 f'{operation} is a future operation.  Not currently supported.')
             continue
@@ -69,16 +64,19 @@ def main():
                 do_bulk_job(sf_bulk_target, 'Delete', obj, delete_data)
 
         if operation in ['refresh', 'insert']:
+            self_relationships = []
             if relationships:
                 for relationship in relationships:
                     if relationship['object'] == obj:
-                        self_field = relationship['field']
-                        self_relationshipName = relationship['relationshipName']
-                        self_externalId = relationship['externalId']
-
+                        self_relationships.append(relationship)
+            log.debug(f'self_relationships: {self_relationships}')
             fields_1 = fields_0
             where_1 = where_0
-            fields_1.pop(fields_1.index(self_field))
+
+            if len(self_relationships) > 0:
+                for self_relationship in self_relationships:
+                    fields_1.remove(self_relationship['field'])
+            log.debug(f'fields after removing self_relationships: {fields_1}')
 
             source_data_1 = get_data(sf_rest_source, obj,
                                      fields_1, where_1, orderby, limit, masks)
@@ -86,37 +84,38 @@ def main():
                 do_bulk_job(sf_bulk_target, 'Upsert', obj,
                             source_data_1, externalID)
 
-            fields_2 = [externalID,
-                        f'{self_relationshipName}.{self_externalId}']
+            if len(self_relationships) > 0:
+                log.debug('Start upsert of self_relationships')
+                for self_rel in self_relationships:
+                    self_dot_reference = f'{self_rel["relationshipName"]}.{self_rel["externalId"]}'
+                    self_underscore_reference = f'{self_rel["relationshipName"]}_{self_rel["externalId"]}'
+                    log.info(
+                        f'Upserting self relationship {self_dot_reference}')
+                    fields_2 = [externalID, f'{self_dot_reference}']
 
-            externalID_data = []
-            for rec in source_data_1:
-                externalID_data.append(rec[externalID])
+                    externalID_data = []
+                    for rec in source_data_1:
+                        externalID_data.append(rec[externalID])
 
-            externalID_data = "('" + "', '".join(externalID_data) + "')"
-            where_2 = f'{externalID} in {externalID_data}'
+                    externalID_data = "('" + \
+                        "', '".join(externalID_data) + "')"
+                    where_2 = f'{externalID} in {externalID_data} and {self_rel["field"]} != null'
 
-            source_data_2 = get_data(sf_rest_source, obj, fields_2, where_2)
-            source_data_2 = [h.flatten_dict(record)
-                             for record in source_data_2]
-            log.debug(source_data_2)
-            parent_count = 0
-            for rec in source_data_2:
-                if rec.get(self_relationshipName, -1) != -1:
-                    source_data_2.remove(rec)
-            for rec in source_data_2:
-                parent_count += 1
-                fields_2.append(
-                    f'{self_relationshipName}_{self_externalId}')
-                {rec.pop(_key) for _key in list(rec.keys())
-                    if fields_2 and _key not in fields_2}
-                rec[f'{self_relationshipName}.{self_externalId}'] = rec.pop(
-                    f'{self_relationshipName}_{self_externalId}')
+                    source_data_2 = [h.flatten_dict(record)
+                                     for record in get_data(sf_rest_source, obj, fields_2, where_2)]
+                    log.debug(f'Initial records to upsert: {source_data_2}')
 
-            log.debug(source_data_2)
-            if source_data_2 and parent_count > 0:
-                do_bulk_job(sf_bulk_target, 'Upsert', obj,
-                            source_data_2, externalID)
+                    if source_data_2:
+                        for rec in source_data_2:
+                            fields_2.append(f'{self_underscore_reference}')
+                            {rec.pop(_key) for _key in list(rec.keys())
+                                if fields_2 and _key not in fields_2}
+                            rec[f'{self_dot_reference}'] = rec.pop(
+                                f'{self_underscore_reference}')
+                        log.debug(f'Final records to upsert: {source_data_2}')
+
+                        do_bulk_job(sf_bulk_target, 'Upsert', obj,
+                                    source_data_2, externalID)
 
             target_data = get_data(sf_rest_target, obj, [
                                    f'count({primaryKey}) Ct'])
@@ -194,5 +193,8 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=""):
     return f'Batch Completed with {n_success} successes and {n_error} failures.'
 
 
-# %% Run main
-log.info(f'{main()}\n')
+# %% Run main program
+
+if __name__ == '__main__':
+    results = run_template(tdm_config='./template.account-refresh.json')
+    log.info(f'{results}\n')
