@@ -4,7 +4,14 @@
 # %% Imports
 import csv
 import helpers as h
+import logging
 
+# %% Logging setup
+h.setup_logging(level=logging.DEBUG)
+
+# Include in each module:
+log = logging.getLogger(__name__)
+log.debug('Logging is configured.')
 
 # %% Variables
 env_path = './config/'
@@ -15,8 +22,19 @@ tdm_config = './template.account-refresh.json'
 
 
 def main():
-    _tdm_config = h.get_config(tdm_config)
-    env_map = h.get_config(env_path+env_config)
+    log.debug('Test')
+
+    return 'Done'
+
+
+def main1():
+    try:
+        _tdm_config = h.get_config(tdm_config)
+        env_map = h.get_config(env_path+env_config)
+        log.info(
+            f'Successfully read config files: {tdm_config}')
+    except Exception as config_err:
+        log.exception(f'Failed to connect to Salesforce: {config_err}.')
 
     source = _tdm_config['source']
     target = _tdm_config['target']
@@ -38,9 +56,10 @@ def main():
         relationships = row['relationships']
         masks = row['masks']
 
-        print('\n', '*'*80, f'\n{operation} -- {source}>>{target} -- {obj}\n')
+        log.info(f'{operation} -- {source}>>{target} -- {obj}\n')
         if operation in ['execute', 'upsert']:
-            print(f'{operation} is a future operation.  Not currently supported.')
+            log.info(
+                f'{operation} is a future operation.  Not currently supported.')
             continue
 
         if operation in ['refresh', 'deleteAll']:
@@ -79,6 +98,7 @@ def main():
             source_data_2 = get_data(sf_rest_source, obj, fields_2, where_2)
             source_data_2 = [h.flatten_dict(record)
                              for record in source_data_2]
+            log.debug(source_data_2)
             parent_count = 0
             for rec in source_data_2:
                 if rec.get(self_relationshipName, -1) != -1:
@@ -92,14 +112,14 @@ def main():
                 rec[f'{self_relationshipName}.{self_externalId}'] = rec.pop(
                     f'{self_relationshipName}_{self_externalId}')
 
-            print(source_data_2)
+            log.debug('here')
             if source_data_2 and parent_count > 0:
                 do_bulk_job(sf_bulk_target, 'Upsert', obj,
                             source_data_2, externalID)
 
             target_data = get_data(sf_rest_target, obj, [
                                    f'count({primaryKey}) Ct'])
-            print('\n', target_data)
+            log.debug(target_data)
 
     sf_rest_source.close_connection()
     sf_rest_target.close_connection()
@@ -146,7 +166,7 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=""):
 
     # Iterate through batches of data, run job, & print results.
     for batch in batches:
-        print(len(batch))
+        log.debug(f'do_bulk_job {job_type} batch size:{len(batch)}')
         if job_type == 'Delete':
             batch_results = sf_bulk.create_and_run_delete_job(
                 object_name=object_name, data=batch)
@@ -163,7 +183,7 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=""):
     for result in batch_results:
         if result.success != 'true':
             n_error += 1
-            print(
+            log.warning(
                 f'Record Failed in Batch {batch}: {result.error}. Record ID: {result.id}.')
         else:
             n_success += 1
@@ -171,4 +191,4 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=""):
 
 
 # %% Run main
-print(main())
+log.info(f'{main()}\n')

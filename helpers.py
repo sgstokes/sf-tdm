@@ -4,10 +4,13 @@
 # %% Imports
 
 import json
+import logging.config
 import os
 import sf_rest_api
 import sf_bulk_api
 import time
+import yaml
+
 from faker import Faker
 
 # %% Variables
@@ -15,6 +18,18 @@ fn_path = os.path.dirname(os.path.realpath(__file__))
 
 
 # %% Functions
+def setup_logging(config='./config/logging.json', level=logging.INFO):
+    """Setup logging configuration
+
+    """
+    path = config
+    if os.path.exists(path):
+        with open(path, 'rt') as f:
+            config = json.load(f)
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=level)
+
 def get_config(config_file):
     _config_file = os.path.join(fn_path, config_file)
     try:
@@ -86,3 +101,7 @@ def chunk_records(records, chunk_size):
 
 def timestamp():
     return time.strftime('%H:%M:%S.%f')
+
+
+def datestamp():
+    return time.strftime('%Y%m%d')
