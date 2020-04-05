@@ -2,6 +2,8 @@ __author__ = 'Andrew Shuler: ashuler[at]relationshipvelocity.com'
 
 import json
 import csv
+import logging
+
 from salesforce_bulk import SalesforceBulk, CsvDictsAdapter
 from salesforce_bulk.util import IteratorBytesIO
 
@@ -18,11 +20,14 @@ class Connection(object):
         :param sandbox: Whether the Salesforce Instance is Production or Sandbox. Default value is False (Production).
         :type sandbox: bool
         """
-        print('Signing into Salesforce.')
+        # Logging setup
+        self.log = logging.getLogger(__name__)
+        self.log.info('Signing into Salesforce.')
         try:
             self.bulk = SalesforceBulk(username=username, password=password,
                                        security_token=security_token, sandbox=sandbox)
-            print(f'Successfully connected to Salesforce as "{username}".')
+            self.log.info(
+                f'Successfully connected to Salesforce as "{username}".')
         except Exception as auth_err:
             raise PermissionError(
                 f'Failed to connect to Salesforce: {auth_err}.')
@@ -40,7 +45,8 @@ class Connection(object):
         results = self.bulk.get_batch_results(batch)
         # Close the Job.
         self.bulk.close_job(job)
-        print(f'Delete {object_name} Job has been successfully completed.')
+        self.log.info(
+            f'Delete {object_name} job has been successfully completed.')
         return results
 
     def create_and_run_bulk_job(self, job_type, object_name, primary_key, data):
@@ -64,7 +70,7 @@ class Connection(object):
         object_name = str.title(object_name)
         # Connect and authenticate to Salesforce.
         # Create Job.
-        print(f'Creating {object_name} {job_type} Job.')
+        self.log.info(f'Creating {object_name} {job_type} job.')
         if job_type not in ['Insert', 'Update', 'Upsert']:
             raise ReferenceError(
                 'Invalid job_type not specified. Please use "Insert", "Update", or "Upsert".')
@@ -75,8 +81,7 @@ class Connection(object):
             elif job_type == 'Update':
                 job = self.bulk.create_update_job(
                     object_name, contentType='CSV')
-                soql_query = 'select Id, {} from {}'.format(
-                    primary_key, object_name)
+                soql_query = f'select Id, {primary_key} from {object_name}'
                 query_job = self.bulk.create_query_job(
                     object_name, contentType='CSV')
                 query_batch = self.bulk.query(query_job, soql_query)
@@ -101,11 +106,10 @@ class Connection(object):
                 job = self.bulk.create_upsert_job(
                     object_name, external_id_name=primary_key, contentType='CSV')
         except Exception as job_creation_error:
-            print('Encountered exception when creating Job: {}'.format(
-                job_creation_error))
+            self.log.exception(
+                f'Encountered exception when creating job: {job_creation_error}')
             raise ValueError(
-                'Unable to create {} {} Job. Please verify the value of the object_name variable.'
-                .format(object_name, job_type)
+                f'Unable to create {object_name} {job_type} Job. Please verify the value of the object_name variable.'
             )
         # Transform data from list of dictionaries into iterable CSV Content Type,
         # since the salesforce_bulk package provides a sweet class for it.
@@ -118,5 +122,6 @@ class Connection(object):
         results = self.bulk.get_batch_results(batch)
         # Close the Job.
         self.bulk.close_job(job)
-        print(job_type, object_name, 'Job has been successfully completed.')
+        self.log.info(
+            f'{job_type}, {object_name}, job has been successfully completed.')
         return results

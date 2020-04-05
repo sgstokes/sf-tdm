@@ -3,12 +3,12 @@
   "loggers": {
     "": {
       "level": "NOTSET",
-      "handlers": ["debug_console_handler", "all_rotating_file_handler", "info_rotating_file_handler", "error_file_handler"]
+      "handlers": ["debug_console_handler", "all_rotating_file_handler", "info_rotating_file_handler", "error_file_handler", "critical_mail_handler"]
     },
     "my.package": {
       "level": "WARNING",
       "propagate": false,
-      "handlers": ["info_rotating_file_handler", "error_file_handler"]
+      "handlers": ["all_rotating_file_handler", "info_rotating_file_handler", "error_file_handler"]
     }
   },
   "handlers": {
@@ -42,6 +42,15 @@
       "class": "logging.FileHandler",
       "filename": "./logs/error.log",
       "mode": "a"
+    },
+    "critical_mail_handler": {
+        "level": "CRITICAL",
+        "formatter": "file",
+        "class": "logging.handlers.SMTPHandler",
+        "mailhost" : "localhost",
+        "fromaddr": "monitoring@domain.com",
+        "toaddrs": ["dev@domain.com", "qa@domain.com"],
+        "subject": "Critical error with application name"
     }
   },
   "formatters": {

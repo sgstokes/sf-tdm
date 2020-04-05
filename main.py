@@ -21,13 +21,14 @@ tdm_config = './template.account-refresh.json'
 # %% Main
 
 
-def main():
-    log.debug('Test')
+def main1():
+    log.debug(h.dtm())
+    
 
     return 'Done'
 
 
-def main1():
+def main():
     try:
         _tdm_config = h.get_config(tdm_config)
         env_map = h.get_config(env_path+env_config)
@@ -112,7 +113,7 @@ def main1():
                 rec[f'{self_relationshipName}.{self_externalId}'] = rec.pop(
                     f'{self_relationshipName}_{self_externalId}')
 
-            log.debug('here')
+            log.debug(source_data_2)
             if source_data_2 and parent_count > 0:
                 do_bulk_job(sf_bulk_target, 'Upsert', obj,
                             source_data_2, externalID)
@@ -157,7 +158,10 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
     if limit > 0:
         _limit = ' limit ' + str(limit)
 
-    return _select+_from+_where+_orderby+_limit
+    q = _select+_from+_where+_orderby+_limit
+    log.debug(q)
+
+    return q
 
 
 def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=""):

@@ -1,11 +1,14 @@
 __author__ = 'Andrew Shuler: ashuler[at]relationshipvelocity.com'
 
 import json
+import logging
 import requests as r
 
 
 class Connection(object):
     def __init__(self, username, password, grant_type, client_id, client_secret, sandbox=True):
+        # Logging setup
+        self.log = logging.getLogger(__name__)
         # create non-JSON dict object with all other configuration params.
         payload = {
             'grant_type': grant_type,
@@ -34,9 +37,10 @@ class Connection(object):
             # update Authorization session header with value "Bearer {access_token}"
             self.session.headers.update(
                 {'Authorization': f'Bearer {login["access_token"]}'})
-            print(f'Successfully connected to {self.instance_url}.')
+            self.log.info(f'Successfully connected to {self.instance_url}.')
         except Exception as login_error:
-            print(f'Failed to connect to SF instance.\nError: {login_error}')
+            self.log.exception(
+                f'Failed to connect to SF instance.\nError: {login_error}')
         # get the latest valid Salesforce API Version.
         version = self.session.get(self.base_url).json()[-1]['version']
         # extend the base_url to include the standard API path prefix and the version number.
@@ -59,7 +63,7 @@ class Connection(object):
                     next_url = results['nextRecordsUrl']
                     results = self.session.get(
                         self.instance_url + next_url).json()
-                    # print(f'Results: {results}')
+                    self.log.debug(f'Results: {results}')
                     records.extend(
                         {key: value for key, value in record.items() if key !=
                          'attributes'}
@@ -67,7 +71,7 @@ class Connection(object):
                     )
             else:
                 records = []
-            print(f'SOQL query returned {len(records)} records.')
+            self.log.info(f'SOQL query returned {len(records)} records.')
             return records
         except Exception as soql_err:
             raise ValueError(
@@ -102,7 +106,7 @@ class Connection(object):
             details = self.session.get(
                 self.base_url + '/sobjects/{}/describe'.format(sobject)).json()[key]
             if print_keys:
-                print('\n' + key + ' keys\n', details[0].keys())
+                self.log.info(f'{key} keys\n\t{details[0].keys()}')
             for record in details:
                 [record.pop(_key) for _key in list(record.keys())
                  if fields and _key not in fields]
@@ -123,4 +127,4 @@ class Connection(object):
 
     def close_connection(self):
         self.session.close()
-        print('\nClosed connection to Salesforce REST API')
+        self.log.info('Closed connection to Salesforce REST API')

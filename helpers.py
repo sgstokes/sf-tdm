@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# %% Imports
+# Imports
 
 import json
 import logging.config
 import os
 import sf_rest_api
 import sf_bulk_api
-import time
 import yaml
 
+from datetime import datetime
 from faker import Faker
 
-# %% Variables
+# Variables
 fn_path = os.path.dirname(os.path.realpath(__file__))
 
 
-# %% Functions
+# Setup logging
+
+
 def setup_logging(config='./config/logging.json', level=logging.INFO):
     """Setup logging configuration
 
@@ -30,6 +32,11 @@ def setup_logging(config='./config/logging.json', level=logging.INFO):
     else:
         logging.basicConfig(level=level)
 
+    return True
+
+# Return config_file as dictionary.
+
+
 def get_config(config_file):
     _config_file = os.path.join(fn_path, config_file)
     try:
@@ -39,6 +46,8 @@ def get_config(config_file):
     except Exception as config_err:
         raise ReferenceError(
             f'Failed to load config file "{_config_file}": {config_err}')
+
+# Get fake value based on method
 
 
 def get_fake(method):
@@ -54,6 +63,8 @@ def get_fake(method):
 
     return mask[method]
 
+# Get reference to sf_rest_api module
+
 
 def get_sf_rest_connection(config):
     _config = get_config(config)
@@ -67,6 +78,8 @@ def get_sf_rest_connection(config):
         sandbox=_config['sf_sandbox'])
 
     return sf_rest
+
+# Get reference to sf_bulk_api module
 
 
 def get_sf_bulk_connection(config):
@@ -96,12 +109,16 @@ def chunk_records(records, chunk_size):
     for step in range(0, len(records), chunk_size):
         yield records[step:step+chunk_size]
 
-# Return formatted timestamp
+# Return formatted timestamp or datestamp
 
 
 def timestamp():
-    return time.strftime('%H:%M:%S.%f')
+    return datetime.now().strftime('%H:%M:%S.%f')
 
 
 def datestamp():
-    return time.strftime('%Y%m%d')
+    return datetime.now().strftime('%Y%m%d')
+
+
+def dtm():
+    return datetime.now()
