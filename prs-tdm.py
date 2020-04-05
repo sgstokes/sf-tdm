@@ -103,7 +103,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
 
                     source_data_2 = [h.flatten_dict(record)
                                      for record in get_data(sf_rest_source, obj, fields_2, where_2)]
-                    log.debug(f'Initial records to upsert: {source_data_2}')
+                    log.debug(f'Initial record count to upsert: {len(source_data_2)}')
 
                     if source_data_2:
                         for rec in source_data_2:
@@ -112,7 +112,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                                 if fields_2 and _key not in fields_2}
                             rec[f'{self_dot_reference}'] = rec.pop(
                                 f'{self_underscore_reference}')
-                        log.debug(f'Final records to upsert: {source_data_2}')
+                        log.debug(f'Final record count to upsert: {len(source_data_2)}')
 
                         do_bulk_job(sf_bulk_target, 'Upsert', obj,
                                     source_data_2, externalID)
