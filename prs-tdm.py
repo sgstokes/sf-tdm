@@ -91,18 +91,13 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                     self_underscore_reference = f'{self_rel["relationshipName"]}_{self_rel["externalId"]}'
                     log.info(
                         f'Upserting self relationship {self_dot_reference}')
+                    
                     fields_2 = [externalID, f'{self_dot_reference}']
-
-                    externalID_data = []
-                    for rec in source_data_1:
-                        externalID_data.append(rec[externalID])
-
-                    externalID_data = "('" + \
-                        "', '".join(externalID_data) + "')"
-                    where_2 = f'{externalID} in {externalID_data} and {self_rel["field"]} != null'
+                    where_2 = f'{where_1} and {self_rel["field"]} != null'
+                    # Todo Selection between source_data_1 and source_data_2 is different for sample versus population.
 
                     source_data_2 = [h.flatten_dict(record)
-                                     for record in get_data(sf_rest_source, obj, fields_2, where_2)]
+                                     for record in get_data(sf_rest_source, obj, fields_2, where_2, orderby, limit)]
                     log.debug(f'Initial record count to upsert: {len(source_data_2)}')
 
                     if source_data_2:
