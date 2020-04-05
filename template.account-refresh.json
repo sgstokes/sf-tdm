@@ -72,7 +72,7 @@
       "Web_Address__c",
       "LID__LinkedIn_Company_Id__c"
     ],
-    "where": "Legacy_ID__c in ('0013900001PP4E7AAL', '00170000010p2tdAAA')",
+    "where": "Legacy_ID__c != null",
     "orderby": "",
     "limit": 0,
     "relationships": [{

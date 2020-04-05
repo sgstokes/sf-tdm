@@ -24,7 +24,7 @@
       "class": "logging.handlers.RotatingFileHandler",
       "filename": "./logs/all.log",
       "mode": "a",
-      "maxBytes": 1048576,
+      "maxBytes": 16777216,
       "backupCount": 10
     },
     "info_rotating_file_handler": {
@@ -33,7 +33,7 @@
       "class": "logging.handlers.RotatingFileHandler",
       "filename": "./logs/info.log",
       "mode": "a",
-      "maxBytes": 1048576,
+      "maxBytes": 16777216,
       "backupCount": 10
     },
     "error_file_handler": {
