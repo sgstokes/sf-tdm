@@ -63,7 +63,7 @@ class Connection(object):
                     next_url = results['nextRecordsUrl']
                     results = self.session.get(
                         self.instance_url + next_url).json()
-                    self.log.debug(f'Results: {results}')
+                    # self.log.debug(f'Results: {results}')
                     records.extend(
                         {key: value for key, value in record.items() if key !=
                          'attributes'}
