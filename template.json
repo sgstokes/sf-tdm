@@ -1,9 +1,9 @@
 {
   "source": "PRD",
-  "target": "STG",
+  "target": "DEV200404",
   "data": [{
       "sequence": "1",
-      "operation": "execute",
+      "operation": "refresh",
       "type": "sobject",
       "object": "Party_Brand__c",
       "fields": [
@@ -17,18 +17,18 @@
       ],
       "where": "",
       "orderby": "",
-      "limit": 1,
-      "externalIds": [
-        "DM_External__c"
-      ],
+      "limit": 0,
+      "externalIds": [],
       "relationships": [],
       "masks": {}
     },
     {
       "sequence": "2",
-      "operation": "insert",
+      "operation": "refresh",
       "type": "sobject",
       "object": "Account",
+      "primaryKey": "Id",
+      "externalId": "Legacy_ID__c",
       "fields": [
         "Name",
         "Type",
@@ -93,120 +93,22 @@
         "Web_Address__c",
         "LID__LinkedIn_Company_Id__c"
       ],
-      "where": "",
+      "where": "Legacy_ID__c != null",
       "orderby": "",
-      "limit": 1,
-      "externalIds": [
-        "BIS_External_ID__c",
-        "Client_External_ID__c",
-        "Partner_External_ID__c",
-        "Custodian_External_ID__c",
-        "Trading_Partner_External_ID__c",
-        "Advisor_External_ID__c",
-        "Legacy_ID__c"
-      ],
+      "limit": 0,
       "relationships": [{
         "object": "Account",
         "relationshipName": "Parent",
-        "fieldName": "ParentId"
-      }, {
+        "field": "ParentId",
+        "externalId": "Legacy_ID__c"
+      },{
         "object": "Party_Brand__c",
         "relationshipName": "Party_Brand__r",
-        "fieldName": "Party_Brand__c"
+        "field": "Party_Brand__c",
+        "externalId": "DM_External_ID__c"
       }],
       "masks": {
         "EIN__c": "fake.ein"
-      }
-    },
-    {
-      "sequence": "1",
-      "operation": "insert",
-      "type": "sobject",
-      "object": "Contact",
-      "fields": [
-        "AccountId",
-        "LastName",
-        "FirstName",
-        "Salutation",
-        "MiddleName",
-        "Suffix",
-        "RecordTypeId",
-        "OtherStreet",
-        "OtherCity",
-        "OtherState",
-        "OtherPostalCode",
-        "OtherCountry",
-        "OtherLatitude",
-        "OtherLongitude",
-        "OtherGeocodeAccuracy",
-        "MailingStreet",
-        "MailingCity",
-        "MailingState",
-        "MailingPostalCode",
-        "MailingCountry",
-        "MailingLatitude",
-        "MailingLongitude",
-        "MailingGeocodeAccuracy",
-        "Phone",
-        "Fax",
-        "MobilePhone",
-        "HomePhone",
-        "OtherPhone",
-        "AssistantPhone",
-        "ReportsToId",
-        "Email",
-        "Title",
-        "Department",
-        "AssistantName",
-        "LeadSource",
-        "Birthdate",
-        "Description",
-        "HasOptedOutOfEmail",
-        "HasOptedOutOfFax",
-        "DoNotCall",
-        "EmailBouncedReason",
-        "EmailBouncedDate",
-        "BIS_IndivId__c",
-        "Confidential_Correspondence__c",
-        "Last_Update_Date__c",
-        "Last_Update_User__c",
-        "Salaries__c",
-        "DTP_Data_Quality__c",
-        "Do_Not_Contact__c",
-        "iContactforSF__iContact_Contact_Id__c",
-        "Acumatica_NoteID__c",
-        "Advisor_Status__c",
-        "Has_a_Contact_Plan_Role__c",
-        "Is_Billing_Contact__c",
-        "Legacy_ID__c",
-        "Passcode__c",
-        "LID__Languages__c",
-        "LID__Level__c",
-        "LID__LinkedIn_Company_Id__c",
-        "LID__LinkedIn_Member_Token__c",
-        "LID__No_longer_at_Company__c"
-      ],
-      "where": "",
-      "orderby": "",
-      "limit": 1,
-      "externalIds": [
-        "BIS_IndivId__c",
-        "Legacy_ID__c"
-      ],
-      "relationships": [{
-          "type": "self",
-          "relationshipName": "ReportsTo",
-          "fieldName": "ReportsToId"
-        },
-        {
-          "type": "other",
-          "relationshipName": "Account",
-          "fieldName": "AccountId"
-        }
-      ],
-      "masks": {
-        "Email": "fake.email",
-        "Birthdate": "fake.date_of_birth"
       }
     }
   ]

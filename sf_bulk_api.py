@@ -29,8 +29,9 @@ class Connection(object):
             self.log.info(
                 f'Successfully connected to Salesforce as "{username}".')
         except Exception as auth_err:
-            raise PermissionError(
-                f'Failed to connect to Salesforce: {auth_err}.')
+            self.log.exception(
+                f'Failed to connect to Salesforce: {auth_err}')
+            raise
 
     def create_and_run_delete_job(self, object_name, data):
         job = self.bulk.create_delete_job(object_name, contentType='CSV')
@@ -106,11 +107,12 @@ class Connection(object):
                 job = self.bulk.create_upsert_job(
                     object_name, external_id_name=primary_key, contentType='CSV')
         except Exception as job_creation_error:
+            self.log.info(
+                f'Unable to create {object_name} {job_type} Job. Please verify the value of the object_name variable.')
             self.log.exception(
                 f'Encountered exception when creating job: {job_creation_error}')
-            raise ValueError(
-                f'Unable to create {object_name} {job_type} Job. Please verify the value of the object_name variable.'
-            )
+            raise
+
         # Transform data from list of dictionaries into iterable CSV Content Type,
         # since the salesforce_bulk package provides a sweet class for it.
         csv_iter = CsvDictsAdapter(iter(data))

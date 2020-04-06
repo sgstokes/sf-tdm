@@ -41,6 +41,7 @@ class Connection(object):
         except Exception as login_error:
             self.log.exception(
                 f'Failed to connect to SF instance.\nError: {login_error}')
+            raise
         # get the latest valid Salesforce API Version.
         version = self.session.get(self.base_url).json()[-1]['version']
         # extend the base_url to include the standard API path prefix and the version number.
@@ -74,8 +75,9 @@ class Connection(object):
             self.log.info(f'SOQL query returned {len(records)} records.')
             return records
         except Exception as soql_err:
-            raise ValueError(
+            self.log.exception(
                 f'Failed to execute SOQL query "{query_string}".\nError: {soql_err}')
+            raise
 
     def describe_fields(self, sobject, print_keys=False):
         try:
@@ -98,8 +100,9 @@ class Connection(object):
 
             return self.describe_object(sobject, 'fields', fields, print_keys)
         except Exception as describe_err:
-            raise ValueError(
+            self.log.exception(
                 f'Failed to describe "{sobject}".\nError: {describe_err}')
+            raise
 
     def describe_object(self, sobject, key, fields=[], print_keys=False):
         try:
@@ -122,8 +125,9 @@ class Connection(object):
 
             return results
         except Exception as describe_err:
-            raise ValueError(
+            self.log.exception(
                 f'Failed to get results.\nError: {describe_err}')
+            raise
 
     def close_connection(self):
         self.session.close()
