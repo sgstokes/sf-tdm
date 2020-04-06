@@ -3,16 +3,21 @@
 
 # %% Imports
 import helpers as h
-import pandas as pd
+import logging
+# import pandas as pd
 
 
-# %% Variables
+# %% Logging setup
+h.setup_logging(level=logging.DEBUG)
+
+# Logging statements for each module:
+log = logging.getLogger(__name__)
+log.debug('Logging is configured.')
 
 
-# %% Main
+# %% Primary function
 
-
-def main():
+def do_query():
     sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
 
     query = "select Id, Name, RecordType.Name, ParentId, Parent.Legacy_ID__c, EIN__c from Account"
@@ -28,8 +33,6 @@ def main():
     return len(results)
 
 
-# %% Functions
-
-
-# %% Run main
-print(main())
+# %% Run main program
+if __name__ == '__main__':
+    log.info(do_query())

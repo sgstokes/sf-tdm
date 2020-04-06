@@ -66,13 +66,12 @@
       "Membership__c",
       "Notes__c",
       "Number_of_Locations__c",
-      "Party_Brand__c",
       "Selling_Agreement_Status__c",
       "Vanity_URL__c",
       "Web_Address__c",
       "LID__LinkedIn_Company_Id__c"
     ],
-    "where": "Legacy_ID__c != null",
+    "where": "Legacy_ID__c in ('0013900001PP4E7AAL', '00170000010p2tdAAA')",
     "orderby": "",
     "limit": 0,
     "relationships": [{
