@@ -221,5 +221,5 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
 # %% Run main program
 
 if __name__ == '__main__':
-    results = run_template(tdm_config='./template.account-refresh.json')
+    results = run_template(tdm_config='./template.json')
     log.info(f'{results}\n')
