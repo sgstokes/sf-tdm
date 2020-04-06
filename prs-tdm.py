@@ -20,6 +20,8 @@ MAKE_CHANGES = True
 # %% Primary function
 
 def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
+    start_time = h.dtm()
+    log.info(f'Started {tdm_config} template run')
     try:
         _tdm_config = h.get_config(tdm_config)
         env_map = h.get_config(env_path+env_config)
@@ -38,6 +40,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
 
     try:
         for row in data:
+            row_start_time = h.dtm()
             operation = row['operation']
             obj = row['object']
             primaryKey = row['primaryKey']
@@ -49,7 +52,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
             relationships = row['relationships']
             masks = row['masks']
 
-            log.info(f'{operation} -- {source}>>{target} -- {obj}\n')
+            log.info(f'{operation} -- {source}>>{target} -- {obj} started...')
             # Continue if future operations are specified.
             if operation in ['delete', 'execute', 'upsert']:
                 log.info(
@@ -84,7 +87,8 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                     f'fields after removing self_relationships: {fields_1}')
                 # Replace field with relationship.externalId reference.
                 if len(relationships) > 0:
-                    fields_1 = replace_field_external_ids(relationships, fields_1)
+                    fields_1 = replace_field_external_ids(
+                        relationships, fields_1)
                     log.debug(
                         f'fields after replacing other relationships: {fields_1}')
                 # Get data from source to upsert to target.
@@ -122,11 +126,17 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                 target_data = get_data(sf_rest_target, obj, [
                     f'count({primaryKey}) Ct'])
                 log.debug(f'{obj} final count: {target_data}')
+            row_finish_time = h.dtm()
+            log.info(
+                f'{operation} -- {source}>>{target} -- {obj} finished - run time: {row_finish_time-row_start_time}')
+
         # Close sf_rest connections.
         sf_rest_source.close_connection()
         sf_rest_target.close_connection()
 
-        return f'Completed {tdm_config} template run.'
+        finish_time = h.dtm()
+
+        return f'Completed {tdm_config} template run - run time: {finish_time-start_time}.'
     except Exception as template_err:
         log.error(
             f'Failed to run template "{tdm_config}".\nError: {template_err}')
