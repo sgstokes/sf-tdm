@@ -53,6 +53,12 @@ def get_config(config_file):
 def get_fake(method):
     fake = Faker()
     mask = {
+        "fixed.company": "Acme Dynamite, Inc.",
+        "fixed.date_of_birth": "1970-01-01",
+        "fixed.ein": "95-8101756",
+        "fixed.email": "joel19@gmail.com",
+        "fixed.name": "Valerie Duke",
+        "fixed.ssn": "247-03-5127",
         "fake.company": fake.company(),
         "fake.date_of_birth": fake.date_of_birth(minimum_age=21, maximum_age=115),
         "fake.ein": fake.ein(),
