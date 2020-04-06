@@ -112,16 +112,15 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                     log.info(f'do_bulk_job results: {results}')
                 # Loop through and upsert self relationships.
                 if len(self_relationships) > 0:
-                    for rel in self_relationships:
-                        results = do_self_relationship_upsert(sf_rest=sf_rest_source,
-                                                              sf_bulk=sf_bulk_target,
-                                                              relationship=rel,
-                                                              object_name=obj,
-                                                              externalID=externalID,
-                                                              where=where,
-                                                              orderby=orderby,
-                                                              limit=limit)
-                        log.info(results)
+                    results = do_self_relationship_upsert(sf_rest=sf_rest_source,
+                                                            sf_bulk=sf_bulk_target,
+                                                            relationships=self_relationships,
+                                                            object_name=obj,
+                                                            externalID=externalID,
+                                                            where=where,
+                                                            orderby=orderby,
+                                                            limit=limit)
+                    log.info(results)
                 # Get record count of target object.
                 target_data = get_data(sf_rest_target, obj, [
                     f'count({primaryKey}) Ct'])
@@ -187,29 +186,31 @@ def fix_flattened_fields(relationships, fields, data):
 
 def do_self_relationship_upsert(sf_rest,
                                 sf_bulk,
-                                relationship,
+                                relationships,
                                 object_name,
                                 externalID,
                                 where='',
                                 orderby='',
                                 limit=0):
-    log.info('Start relationship upsert')
+    start_time = h.dtm()
+    log.info('Start self relationship upsert.')
 
-    if len(relationship) > 0:
-        reln_dot_reference = f'{relationship["relationshipName"]}.{relationship["externalId"]}'
-        reln_underscore_reference = f'{relationship["relationshipName"]}_{relationship["externalId"]}'
+    for rel in relationships:
+        rel_start_time = h.dtm()
+        reln_dot_reference = f'{rel["relationshipName"]}.{rel["externalId"]}'
+        reln_underscore_reference = f'{rel["relationshipName"]}_{rel["externalId"]}'
         log.info(f'Upserting relationship {reln_dot_reference}')
 
         fields = [externalID, f'{reln_dot_reference}']
         if where:
-            _where = f'{where} and {relationship["field"]} != null'
+            _where = f'{where} and {rel["field"]} != null'
         else:
-            _where = f'{relationship["field"]} != null'
+            _where = f'{rel["field"]} != null'
 
         # Todo Selection between source_data_1 and source_data_2 is different for sample versus population.
 
         source_data = [h.flatten_dict(record)
-                       for record in get_data(sf_rest, object_name, fields, _where, orderby, limit)]
+                    for record in get_data(sf_rest, object_name, fields, _where, orderby, limit)]
         log.debug(f'Initial record count to upsert: {len(source_data)}')
 
         if source_data:
@@ -222,8 +223,13 @@ def do_self_relationship_upsert(sf_rest,
             log.debug(f'Final record count to upsert: {len(source_data)}')
 
             results = do_bulk_job(sf_bulk, 'Upsert', object_name,
-                                  source_data, externalID)
+                                source_data, externalID)
             log.info(f'do_bulk_job results: {results}')
+        rel_finish_time = h.dtm()
+        log.info(f'Relationshp: {reln_dot_reference} finished - run time: {rel_finish_time-rel_start_time}.')
+
+    finish_time = h.dtm()
+    log.info(f'do_self_relationship_upsert finished - run time: {finish_time-start_time}.')
 
     return 'Relationship upsert completed.'
 
