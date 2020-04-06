@@ -308,7 +308,7 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
         if result.success != 'true':
             n_error += 1
             log.warning(
-                f'Record Failed in Batch {batch}: {result.error}. Record ID: {result.id}.')
+                f'Record Failed in batch: {result.error}.')
         else:
             n_success += 1
     bulk_finish_time = h.dtm()
