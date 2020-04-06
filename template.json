@@ -64,6 +64,7 @@
         "Description",
         "Rating",
         "Site",
+        "OwnerId",
         "AccountSource",
         "SicDesc",
         "BIS_External_ID__c",
@@ -101,6 +102,11 @@
         "relationshipName": "Parent",
         "field": "ParentId",
         "externalId": "Legacy_ID__c"
+      },{
+        "object": "User",
+        "relationshipName": "Owner",
+        "field": "OwnerId",
+        "externalId": "Pentegra_ID__c"
       },{
         "object": "Party_Brand__c",
         "relationshipName": "Party_Brand__r",
