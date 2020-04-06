@@ -64,7 +64,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                 if delete_data:
                     results = do_bulk_job(
                         sf_bulk_target, 'Delete', obj, delete_data)
-                    log.info(f'do_bulk_job results: {results}')
+                    log.info(results)
             # Perform upsert portion of refresh operation and insert operation.
             if operation in ['refresh', 'insert']:
                 # Split relationships into two lists: self and other.
@@ -109,17 +109,17 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                 if source_data:
                     results = do_bulk_job(sf_bulk_target, 'Upsert', obj,
                                           source_data, externalID)
-                    log.info(f'do_bulk_job results: {results}')
+                    log.info(results)
                 # Loop through and upsert self relationships.
                 if len(self_relationships) > 0:
                     results = do_self_relationship_upsert(sf_rest=sf_rest_source,
-                                                            sf_bulk=sf_bulk_target,
-                                                            relationships=self_relationships,
-                                                            object_name=obj,
-                                                            externalID=externalID,
-                                                            where=where,
-                                                            orderby=orderby,
-                                                            limit=limit)
+                                                          sf_bulk=sf_bulk_target,
+                                                          relationships=self_relationships,
+                                                          object_name=obj,
+                                                          externalID=externalID,
+                                                          where=where,
+                                                          orderby=orderby,
+                                                          limit=limit)
                     log.info(results)
                 # Get record count of target object.
                 target_data = get_data(sf_rest_target, obj, [
@@ -199,7 +199,7 @@ def do_self_relationship_upsert(sf_rest,
         rel_start_time = h.dtm()
         reln_dot_reference = f'{rel["relationshipName"]}.{rel["externalId"]}'
         reln_underscore_reference = f'{rel["relationshipName"]}_{rel["externalId"]}'
-        log.info(f'Upserting relationship {reln_dot_reference}')
+        log.info(f'Upserting relationship: {reln_dot_reference}.')
 
         fields = [externalID, f'{reln_dot_reference}']
         if where:
@@ -210,7 +210,7 @@ def do_self_relationship_upsert(sf_rest,
         # Todo Selection between source_data_1 and source_data_2 is different for sample versus population.
 
         source_data = [h.flatten_dict(record)
-                    for record in get_data(sf_rest, object_name, fields, _where, orderby, limit)]
+                       for record in get_data(sf_rest, object_name, fields, _where, orderby, limit)]
         log.debug(f'Initial record count to upsert: {len(source_data)}')
 
         if source_data:
@@ -223,15 +223,15 @@ def do_self_relationship_upsert(sf_rest,
             log.debug(f'Final record count to upsert: {len(source_data)}')
 
             results = do_bulk_job(sf_bulk, 'Upsert', object_name,
-                                source_data, externalID)
-            log.info(f'do_bulk_job results: {results}')
+                                  source_data, externalID)
+            log.info(results)
         rel_finish_time = h.dtm()
-        log.info(f'Relationshp: {reln_dot_reference} finished - run time: {rel_finish_time-rel_start_time}.')
+        log.info(
+            f'Relationshp: {reln_dot_reference} finished - run time: {rel_finish_time-rel_start_time}.')
 
     finish_time = h.dtm()
-    log.info(f'do_self_relationship_upsert finished - run time: {finish_time-start_time}.')
 
-    return 'Relationship upsert completed.'
+    return f'do_self_relationship_upsert finished - run time: {finish_time-start_time}.'
 
 
 def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
@@ -241,7 +241,8 @@ def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
     soql_start_time = h.dtm()
     records = sf_rest.soql_query(query)
     soql_finish_time = h.dtm()
-    log.info(f'get_data result count: {len(records)} - run time: {soql_finish_time-soql_start_time}.')
+    log.info(
+        f'get_data result count: {len(records)} - run time: {soql_finish_time-soql_start_time}.')
 
     if _masks:
         mask_start_time = h.dtm()
@@ -250,7 +251,8 @@ def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
             for field, fake_method in _masks.items():
                 record.update({field: str(h.get_fake(fake_method))})
         mask_finish_time = h.dtm()
-        log.info(f'get_data apply masks finished - run time: {mask_finish_time-mask_start_time}.')
+        log.info(
+            f'get_data apply masks finished - run time: {mask_finish_time-mask_start_time}.')
 
     return records
 
@@ -270,7 +272,7 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
         _limit = ' limit ' + str(limit)
 
     q = _select+_from+_where+_orderby+_limit
-    log.debug(q)
+    log.debug(f'build_soql: {q}')
 
     return q
 
@@ -310,8 +312,8 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
         else:
             n_success += 1
     bulk_finish_time = h.dtm()
-    log.info(f'do_bulk_job finished - run time: {bulk_finish_time-bulk_start_time}.')
-    return f'Batch Completed with {n_success} successes and {n_error} failures.'
+
+    return f'do_bulk_job completed with {n_success} successes and {n_error} failures - run time: {bulk_finish_time-bulk_start_time}.'
 
 
 # %% Run main program
