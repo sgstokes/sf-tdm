@@ -225,7 +225,7 @@ def do_self_relationship_upsert(sf_rest,
                                   source_data, externalID)
             log.info(f'do_bulk_job results: {results}')
 
-    return f'Relationship upsert completed.'
+    return 'Relationship upsert completed.'
 
 
 def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
@@ -236,11 +236,13 @@ def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
     log.debug(f'get_data result count: {len(records)}')
 
     if _masks:
-        log.debug(f'get_data apply masks start.')
+        mask_start_time = h.dtm()
+        log.debug('get_data apply masks start.')
         for record in records:
             for field, fake_method in _masks.items():
                 record.update({field: str(h.get_fake(fake_method))})
-        log.debug(f'get_data apply masks finish.')
+        mask_finish_time = h.dtm()
+        log.debug(f'get_data apply masks finished - run time: {mask_finish_time-mask_start_time}.')
 
     return records
 
