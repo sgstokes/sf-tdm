@@ -50,10 +50,11 @@ class Connection(object):
     def soql_query(self, query_string):
         """ Response JSON has 3 keys: totalSize, done, records. """
         try:
-            # replace spaces with "+" and execute soql query
-            results = self.session.get(
-                self.base_url +
-                f'/query/?q={query_string}'.replace(' ', '+').replace('%', '%25')).json()
+            # Encode and execute soql query
+            raw_query = self.base_url + f'/query/?q={query_string}'
+            enc_query = r.utils.requote_uri(raw_query)
+            self.log.debug(enc_query)
+            results = self.session.get(enc_query).json()
             if int(results['totalSize']) > 0:
                 records = [
                     {key: value for key, value in record.items() if key !=
