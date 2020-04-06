@@ -232,8 +232,10 @@ def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
     query = build_soql(obj, fields, where, orderby, limit)
     _masks = masks
 
+    soql_start_time = h.dtm()
     records = sf_rest.soql_query(query)
-    log.debug(f'get_data result count: {len(records)}')
+    soql_finish_time = h.dtm()
+    log.info(f'get_data result count: {len(records)} - run time: {soql_finish_time-soql_start_time}.')
 
     if _masks:
         mask_start_time = h.dtm()
@@ -242,7 +244,7 @@ def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
             for field, fake_method in _masks.items():
                 record.update({field: str(h.get_fake(fake_method))})
         mask_finish_time = h.dtm()
-        log.debug(f'get_data apply masks finished - run time: {mask_finish_time-mask_start_time}.')
+        log.info(f'get_data apply masks finished - run time: {mask_finish_time-mask_start_time}.')
 
     return records
 
@@ -268,6 +270,7 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
 
 
 def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
+    bulk_start_time = h.dtm()
     # Split records into batches of 5000.
     batches = h.chunk_records(data, 5000)
 
@@ -300,6 +303,8 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
                 f'Record Failed in Batch {batch}: {result.error}. Record ID: {result.id}.')
         else:
             n_success += 1
+    bulk_finish_time = h.dtm()
+    log.info(f'do_bulk_job finished - run time: {bulk_finish_time-bulk_start_time}.')
     return f'Batch Completed with {n_success} successes and {n_error} failures.'
 
 

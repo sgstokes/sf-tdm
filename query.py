@@ -18,6 +18,7 @@ log.debug('Logging is configured.')
 # %% Primary function
 
 def do_query():
+    start_time = h.dtm()
     sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
 
     query = "select Id, Name, RecordType.Name, ParentId, Parent.Legacy_ID__c, EIN__c from Account"
@@ -29,6 +30,9 @@ def do_query():
 
     results = sf_rest.soql_query(query)
     sf_rest.close_connection()
+    
+    finish_time = h.dtm()
+    log.info(f'Completed query - run time: {finish_time-start_time}.')
 
     return len(results)
 
