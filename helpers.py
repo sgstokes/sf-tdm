@@ -15,6 +15,7 @@ from faker import Faker
 
 # Variables
 fn_path = os.path.dirname(os.path.realpath(__file__))
+fake = Faker()
 
 
 # Setup logging
@@ -67,7 +68,6 @@ def get_fake(method):
 
 
 def get_faker(method):
-    fake = Faker()
     mask = {
         "fake.company": fake.company(),
         "fake.date_of_birth": fake.date_of_birth(minimum_age=21, maximum_age=115),

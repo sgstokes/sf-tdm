@@ -3,19 +3,21 @@
 
 # %% Imports
 import helpers as h
-import timeit
+
+from faker import Faker
+
 
 # %% Code
 st = h.dtm()
 for x in range(1000):
-  method = 'fake.ein'
-  str(h.get_fake(method))
+    method = 'fake.ein'
+    str(h.get_fake(method))
 fn = h.dtm()
 print(f'{method}: {fn-st}')
 
 st = h.dtm()
 for x in range(1000):
-  method = 'fixed.ein'
-  str(h.get_fake(method))
+    method = 'fixed.ein'
+    str(h.get_fake(method))
 fn = h.dtm()
 print(f'{method}: {fn-st}')
