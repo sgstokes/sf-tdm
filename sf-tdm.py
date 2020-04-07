@@ -283,10 +283,13 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
 def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
     bulk_start_time = h.dtm()
     # Split records into batches by thread count.
+    # min_batch based on Salesforce processing details.
+    min_batch = 200
     thread_count = 20
     if job_type == 'Delete':
         thread_count = 10
-    chunk_size = len(data) // thread_count + 1
+    chunk_size = len(data) // thread_count
+    chunk_size = min_batch - (chunk_size % min_batch) + chunk_size
     log.debug(f'chunk_size: {chunk_size}')
 
     batches = h.chunk_records(data, chunk_size)
@@ -306,7 +309,7 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
 def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
     bulk_start_time = h.dtm()
 
-    log.debug(f'do_bulk_job_thread {job_type} on {object_name}.')
+    log.debug(f'do_bulk_job_thread {job_type} on {object_name} - batch size: {len(data)}')
     if MAKE_CHANGES:
         if job_type == 'Delete':
             batch_results = sf_bulk.create_and_run_delete_job(
