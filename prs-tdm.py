@@ -6,6 +6,9 @@ import csv
 import helpers as h
 import logging
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+
 # %% Logging setup
 h.setup_logging(level=logging.DEBUG)
 
@@ -282,27 +285,40 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
     # Split records into batches of 5000.
     batches = h.chunk_records(data, 5000)
 
-    # Iterate through batches of data, run job, & print results.
-    for batch in batches:
-        log.debug(f'do_bulk_job {job_type} batch size: {len(batch)}')
-        if MAKE_CHANGES:
-            if job_type == 'Delete':
-                batch_results = sf_bulk.create_and_run_delete_job(
-                    object_name=object_name, data=batch)
-            else:
-                batch_results = sf_bulk.create_and_run_bulk_job(
-                    job_type=job_type,
-                    object_name=object_name,
-                    primary_key=primary_key,
-                    data=batch)
-        else:
-            log.debug(f'MAKE_CHANGES set to {MAKE_CHANGES}')
-            batch_results = []
-            n_success = 0
-            n_error = 0
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(do_bulk_job_thread, sf_bulk, job_type,
+                                   object_name, batch, primary_key) for batch in batches]
 
+    for future in as_completed(futures):
+        log.info(future.result())
+
+    bulk_finish_time = h.dtm()
+
+    return f'do_bulk_job completed - run time: {bulk_finish_time-bulk_start_time}.'
+
+
+def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
+    bulk_start_time = h.dtm()
+
+    log.debug(f'do_bulk_job_thread {job_type} on {object_name}.')
+    if MAKE_CHANGES:
+        if job_type == 'Delete':
+            batch_results = sf_bulk.create_and_run_delete_job(
+                object_name=object_name, data=data)
+        else:
+            batch_results = sf_bulk.create_and_run_bulk_job(
+                job_type=job_type,
+                object_name=object_name,
+                primary_key=primary_key,
+                data=data)
+    else:
+        log.debug(f'MAKE_CHANGES set to {MAKE_CHANGES}')
+        batch_results = []
         n_success = 0
         n_error = 0
+
+    n_success = 0
+    n_error = 0
 
     for result in batch_results:
         if result.success != 'true':
@@ -313,7 +329,7 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
             n_success += 1
     bulk_finish_time = h.dtm()
 
-    return f'do_bulk_job completed with {n_success} successes and {n_error} failures - run time: {bulk_finish_time-bulk_start_time}.'
+    return f'do_bulk_job_threads completed with {n_success} successes and {n_error} failures - run time: {bulk_finish_time-bulk_start_time}.'
 
 
 # %% Run main program
