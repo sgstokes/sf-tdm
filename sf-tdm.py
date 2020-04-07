@@ -290,6 +290,8 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
         thread_count = 10
     chunk_size = len(data) // thread_count
     chunk_size = min_batch - (chunk_size % min_batch) + chunk_size
+    if chunk_size > 5000:
+        chunk_size = 5000
     log.debug(f'chunk_size: {chunk_size}')
 
     batches = h.chunk_records(data, chunk_size)
@@ -309,7 +311,8 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
 def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
     bulk_start_time = h.dtm()
 
-    log.debug(f'do_bulk_job_thread {job_type} on {object_name} - batch size: {len(data)}')
+    log.debug(
+        f'do_bulk_job_thread {job_type} on {object_name} - batch size: {len(data)}')
     if MAKE_CHANGES:
         if job_type == 'Delete':
             batch_results = sf_bulk.create_and_run_delete_job(
