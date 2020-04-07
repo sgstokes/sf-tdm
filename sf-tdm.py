@@ -283,15 +283,10 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
 def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
     bulk_start_time = h.dtm()
     # Split records into batches by thread count.
-    # min_chunk based on Salesforce chunking.
-    # Limit max chunk_size to 5000
-    min_chunk = 200
     thread_count = 20
     if job_type == 'Delete':
         thread_count = 10
-    chunk_size = int((len(data) // min_chunk) * min_chunk / thread_count)
-    if chunk_size > 5000:
-        chunk_size = 5000
+    chunk_size = len(data) // thread_count + 1
     log.debug(f'chunk_size: {chunk_size}')
 
     batches = h.chunk_records(data, chunk_size)
