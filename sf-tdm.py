@@ -3,7 +3,7 @@
 
 # %% Imports
 import csv
-import helpers as h
+import tools.helpers as h
 import logging
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -347,5 +347,5 @@ def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
 # %% Run main program
 if __name__ == '__main__':
     MAKE_CHANGES = True
-    results = run_template(tdm_config='./template.json')
+    results = run_template(tdm_config='./jobs/template.json')
     log.info(f'{results}\n')
