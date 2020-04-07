@@ -8,7 +8,7 @@ __pycache__
 **/*.pyc
 logs/*
 config/prs.*
-.vscode/
+.vscode/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
