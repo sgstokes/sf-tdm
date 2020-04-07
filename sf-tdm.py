@@ -284,9 +284,11 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
     bulk_start_time = h.dtm()
     # Split records into batches by thread count.
     thread_count = 20
+    if job_type == 'Delete':
+        thread_count = 10
     chunk_size = len(data) // thread_count + 1
     log.debug(f'chunk_size: {chunk_size}')
-    
+
     batches = h.chunk_records(data, chunk_size)
 
     with ThreadPoolExecutor(max_workers=thread_count) as executor:
