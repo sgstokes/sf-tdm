@@ -114,7 +114,7 @@
         "externalId": "DM_External_ID__c"
       }],
       "masks": {
-        "EIN__c": "fixed.ein"
+        "EIN__c": "fake.ein"
       }
     }
   ]
