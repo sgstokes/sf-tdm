@@ -2,7 +2,6 @@
   "source": "PRD",
   "target": "DEV200404",
   "data": [{
-      "sequence": "1",
       "operation": "refresh",
       "type": "sobject",
       "object": "Party_Brand__c",
@@ -24,7 +23,6 @@
       "masks": {}
     },
     {
-      "sequence": "2",
       "operation": "refresh",
       "type": "sobject",
       "object": "Account",

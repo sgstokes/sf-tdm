@@ -2,7 +2,6 @@
   "source": "PRD",
   "target": "DEV200404",
   "data": [{
-    "sequence": "1",
     "operation": "refresh",
     "type": "sobject",
     "object": "Account",

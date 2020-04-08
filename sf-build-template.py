@@ -5,6 +5,7 @@
 import csv
 import tools.excel_helper as ex
 import tools.helpers as h
+import json
 import logging
 import pandas as pd
 
@@ -29,12 +30,7 @@ def create_template(source, object_list, output):
 
     records = get_object_data(source, object_list)
 
-    print(len(records))
-
-    # template_data = []
-    # fields = []
-    # relationships = []
-    # last_rec_obj = ''
+    template_data = []
 
     df = pd.DataFrame(records)
     df['relationship'] = df.apply(get_reln_array, axis=1)
@@ -43,18 +39,38 @@ def create_template(source, object_list, output):
     for obj in sobjects:
         _obj = df[df.sobject == obj]
         _flds = _obj.name.unique()
-        _relns = _obj.relationship.unique()
+        _relns = []
 
+        for rel in _obj.relationship.unique():
+            if rel != None:
+                _rel = rel.split('|')
+                _relationships = {
+                    'object': _rel[0],
+                    'relationshipName': _rel[1],
+                    'field': _rel[2],
+                    'externalId': ''
+                }
+                _relns.append(_relationships)
 
-# {
-# "object": "User",
-# "relationshipName": "Owner",
-# "field": "OwnerId",
-# "externalId": "Pentegra_ID__c"
-# }
+        _template = {
+            'type': 'sobject',
+            'object': obj,
+            'primaryKey': 'Id',
+            'externalId': '',
+            'fields': json.loads(json.dumps(_flds.tolist())),
+            'where': '',
+            'orderby': '',
+            'limit': 0,
+            'relationships': _relns,
+            'masks': {}
+        }
 
-        # log.debug(f'{obj} field count: {len(_flds)} - reln count: {len(_rels)}')
-        log.debug(f'{obj}: {_relns}')
+        template_data.append(_template)
+
+    log.debug(f'template: {template_data}')
+
+    with open(output, 'w') as json_file:
+        json.dump(template_data, json_file)
 
     finish_time = h.dtm()
 
@@ -64,10 +80,10 @@ def create_template(source, object_list, output):
 
 
 def get_reln_array(row):
-    if len(row.referenceTo) > 0:
+    if row.referenceTo:
         return f'{row.sobject}|{row.referenceTo}|{row.relationshipName}'
-    else:
-        return None
+
+    return None
 
 
 def do_mass_describe(sf_rest, list_file):
