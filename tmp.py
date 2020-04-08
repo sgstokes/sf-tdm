@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# %% Imports
-import helpers as h
+# Imports
+import tools.helpers as h
 
 from faker import Faker
 
 
-# %% Code
+# Code
 st = h.dtm()
 for x in range(1000):
     method = 'fake.ein'

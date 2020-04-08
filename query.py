@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# %% Imports
-import helpers as h
+# Imports
+import tools.helpers as h
 import logging
 # import pandas as pd
 
 
-# %% Logging setup
+# Logging setup
 h.setup_logging(level=logging.DEBUG)
 
 # Logging statements for each module:
@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 log.debug('Logging is configured.')
 
 
-# %% Primary function
+# Primary function
 
 def do_query():
     start_time = h.dtm()
@@ -39,6 +39,6 @@ def do_query():
     return len(results)
 
 
-# %% Run main program
+# Run main program
 if __name__ == '__main__':
     log.info(do_query())

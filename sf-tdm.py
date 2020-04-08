@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# %% Imports
+# Imports
 import csv
 import tools.helpers as h
 import logging
@@ -9,18 +9,18 @@ import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-# %% Logging setup
+# Logging setup
 h.setup_logging(level=logging.DEBUG)
 
 # Logging statements for each module:
 log = logging.getLogger(__name__)
 log.debug('Logging is configured.')
 
-# %% Global variables
+# Global variables
 MAKE_CHANGES = True
 
 
-# %% Primary function
+# Primary function
 
 def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
     start_time = h.dtm()
@@ -145,7 +145,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
         raise
 
 
-# %% Functions
+# Functions
 
 def replace_field_external_ids(relationships, fields, separator='.'):
     _fields = fields
@@ -344,7 +344,7 @@ def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
     return f'do_bulk_job_threads completed with {n_success} successes and {n_error} failures - run time: {bulk_finish_time-bulk_start_time}.'
 
 
-# %% Run main program
+# Run main program
 if __name__ == '__main__':
     MAKE_CHANGES = True
     results = run_template(tdm_config='./jobs/template.json')
