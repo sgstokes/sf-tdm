@@ -28,7 +28,10 @@ def create_template(source, object_list, output):
     log.info('create_template starting...')
     log.info(f'source: {source} > output: {output}')
 
-    records = get_object_data(source, object_list)
+    obj_list = h.get_config(object_list)
+    log.debug(f'obj_list: {obj_list}')
+
+    records = get_object_data(source, obj_list.keys())
 
     template_data = []
 
@@ -48,21 +51,21 @@ def create_template(source, object_list, output):
                     'object': _rel[0],
                     'relationshipName': _rel[1],
                     'field': _rel[2],
-                    'externalId': ''
+                    'externalId': obj_list[_rel[0]]['externalId']
                 }
                 _relns.append(_relationships)
 
         _template = {
             'type': 'sobject',
             'object': obj,
-            'primaryKey': 'Id',
-            'externalId': '',
+            'primaryKey': obj_list[obj]['primaryKey'],
+            'externalId': obj_list[obj]['externalId'],
             'fields': json.loads(json.dumps(_flds.tolist())),
             'where': '',
             'orderby': '',
             'limit': 0,
             'relationships': _relns,
-            'masks': {}
+            'masks': obj_list[obj]['masks']
         }
 
         template_data.append(_template)
@@ -86,17 +89,13 @@ def get_reln_array(row):
     return None
 
 
-def do_mass_describe(sf_rest, list_file):
+def do_mass_describe(sf_rest, obj_list):
     start_time = h.dtm()
     log.info('do_mass_describe starting')
     results = []
 
-    with open(list_file, "r") as ifile:
-        for line in ifile:
-            if not line:
-                break
-            sobject = line.strip()
-            results.extend(sf_rest.describe_fields(sobject))
+    for obj in obj_list:
+        results.extend(sf_rest.describe_fields(obj))
 
     finish_time = h.dtm()
     log.info(
@@ -152,9 +151,56 @@ def get_object_data(source, object_list):
     return records
 
 
+def get_external_id(obj):
+    ids = {
+        'Account': 'DM_External_ID__c',
+        'Client_Transition_DC__c': 'DM_External_ID__c',
+        'Contact': 'DM_External_ID__c',
+        'Governance_Item__c': 'DM_External_ID__c',
+        'Incident__c': 'DM_External_ID__c',
+        'Opportunity': 'DM_External_ID__c',
+        'Opportunity_Addendum__c': 'DM_External_ID__c',
+        'Party_Brand__c': 'DM_External_ID__c',
+        'Party_Contact__c': 'DM_External_ID__c',
+        'Party_Division__c': 'DM_External_ID__c',
+        'Party_Division_Contact__c': 'DM_External_ID__c',
+        'Party_Party__c': 'DM_External_ID__c',
+        'Plan__c': 'DM_External_ID__c',
+        'Plan_Contact__c': 'DM_External_ID__c',
+        'Plan_Party__c': 'DM_External_ID__c',
+        'Plan_User__c': 'DM_External_ID__c',
+        'Plan_Withdrawals__c': 'DM_External_ID__c',
+        'Proposed_Plan_Transition__c': 'DM_External_ID__c',
+        'Prs_Agreement__c': 'DM_External_ID__c',
+        'Prs_Agreement_Contact__c': 'DM_External_ID__c',
+        'Prs_Agreement_Instance__c': 'DM_External_ID__c',
+        'Prs_Agreement_Version__c': 'DM_External_ID__c',
+        'Prs_Business_Data_Endpoint__c': 'DM_External_ID__c',
+        'Prs_Communication__c': 'DM_External_ID__c',
+        'Prs_Communication_Contact__c': 'DM_External_ID__c',
+        'Prs_Communication_Party__c': 'DM_External_ID__c',
+        'Prs_Communication_Plan__c': 'DM_External_ID__c',
+        'Prs_Communication_Role__c': 'DM_External_ID__c',
+        'Prs_Opportunity_Product__c': 'DM_External_ID__c',
+        'Prs_Opportunity_Product_Contact__c': 'DM_External_ID__c',
+        'Prs_Opportunity_Product_Party__c': 'DM_External_ID__c',
+        'Prs_Opportunity_Product_Plan__c': 'DM_External_ID__c',
+        'Prs_Opportunity_Product_User__c': 'DM_External_ID__c',
+        'Request__c': 'DM_External_ID__c',
+        'Role_Group__c': 'DM_External_ID__c',
+        'Role_Master__c': 'DM_External_ID__c',
+        'Role_Role_Group__c': 'DM_External_ID__c',
+        'SaAssignmentDriver__c': 'DM_External_ID__c',
+        'SalesAlignment__c': 'DM_External_ID__c',
+        'WS_Feature_Flag__c': 'DM_External_ID__c'
+    }
+
+    return ids[obj]
+
+
 # Run main program
 if __name__ == '__main__':
     results = create_template(source='./config/prs.prd.json',
-                              object_list='./data/sobject_list.txt',
+                              object_list='./data/sobject.json',
                               output=f'./output/{h.datestamp()}.json')
     log.info(f'{results}\n')
