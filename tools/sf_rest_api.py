@@ -122,7 +122,9 @@ class Connection(object):
 
     def get_response(self, url):
         try:
-            results = self.session.get(self.base_url + url)
+            session_url = self.base_url + url
+            self.log.debug(f'URL: {session_url}')
+            results = self.session.get(session_url)
 
             return results
         except Exception as describe_err:
