@@ -151,53 +151,6 @@ def get_object_data(source, object_list):
     return records
 
 
-def get_external_id(obj):
-    ids = {
-        'Account': 'DM_External_ID__c',
-        'Client_Transition_DC__c': 'DM_External_ID__c',
-        'Contact': 'DM_External_ID__c',
-        'Governance_Item__c': 'DM_External_ID__c',
-        'Incident__c': 'DM_External_ID__c',
-        'Opportunity': 'DM_External_ID__c',
-        'Opportunity_Addendum__c': 'DM_External_ID__c',
-        'Party_Brand__c': 'DM_External_ID__c',
-        'Party_Contact__c': 'DM_External_ID__c',
-        'Party_Division__c': 'DM_External_ID__c',
-        'Party_Division_Contact__c': 'DM_External_ID__c',
-        'Party_Party__c': 'DM_External_ID__c',
-        'Plan__c': 'DM_External_ID__c',
-        'Plan_Contact__c': 'DM_External_ID__c',
-        'Plan_Party__c': 'DM_External_ID__c',
-        'Plan_User__c': 'DM_External_ID__c',
-        'Plan_Withdrawals__c': 'DM_External_ID__c',
-        'Proposed_Plan_Transition__c': 'DM_External_ID__c',
-        'Prs_Agreement__c': 'DM_External_ID__c',
-        'Prs_Agreement_Contact__c': 'DM_External_ID__c',
-        'Prs_Agreement_Instance__c': 'DM_External_ID__c',
-        'Prs_Agreement_Version__c': 'DM_External_ID__c',
-        'Prs_Business_Data_Endpoint__c': 'DM_External_ID__c',
-        'Prs_Communication__c': 'DM_External_ID__c',
-        'Prs_Communication_Contact__c': 'DM_External_ID__c',
-        'Prs_Communication_Party__c': 'DM_External_ID__c',
-        'Prs_Communication_Plan__c': 'DM_External_ID__c',
-        'Prs_Communication_Role__c': 'DM_External_ID__c',
-        'Prs_Opportunity_Product__c': 'DM_External_ID__c',
-        'Prs_Opportunity_Product_Contact__c': 'DM_External_ID__c',
-        'Prs_Opportunity_Product_Party__c': 'DM_External_ID__c',
-        'Prs_Opportunity_Product_Plan__c': 'DM_External_ID__c',
-        'Prs_Opportunity_Product_User__c': 'DM_External_ID__c',
-        'Request__c': 'DM_External_ID__c',
-        'Role_Group__c': 'DM_External_ID__c',
-        'Role_Master__c': 'DM_External_ID__c',
-        'Role_Role_Group__c': 'DM_External_ID__c',
-        'SaAssignmentDriver__c': 'DM_External_ID__c',
-        'SalesAlignment__c': 'DM_External_ID__c',
-        'WS_Feature_Flag__c': 'DM_External_ID__c'
-    }
-
-    return ids[obj]
-
-
 # Run main program
 if __name__ == '__main__':
     results = create_template(source='./config/prs.prd.json',
