@@ -57,7 +57,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
 
             log.info(f'{operation} -- {source}>>{target} -- {obj} started...')
             # Continue if future operations are specified.
-            if operation in ['delete', 'execute', 'upsert']:
+            if operation in ['delete', 'execute']:
                 log.info(
                     f'{operation} is a future operation.  Not currently supported.')
                 continue
@@ -69,7 +69,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                         sf_bulk_target, 'Delete', obj, delete_data)
                     log.info(results)
             # Perform upsert portion of refresh operation and insert operation.
-            if operation in ['refresh', 'insert']:
+            if operation in ['refresh', 'insert', 'upsert']:
                 # Split relationships into two lists: self and other.
                 self_relationships = []
                 if relationships:
