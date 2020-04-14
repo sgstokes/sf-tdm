@@ -6,8 +6,6 @@ __author__ = 'Stephen Stokes: sstokes[at]relationshipvelocity.com'
 # Imports
 import tools.helpers as h
 
-from faker import Faker
-
 
 # Code
 st = h.dtm()
