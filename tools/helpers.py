@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Imports
 
+# Imports
 import json
 import logging.config
 import os
@@ -17,8 +17,6 @@ fake = Faker()
 
 
 # Setup logging
-
-
 def setup_logging(config='./config/logging.json', level=logging.INFO):
     """Setup logging configuration
 
@@ -33,9 +31,8 @@ def setup_logging(config='./config/logging.json', level=logging.INFO):
 
     return True
 
+
 # Return config_file as dictionary.
-
-
 def get_config(config_file, ordered=OrderedDict):
     try:
         with open(config_file, 'r') as c:
@@ -45,9 +42,8 @@ def get_config(config_file, ordered=OrderedDict):
         raise ReferenceError(
             f'Failed to load config file "{config_file}": {config_err}')
 
+
 # Get fake value based on method
-
-
 def get_fake(method):
     if method[:5] == 'fixed':
         mask = {
@@ -70,9 +66,8 @@ def get_fake(method):
 
     return mask[method]
 
+
 # Get reference to sf_rest_api module
-
-
 def get_sf_rest_connection(config):
     _config = get_config(config, None)
 
@@ -86,9 +81,8 @@ def get_sf_rest_connection(config):
 
     return sf_rest
 
+
 # Get reference to sf_bulk_api module
-
-
 def get_sf_bulk_connection(config):
     _config = get_config(config, None)
 
@@ -100,25 +94,22 @@ def get_sf_bulk_connection(config):
 
     return sf_bulk
 
+
 # Conversion of nested dictionary into flattened dictionary
-
-
 def flatten_dict(dd, separator='_', prefix=''):
     return {prefix + separator + k if prefix else k: v
             for kk, vv in dd.items()
             for k, v in flatten_dict(vv, separator, kk).items()
             } if isinstance(dd, dict) else {prefix: dd}
 
+
 # Create chunks for Bulk
-
-
 def chunk_records(records, chunk_size):
     for step in range(0, len(records), chunk_size):
         yield records[step:step+chunk_size]
 
+
 # Return formatted timestamp or datestamp
-
-
 def timestamp():
     return datetime.now().strftime('%H:%M:%S.%f')
 

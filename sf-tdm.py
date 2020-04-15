@@ -23,7 +23,6 @@ MAKE_CHANGES = True
 
 
 # Primary function
-
 def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
     start_time = h.dtm()
     log.info(f'Started {tdm_config} template run')
@@ -148,7 +147,6 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
 
 
 # Functions
-
 def replace_field_external_ids(relationships, fields, separator='.'):
     _fields = fields
     for rel in relationships:

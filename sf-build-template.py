@@ -24,7 +24,6 @@ log.debug('Logging is configured.')
 
 
 # Primary function
-
 def create_template(source, object_list, output):
     start_time = h.dtm()
     log.info('create_template starting...')
@@ -81,9 +80,8 @@ def create_template(source, object_list, output):
 
     return f'create_template completed - run time: {finish_time-start_time}'
 
+
 # Functions
-
-
 def get_reln_array(row):
     if row.referenceTo:
         return f'{row.sobject}|{row.referenceTo}|{row.relationshipName}'
