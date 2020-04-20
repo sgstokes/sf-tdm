@@ -26,6 +26,10 @@ MAKE_CHANGES = True
 def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
     start_time = h.dtm()
     log.info(f'Started {tdm_config} template run')
+
+    conf = h.confirm(prompt='Are the target Org email settings are correct?', resp=False)
+    if conf == False: return 'Please correct email settings and return.'
+
     try:
         _tdm_config = h.get_config(tdm_config)
         env_map = h.get_config(env_path+env_config)

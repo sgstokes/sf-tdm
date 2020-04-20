@@ -120,3 +120,26 @@ def datestamp():
 
 def dtm():
     return datetime.now()
+
+
+# Confirm prompt
+def confirm(prompt=None, resp=False):
+    if prompt is None:
+        prompt = 'Confirm'
+    # Sets default value based on "resp" setting.
+    if resp:
+        _prompt = f'{prompt} [y] | n: '
+    else:
+        _prompt = f'{prompt} [n] | y: '
+
+    while True:
+        ans = input(_prompt)
+        if not ans:
+            return resp
+        if ans.upper() not in ['Y', 'N']:
+            print('please enter y or n.')
+            continue
+        if ans.upper() == 'Y':
+            return True
+        if ans.upper() == 'N':
+            return False
