@@ -3,9 +3,11 @@
 
 
 # Imports
+import functools
 import json
 import logging.config
 import os
+import time
 
 from collections import OrderedDict
 from datetime import datetime
@@ -143,3 +145,19 @@ def confirm(prompt=None, resp=False):
             return True
         if ans.upper() == 'N':
             return False
+
+
+# Timer decorator
+def timer(log):
+    def decorator(func):
+        # Print the runtime of the decorated function.
+        @functools.wraps(func)
+        def wrapper_timer(*args, **kwargs):
+            start_time = time.perf_counter()    # 1
+            value = func(*args, **kwargs)
+            end_time = time.perf_counter()      # 2
+            run_time = end_time - start_time    # 3
+            log.info(f'Finished {func.__name__!r} in {run_time:.4f} secs')
+            return value
+        return wrapper_timer
+    return decorator

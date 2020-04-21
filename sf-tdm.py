@@ -23,11 +23,11 @@ MAKE_CHANGES = True
 
 
 # Primary function
+@h.timer(log)
 def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
-    start_time = h.dtm()
     log.info(f'Started {tdm_config} template run')
 
-    conf = h.confirm(prompt='Are the target Org email settings are correct?', resp=False)
+    conf = h.confirm(prompt='Are the target Org email settings correct?', resp=False)
     if conf == False: return 'Please correct email settings and return.'
 
     try:
@@ -133,17 +133,15 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                 target_data = get_data(sf_rest_target, obj, [
                     f'count({primaryKey}) Ct'])
                 log.debug(f'{obj} final count: {target_data}')
-            row_finish_time = h.dtm()
+            row_end_time = h.dtm()
             log.info(
-                f'{operation} -- {source}>>{target} -- {obj} finished - run time: {row_finish_time-row_start_time}')
+                f'{operation} -- {source}>>{target} -- {obj} completed - run time: {row_end_time-row_start_time}')
 
         # Close sf_rest connections.
         sf_rest_source.close_connection()
         sf_rest_target.close_connection()
 
-        finish_time = h.dtm()
-
-        return f'Completed {tdm_config} template run - run time: {finish_time-start_time}.'
+        return f'Completed {tdm_config} template run.'
     except Exception as template_err:
         log.error(
             f'Failed to run template "{tdm_config}".\nError: {template_err}')
@@ -191,6 +189,7 @@ def fix_flattened_fields(relationships, fields, data):
     return data
 
 
+@h.timer(log)
 def do_self_relationship_upsert(sf_rest,
                                 sf_bulk,
                                 relationships,
@@ -199,7 +198,6 @@ def do_self_relationship_upsert(sf_rest,
                                 where='',
                                 orderby='',
                                 limit=0):
-    start_time = h.dtm()
     log.info('Start self relationship upsert.')
 
     for rel in relationships:
@@ -232,24 +230,23 @@ def do_self_relationship_upsert(sf_rest,
             results = do_bulk_job(sf_bulk, 'Upsert', object_name,
                                   source_data, externalID)
             log.info(results)
-        rel_finish_time = h.dtm()
+        rel_end_time = h.dtm()
         log.info(
-            f'Relationshp: {reln_dot_reference} finished - run time: {rel_finish_time-rel_start_time}.')
+            f'Relationshp: {reln_dot_reference} completed - run time: {rel_end_time-rel_start_time}.')
 
-    finish_time = h.dtm()
-
-    return f'do_self_relationship_upsert finished - run time: {finish_time-start_time}.'
+    return f'do_self_relationship_upsert completed.'
 
 
+@h.timer(log)
 def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
     query = build_soql(obj, fields, where, orderby, limit)
     _masks = masks
 
     soql_start_time = h.dtm()
     records = sf_rest.soql_query(query)
-    soql_finish_time = h.dtm()
+    soql_end_time = h.dtm()
     log.info(
-        f'get_data result count: {len(records)} - run time: {soql_finish_time-soql_start_time}.')
+        f'get_data result count: {len(records)} - run time: {soql_end_time-soql_start_time}.')
 
     if _masks:
         mask_start_time = h.dtm()
@@ -257,9 +254,9 @@ def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
         for record in records:
             for field, fake_method in _masks.items():
                 record.update({field: str(h.get_fake(fake_method))})
-        mask_finish_time = h.dtm()
+        mask_end_time = h.dtm()
         log.info(
-            f'get_data apply masks finished - run time: {mask_finish_time-mask_start_time}.')
+            f'get_data apply masks completed - run time: {mask_end_time-mask_start_time}.')
 
     return records
 
@@ -284,8 +281,8 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
     return q
 
 
+@h.timer(log)
 def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
-    bulk_start_time = h.dtm()
     # Split records into batches by thread count.
     # min_batch based on Salesforce processing details.
     min_batch = 200
@@ -307,14 +304,11 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
     for future in as_completed(futures):
         log.info(future.result())
 
-    bulk_finish_time = h.dtm()
-
-    return f'do_bulk_job completed - run time: {bulk_finish_time-bulk_start_time}.'
+    return f'do_bulk_job completed.'
 
 
+@h.timer(log)
 def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
-    bulk_start_time = h.dtm()
-
     log.debug(
         f'do_bulk_job_thread {job_type} on {object_name} - batch size: {len(data)}')
     if MAKE_CHANGES:
@@ -343,9 +337,8 @@ def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
                 f'Record Failed in batch: {result.error}.')
         else:
             n_success += 1
-    bulk_finish_time = h.dtm()
 
-    return f'do_bulk_job_threads completed with {n_success} successes and {n_error} failures - run time: {bulk_finish_time-bulk_start_time}.'
+    return f'do_bulk_job_threads completed with {n_success} successes and {n_error} failures.'
 
 
 # Run main program
