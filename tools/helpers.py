@@ -20,9 +20,7 @@ fake = Faker()
 
 # Setup logging
 def setup_logging(config='./config/logging.json', level=logging.INFO):
-    """Setup logging configuration
-
-    """
+    # Setup logging configuration
     path = config
     if os.path.exists(path):
         with open(path, 'rt') as f:
@@ -147,17 +145,32 @@ def confirm(prompt=None, resp=False):
             return False
 
 
-# Timer decorator
+# Decorators
 def timer(log):
     def decorator(func):
         # Print the runtime of the decorated function.
         @functools.wraps(func)
         def wrapper_timer(*args, **kwargs):
-            start_time = time.perf_counter()    # 1
+            log.info(f'Started {func.__name__!r}.')
+            start_time = time.perf_counter()
             value = func(*args, **kwargs)
-            end_time = time.perf_counter()      # 2
-            run_time = end_time - start_time    # 3
-            log.info(f'Finished {func.__name__!r} in {run_time:.4f} secs')
+            end_time = time.perf_counter()
+            run_time = end_time - start_time
+            log.info(
+                f'Finished {func.__name__!r} - run time: {run_time:.4f} secs')
             return value
         return wrapper_timer
+    return decorator
+
+
+def exception(log):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except:
+                err = f'There was an exception in  {func.__name__}'
+                log.exception(err)
+                raise
+        return wrapper
     return decorator

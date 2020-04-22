@@ -15,8 +15,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 # Logging setup
-h.setup_logging(config='./config/logging.json',
-                level=logging.DEBUG)
+h.setup_logging()
 
 # Logging statements for each module:
 log = logging.getLogger(__name__)
@@ -24,9 +23,9 @@ log.debug('Logging is configured.')
 
 
 # Primary function
+@h.exception(log)
+@h.timer(log)
 def create_template(source, object_list, output):
-    start_time = h.dtm()
-    log.info('create_template starting...')
     log.info(f'source: {source} > output: {output}')
 
     obj_list = h.get_config(object_list)
@@ -76,9 +75,7 @@ def create_template(source, object_list, output):
     with open(output, 'w') as json_file:
         json.dump(template_data, json_file)
 
-    finish_time = h.dtm()
-
-    return f'create_template completed - run time: {finish_time-start_time}'
+    return f'create_template completed.'
 
 
 # Functions
@@ -89,25 +86,21 @@ def get_reln_array(row):
     return None
 
 
+@h.exception(log)
+@h.timer(log)
 def do_mass_describe(sf_rest, obj_list):
-    start_time = h.dtm()
-    log.info('do_mass_describe starting')
     results = []
 
     for obj in obj_list:
         results.extend(sf_rest.describe_fields(obj))
 
-    finish_time = h.dtm()
-    log.info(
-        f'do_mass_describe completed - run time: {finish_time-start_time}.')
-
+    log.info('do_mass_describe completed.')
     return results
 
 
+@h.exception(log)
+@h.timer(log)
 def get_object_data(source, object_list):
-    start_time = h.dtm()
-    log.info('get_object_data starting...')
-
     sf_rest = h.get_sf_rest_connection(source)
 
     # Mass describe
@@ -144,9 +137,7 @@ def get_object_data(source, object_list):
     ex.do_excel_out('./output/fntmp.xlsx', records)
 
     sf_rest.close_connection()
-    finish_time = h.dtm()
-    log.info(
-        f'get_object_data finished - record count: {len(records)} - run time: {finish_time-start_time}.')
+    log.info(f'get_object_data finished - record count: {len(records)}.')
 
     return records
 
