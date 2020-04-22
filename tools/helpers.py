@@ -2,17 +2,17 @@
 # -*- coding: utf-8 -*-
 
 
-# Imports
 import functools
 import json
 import logging.config
 import os
 import time
-
 from collections import OrderedDict
 from datetime import datetime
+
 from faker import Faker
-from tools import sf_rest_api, sf_bulk_api
+
+from tools import sf_bulk_api, sf_rest_api
 
 # Variables
 fake = Faker()

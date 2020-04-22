@@ -2,6 +2,7 @@ __author__ = 'Andrew Shuler: ashuler[at]relationshipvelocity.com'
 
 import json
 import logging
+
 import requests as r
 
 

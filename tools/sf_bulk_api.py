@@ -1,10 +1,10 @@
 __author__ = 'Andrew Shuler: ashuler[at]relationshipvelocity.com'
 
-import json
 import csv
+import json
 import logging
 
-from salesforce_bulk import SalesforceBulk, CsvDictsAdapter
+from salesforce_bulk import CsvDictsAdapter, SalesforceBulk
 from salesforce_bulk.util import IteratorBytesIO
 
 
