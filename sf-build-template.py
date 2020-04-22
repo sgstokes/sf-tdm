@@ -3,16 +3,15 @@
 
 __author__ = 'Stephen Stokes: sstokes[at]relationshipvelocity.com'
 
-# Imports
 import csv
-import tools.excel_helper as ex
-import tools.helpers as h
 import json
 import logging
-import pandas as pd
-
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import pandas as pd
+
+import tools.excel_helper as ex
+import tools.helpers as h
 
 # Logging setup
 h.setup_logging()

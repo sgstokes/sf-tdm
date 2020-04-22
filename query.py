@@ -3,11 +3,9 @@
 
 __author__ = 'Stephen Stokes: sstokes[at]relationshipvelocity.com'
 
-# Imports
-import tools.helpers as h
 import logging
-# import pandas as pd
 
+import tools.helpers as h
 
 # Logging setup
 h.setup_logging(level=logging.DEBUG)

@@ -3,13 +3,11 @@
 
 __author__ = 'Stephen Stokes: sstokes[at]relationshipvelocity.com'
 
-# Imports
 import csv
-import tools.helpers as h
 import logging
-
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import tools.helpers as h
 
 # Logging setup
 h.setup_logging()
