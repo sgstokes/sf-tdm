@@ -31,24 +31,24 @@ def create_template(source, operations_list, output):
     obj_list = list(dict.fromkeys([d['object']
                                    for d in opr_list['operations']]))
 
-    records = get_object_data(source, obj_list)
-    details = []
+    all_fields = get_object_data(source, obj_list)
+    fields = []
 
-    for rec in records:
-        if (not rec['referenceTo']) or (rec['referenceTo'] and rec['relationshipName'] and rec['referenceTo'] in ext_id):
-            details.append(rec)
+    for fld in all_fields:
+        if (not fld['referenceTo']) or (fld['referenceTo'] and fld['relationshipName'] and fld['referenceTo'] in ext_id):
+            fields.append(fld)
 
     template_data = []
 
     for rec in opr_list['operations']:
         _obj = rec['object']
-        _flds = [d['name'] for d in details if d['sobject'] == _obj]
-        _relns = [{'object': d['referenceTo'],
-                   'relationshipName': d['relationshipName'],
-                   'field': d['name'],
-                   'externalId': ext_id[d['referenceTo']]}
-                  for d in details
-                  if d['sobject'] == _obj and d['referenceTo'] != None]
+        _flds = [f['name'] for f in fields if f['sobject'] == _obj]
+        _relns = [{'object': f['referenceTo'],
+                   'relationshipName': f['relationshipName'],
+                   'field': f['name'],
+                   'externalId': ext_id[f['referenceTo']]}
+                  for f in fields
+                  if f['sobject'] == _obj and f['referenceTo'] != None]
 
         _template = {
             'operation': rec['operation'],
@@ -93,44 +93,44 @@ def get_object_data(source, obj_list):
     sf_rest = h.get_sf_rest_connection(source)
 
     # Mass describe
-    results = do_mass_describe(sf_rest, obj_list)
-    log.info(f'do_mass_describe returned {len(results)} records.')
+    all_fields = do_mass_describe(sf_rest, obj_list)
+    log.info(f'do_mass_describe returned {len(all_fields)} records.')
     # log.debug(records)
     with open('./output/sttmp.json', 'w') as json_file:
-        json.dump(results, json_file)
+        json.dump(all_fields, json_file)
 
-    records = []
-    for rec in results:
-        if rec['updateable'] == True:
-            records.append(rec)
+    fields = []
+    for fld in all_fields:
+        if fld['updateable'] == True:
+            fields.append(fld)
 
-    for rec in records:
-        if len(rec['referenceTo']) < 1:
-            rec['referenceTo'] = None
+    for fld in fields:
+        if len(fld['referenceTo']) < 1:
+            fld['referenceTo'] = None
         else:
-            for ref in rec['referenceTo']:
+            for ref in fld['referenceTo']:
                 log.debug(
-                    f'for loop {rec["sobject"]}.{rec["name"]} - referenceTo - {ref} in {rec["referenceTo"]}')
+                    f'for loop {fld["sobject"]}.{fld["name"]} - referenceTo - {ref} in {fld["referenceTo"]}')
                 if ref == 'RecordType':
-                    rec['referenceTo'] = None
-                    rec['relationshipName'] = None
+                    fld['referenceTo'] = None
+                    fld['relationshipName'] = None
                     break
                 if ref == 'User':
-                    rec['referenceTo'] = ref
+                    fld['referenceTo'] = ref
                     break
-                if len(rec['referenceTo']) == 1:
-                    rec['referenceTo'] = ref
+                if len(fld['referenceTo']) == 1:
+                    fld['referenceTo'] = ref
                     break
-                rec['referenceTo'] = ref
+                fld['referenceTo'] = ref
 
     # log.debug(records)
     with open('./output/fntmp.json', 'w') as json_file:
-        json.dump(records, json_file)
+        json.dump(fields, json_file)
 
     sf_rest.close_connection()
-    log.info(f'get_object_data finished - record count: {len(records)}.')
+    log.info(f'get_object_data finished - record count: {len(fields)}.')
 
-    return records
+    return fields
 
 
 # Run main program
