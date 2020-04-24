@@ -17,15 +17,12 @@ h.setup_logging()
 log = logging.getLogger(__name__)
 log.debug('Logging is configured.')
 
-# Variables
-config = 'config.json'
-fn_path = os.path.dirname(os.path.realpath(__file__))
-
 # Get script argument
 try:
     config = sys.argv[1]
 except Exception as argument_error:
     print(f'No input arguments.\nError: {argument_error}')
+    log.info(f'No input arguments.\nError: {argument_error}')
 
 # Run template
 results = tdm.run_template(tdm_config=config)
