@@ -55,7 +55,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
         relationships = row['relationships']
         masks = row['masks']
 
-        log.info(f'{operation} -- {source}>>{target} -- {obj} started...')
+        log.info(f'{obj} {operation} -- {source}>>{target} started...')
         # Continue if future operations are specified.
         if operation in ['delete', 'execute']:
             log.info(
@@ -75,55 +75,38 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                     if relationship['object'] == obj:
                         self_relationships.append(relationship)
                         relationships.remove(relationship)
+                        fields.remove(relationship['field'])
             log.debug(f'Self relationships: {self_relationships}')
             log.debug(f'Other relationships: {relationships}')
-            fields_1 = fields
-            # Remove self relationship fields from fields list.
-            log.debug(
-                f'fields before removing self_relationships: {fields_1}')
+            log.debug(f'fields after removing self_relationships: {fields}')
+            # Upsert without self-relationships.
+            do_upsert(sf_rest_source=sf_rest_source,
+                      sf_bulk_target=sf_bulk_target,
+                      relationships=relationships,
+                      externalID=externalID,
+                      object_name=obj,
+                      fields=fields,
+                      where=where,
+                      orderby=orderby,
+                      limit=limit,
+                      masks=masks)
+            # Upsert self relationships.
             if len(self_relationships) > 0:
-                for self_relationship in self_relationships:
-                    fields_1.remove(self_relationship['field'])
-            log.debug(
-                f'fields after removing self_relationships: {fields_1}')
-            # Replace field with relationship.externalId reference.
-            if len(relationships) > 0:
-                fields_1 = replace_field_external_ids(
-                    relationships, fields_1)
-                log.debug(
-                    f'fields after replacing other relationships: {fields_1}')
-            # Get data from source to upsert to target.
-            source_data = get_data(sf_rest=sf_rest_source,
-                                   obj=obj,
-                                   fields=fields_1,
-                                   where=where,
-                                   orderby=orderby,
-                                   limit=limit,
-                                   masks=masks)
-            # Flatten and remove extraneous fields.
-            if len(relationships) > 0:
-                source_data = [h.flatten_dict(record)
-                               for record in source_data]
-                source_data = fix_flattened_fields(
-                    relationships, fields_1, source_data)
-            # Upsert source data into target, less self relationships.
-            if source_data:
-                do_bulk_job(sf_bulk_target, 'Upsert',
-                            obj, source_data, externalID)
-            # Loop through and upsert self relationships.
-            if len(self_relationships) > 0:
-                results = do_self_relationship_upsert(sf_rest=sf_rest_source,
-                                                      sf_bulk=sf_bulk_target,
-                                                      relationships=self_relationships,
-                                                      object_name=obj,
-                                                      externalID=externalID,
-                                                      where=where,
-                                                      orderby=orderby,
-                                                      limit=limit)
-                log.info(results)
+                _flds, _where = get_self_reln_fields_where(
+                    where, self_relationships, externalID)
+                do_upsert(sf_rest_source=sf_rest_source,
+                          sf_bulk_target=sf_bulk_target,
+                          relationships=self_relationships,
+                          externalID=externalID,
+                          object_name=obj,
+                          fields=_flds,
+                          where=_where,
+                          orderby=orderby,
+                          limit=limit,
+                          masks=masks)
             # Get record count of target object.
             target_data = get_data(sf_rest_target, obj, [
-                f'count({primaryKey}) Ct'])
+                                   f'count({primaryKey}) Ct'])
             log.debug(f'{obj} final count: {target_data}')
         row_end_time = h.dtm()
         log.info(
@@ -138,13 +121,12 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
 
 # Functions
 def replace_field_external_ids(relationships, fields, separator='.'):
-    _fields = fields
     for rel in relationships:
-        _fields = replace_item_in_list(source=rel['field'],
-                                       target=f'{rel["relationshipName"]}{separator}{rel["externalId"]}',
-                                       _list=_fields)
+        fields = replace_item_in_list(source=rel['field'],
+                                      target=f'{rel["relationshipName"]}{separator}{rel["externalId"]}',
+                                      _list=fields)
 
-    return _fields
+    return fields
 
 
 def replace_item_in_list(source, target, _list):
@@ -159,14 +141,13 @@ def replace_item_in_list(source, target, _list):
 
 
 def fix_flattened_fields(relationships, fields, data):
-    _fields = fields
-    log.debug(f'Fields before flattened fix: {_fields}')
+    log.debug(f'Fields before fix_flattened_fields: {fields}')
     for rel in relationships:
-        _fields.append(f'{rel["relationshipName"]}_{rel["externalId"]}')
+        fields.append(f'{rel["relationshipName"]}_{rel["externalId"]}')
 
     for rec in data:
-        {rec.pop(_key) for _key in list(rec.keys())
-         if _fields and _key not in _fields}
+        {rec.pop(key) for key in list(rec.keys())
+         if key not in fields}
 
         for rel in relationships:
             reln_underscore_reference = f'{rel["relationshipName"]}_{rel["externalId"]}'
@@ -179,50 +160,49 @@ def fix_flattened_fields(relationships, fields, data):
 
 @h.exception(log)
 @h.timer(log)
-def do_self_relationship_upsert(sf_rest,
-                                sf_bulk,
-                                relationships,
-                                object_name,
-                                externalID,
-                                where='',
-                                orderby='',
-                                limit=0):
-    log.info('Start self relationship upsert.')
+def do_upsert(sf_rest_source,
+              sf_bulk_target,
+              relationships,
+              externalID,
+              object_name,
+              fields,
+              where='',
+              orderby='',
+              limit=0,
+              masks=''):
+    # Replace field with relationship.externalId reference.
+    if len(relationships) > 0:
+        fields = replace_field_external_ids(relationships, fields)
+        log.debug(
+            f'Fields after replacing relationships with externalIDs: {fields}')
+    # Get data from source to upsert to target.
+    source_data = get_data(sf_rest=sf_rest_source,
+                           obj=object_name,
+                           fields=fields,
+                           where=where,
+                           orderby=orderby,
+                           limit=limit,
+                           masks=masks)
+    # Flatten and remove extraneous fields.
+    if len(relationships) > 0:
+        source_data = [h.flatten_dict(record) for record in source_data]
+        source_data = fix_flattened_fields(relationships, fields, source_data)
+    # Upsert source data into target.
+    if source_data:
+        do_bulk_job(sf_bulk_target, 'Upsert',
+                    object_name, source_data, externalID)
 
+    return f'do_upsert completed.'
+
+
+def get_self_reln_fields_where(where, relationships, externalID):
+    _flds = [externalID]
+    _where = [where]
     for rel in relationships:
-        rel_start_time = h.dtm()
-        reln_dot_reference = f'{rel["relationshipName"]}.{rel["externalId"]}'
-        reln_underscore_reference = f'{rel["relationshipName"]}_{rel["externalId"]}'
-        log.info(f'Upserting relationship: {reln_dot_reference}.')
+        _flds.append(f'{rel["relationshipName"]}.{rel["externalId"]}')
+        _where.append(f'{rel["field"]} != null')
 
-        fields = [externalID, f'{reln_dot_reference}']
-        if where:
-            _where = f'{where} and {rel["field"]} != null'
-        else:
-            _where = f'{rel["field"]} != null'
-
-        # Todo Selection between source_data_1 and source_data_2 is different for sample versus population.
-
-        source_data = [h.flatten_dict(record)
-                       for record in get_data(sf_rest, object_name, fields, _where, orderby, limit)]
-        log.debug(f'Initial record count to upsert: {len(source_data)}')
-
-        if source_data:
-            for rec in source_data:
-                fields.append(f'{reln_underscore_reference}')
-                {rec.pop(_key) for _key in list(rec.keys())
-                    if fields and _key not in fields}
-                rec[f'{reln_dot_reference}'] = rec.pop(
-                    f'{reln_underscore_reference}')
-            log.debug(f'Final record count to upsert: {len(source_data)}')
-
-            do_bulk_job(sf_bulk, 'Upsert', object_name,
-                        source_data, externalID)
-        rel_end_time = h.dtm()
-        log.info(
-            f'Relationshp: {reln_dot_reference} completed - run time: {rel_end_time-rel_start_time}.')
-
-    return f'do_self_relationship_upsert completed.'
+    return _flds, ' and '.join(_where)
 
 
 @h.exception(log)
@@ -251,20 +231,13 @@ def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
 
 
 def build_soql(sobject, fields, where='', orderby='', limit=0):
-    _select = 'select ' + ', '.join(fields)
+    select = 'select ' + ', '.join(fields)
     _from = f' from {sobject}'
-    _where = ''
-    _orderby = ''
-    _limit = ''
+    where = (f' where {where}' if len(where) > 0 else '')
+    orderby = (f' order by {orderby}' if len(orderby) > 0 else '')
+    limit = (f' limit {str(limit)}' if limit > 0 else '')
 
-    if len(where) > 0:
-        _where = ' where ' + where
-    if len(orderby) > 0:
-        _orderby = ' order by ' + orderby
-    if limit > 0:
-        _limit = ' limit ' + str(limit)
-
-    q = _select+_from+_where+_orderby+_limit
+    q = select + _from + where + orderby + limit
     log.debug(f'build_soql: {q}')
 
     return q
@@ -291,8 +264,16 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
         futures = [executor.submit(do_bulk_job_thread, sf_bulk, job_type,
                                    object_name, batch, primary_key) for batch in batches]
 
+    n_success = 0
+    n_error = 0
     for future in as_completed(futures):
-        log.info(future.result())
+        _n_success, _n_error = future.result()
+        n_success += _n_success
+        n_error += _n_error
+        log.info(
+            f'do_bulk_job_thread {job_type} completed with {_n_success} successes and {_n_error} failures.')
+    log.info(
+        f'do_bulk_job {job_type} completed with {n_success} successes and {n_error} failures.')
 
     return f'do_bulk_job completed.'
 
@@ -302,6 +283,9 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, primary_key=''):
 def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
     log.debug(
         f'do_bulk_job_thread {job_type} on {object_name} - batch size: {len(data)}')
+    n_success = 0
+    n_error = 0
+    # Bypass if global is set to False.
     if MAKE_CHANGES:
         if job_type == 'Delete':
             batch_results = sf_bulk.create_and_run_delete_job(
@@ -315,11 +299,6 @@ def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
     else:
         log.debug(f'MAKE_CHANGES set to {MAKE_CHANGES}')
         batch_results = []
-        n_success = 0
-        n_error = 0
-
-    n_success = 0
-    n_error = 0
 
     for result in batch_results:
         if result.success != 'true':
@@ -329,7 +308,7 @@ def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
         else:
             n_success += 1
 
-    return f'do_bulk_job_thread completed with {n_success} successes and {n_error} failures.'
+    return n_success, n_error
 
 
 # Run main program
