@@ -314,5 +314,5 @@ def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
 # Run main program
 if __name__ == '__main__':
     MAKE_CHANGES = True
-    results = run_template(tdm_config='./jobs/template.json')
+    results = run_template(tdm_config='./jobs/shuler-template-0.json')
     log.info(f'{results}\n')
