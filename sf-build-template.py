@@ -3,14 +3,9 @@
 
 __author__ = 'Stephen Stokes: sstokes[at]relationshipvelocity.com'
 
-import csv
 import json
 import logging
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
-import pandas as pd
-
-import tools.excel_helper as ex
 import tools.helpers as h
 
 # Logging setup
@@ -24,47 +19,49 @@ log.debug('Logging is configured.')
 # Primary function
 @h.exception(log)
 @h.timer(log)
-def create_template(source, object_list, output):
+def create_template(source, operations_list, output):
     log.info(f'source: {source} > output: {output}')
 
-    obj_list = h.get_config(object_list)
-    log.debug(f'obj_list: {obj_list}')
+    ext_id = h.get_config('./data/ext-id.json')
+    log.debug(f'ext_id: {ext_id}')
 
-    records = get_object_data(source, obj_list.keys())
+    opr_list = h.get_config(operations_list)
+    log.debug(f'operations_list: {opr_list}')
+
+    obj_list = list(dict.fromkeys([d['object']
+                                   for d in opr_list['operations']]))
+
+    records = get_object_data(source, obj_list)
+    details = []
+
+    for rec in records:
+        if (not rec['referenceTo']) or (rec['referenceTo'] and rec['relationshipName'] and rec['referenceTo'] in ext_id):
+            details.append(rec)
 
     template_data = []
 
-    df = pd.DataFrame(records)
-    df['relationship'] = df.apply(get_reln_array, axis=1)
-    sobjects = df.sobject.unique()
-
-    for obj in sobjects:
-        _obj = df[df.sobject == obj]
-        _flds = _obj.name.unique()
-        _relns = []
-
-        for rel in _obj.relationship.unique():
-            if rel != None:
-                _rel = rel.split('|')
-                _relationships = {
-                    'object': _rel[0],
-                    'relationshipName': _rel[1],
-                    'field': _rel[2],
-                    'externalId': obj_list[_rel[0]]['externalId']
-                }
-                _relns.append(_relationships)
+    for rec in opr_list['operations']:
+        _obj = rec['object']
+        _flds = [d['name'] for d in details if d['sobject'] == _obj]
+        _relns = [{'object': d['referenceTo'],
+                   'relationshipName': d['relationshipName'],
+                   'field': d['name'],
+                   'externalId': ext_id[d['referenceTo']]}
+                  for d in details
+                  if d['sobject'] == _obj and d['referenceTo'] != None]
 
         _template = {
+            'operation': rec['operation'],
             'type': 'sobject',
-            'object': obj,
-            'primaryKey': obj_list[obj]['primaryKey'],
-            'externalId': obj_list[obj]['externalId'],
-            'fields': json.loads(json.dumps(_flds.tolist())),
+            'object': _obj,
+            'primaryKey': 'Id',
+            'externalId': ext_id[_obj],
+            'fields': _flds,
             'where': '',
             'orderby': '',
             'limit': 0,
             'relationships': _relns,
-            'masks': obj_list[obj]['masks']
+            'masks': rec['masks']
         }
 
         template_data.append(_template)
@@ -78,13 +75,6 @@ def create_template(source, object_list, output):
 
 
 # Functions
-def get_reln_array(row):
-    if row.referenceTo:
-        return f'{row.sobject}|{row.referenceTo}|{row.relationshipName}'
-
-    return None
-
-
 @h.exception(log)
 @h.timer(log)
 def do_mass_describe(sf_rest, obj_list):
@@ -99,14 +89,15 @@ def do_mass_describe(sf_rest, obj_list):
 
 @h.exception(log)
 @h.timer(log)
-def get_object_data(source, object_list):
+def get_object_data(source, obj_list):
     sf_rest = h.get_sf_rest_connection(source)
 
     # Mass describe
-    results = do_mass_describe(sf_rest, object_list)
+    results = do_mass_describe(sf_rest, obj_list)
     log.info(f'do_mass_describe returned {len(results)} records.')
     # log.debug(records)
-    ex.do_excel_out('./output/sttmp.xlsx', results)
+    with open('./output/sttmp.json', 'w') as json_file:
+        json.dump(results, json_file)
 
     records = []
     for rec in results:
@@ -133,7 +124,8 @@ def get_object_data(source, object_list):
                 rec['referenceTo'] = ref
 
     # log.debug(records)
-    ex.do_excel_out('./output/fntmp.xlsx', records)
+    with open('./output/fntmp.json', 'w') as json_file:
+        json.dump(records, json_file)
 
     sf_rest.close_connection()
     log.info(f'get_object_data finished - record count: {len(records)}.')
@@ -144,6 +136,6 @@ def get_object_data(source, object_list):
 # Run main program
 if __name__ == '__main__':
     results = create_template(source='./config/prs.prd.json',
-                              object_list='./data/sobject.json',
+                              operations_list='./data/operations-list.json',
                               output=f'./output/{h.datestamp()}.json')
     log.info(f'{results}\n')

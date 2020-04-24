@@ -7,7 +7,6 @@ import json
 import logging.config
 import os
 import time
-from collections import OrderedDict
 from datetime import datetime
 
 from faker import Faker
@@ -33,10 +32,10 @@ def setup_logging(config='./config/logging.json', level=logging.INFO):
 
 
 # Return config_file as dictionary.
-def get_config(config_file, ordered=OrderedDict):
+def get_config(config_file):
     try:
         with open(config_file, 'r') as c:
-            config = json.loads(c.read(), object_pairs_hook=ordered)
+            config = json.loads(c.read())
             return config
     except Exception as config_err:
         raise ReferenceError(
@@ -69,7 +68,7 @@ def get_fake(method):
 
 # Get reference to sf_rest_api module
 def get_sf_rest_connection(config):
-    _config = get_config(config, None)
+    _config = get_config(config)
 
     sf_rest = sf_rest_api.Connection(
         username=_config['sf_username'],
@@ -84,7 +83,7 @@ def get_sf_rest_connection(config):
 
 # Get reference to sf_bulk_api module
 def get_sf_bulk_connection(config):
-    _config = get_config(config, None)
+    _config = get_config(config)
 
     sf_bulk = sf_bulk_api.Connection(
         username=_config['sf_username'],
