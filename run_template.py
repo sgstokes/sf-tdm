@@ -21,8 +21,8 @@ log.debug('Logging is configured.')
 try:
     config = sys.argv[1]
 except Exception as argument_error:
-    print(f'No input arguments.\nError: {argument_error}')
     log.info(f'No input arguments.\nError: {argument_error}')
+    raise
 
 # Run template
 results = tdm.run_template(tdm_config=config)
