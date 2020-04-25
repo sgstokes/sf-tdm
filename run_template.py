@@ -15,7 +15,7 @@ h.setup_logging()
 
 # Logging statements for each module:
 log = logging.getLogger(__name__)
-log.debug('Logging is configured.')
+log.debug(f'{__name__} logging is configured.')
 
 # Get script argument
 try:

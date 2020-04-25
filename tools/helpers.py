@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+__author__ = 'Stephen Stokes: sstokes[at]relationshipvelocity.com'
 
 import functools
 import json
