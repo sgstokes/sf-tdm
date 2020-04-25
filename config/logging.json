@@ -1,5 +1,6 @@
 {
   "version": 1,
+  "disable_existing_loggers": true,
   "loggers": {
     "": {
       "level": "NOTSET",
@@ -44,13 +45,13 @@
       "mode": "a"
     },
     "critical_mail_handler": {
-        "level": "CRITICAL",
-        "formatter": "file",
-        "class": "logging.handlers.SMTPHandler",
-        "mailhost" : "localhost",
-        "fromaddr": "monitoring@domain.com",
-        "toaddrs": ["dev@domain.com", "qa@domain.com"],
-        "subject": "Critical error with application name"
+      "level": "CRITICAL",
+      "formatter": "file",
+      "class": "logging.handlers.SMTPHandler",
+      "mailhost": "localhost",
+      "fromaddr": "monitoring@domain.com",
+      "toaddrs": ["dev@domain.com", "qa@domain.com"],
+      "subject": "Critical error with application name"
     }
   },
   "formatters": {
