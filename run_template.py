@@ -16,14 +16,17 @@ h.setup_logging()
 log = logging.getLogger(__name__)
 log.debug(f'{__name__} logging is configured.')
 
-# Get script argument
-try:
-    config = sys.argv[1]
-except Exception as argument_error:
-    # print(f'No input arguments.\nError: {argument_error}')
-    log.exception(f'No input arguments.\nError: {argument_error}')
-    raise
 
-# Run template
-results = tdm.run_template(tdm_config=config)
-log.info(f'{results}\n')
+@h.exception(log)
+@h.timer(log)
+def run_template():
+    config = sys.argv[1]
+    results = tdm.run_template(tdm_config=config)
+    return results
+
+
+# Run main program
+if __name__ == '__main__':
+    h.setup_logging()
+    results = run_template()
+    log.info(f'{results}\n')
