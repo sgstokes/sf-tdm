@@ -10,7 +10,7 @@ import tools.helpers as h
 
 # Logging statements for each module:
 log = logging.getLogger(__name__)
-log.debug('Logging is configured.')
+log.debug(f'{__name__} logging is configured.')
 
 
 # Primary function
