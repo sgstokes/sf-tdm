@@ -14,6 +14,7 @@ log = logging.getLogger(__name__)
 log.debug(f'{__name__} logging is configured.')
 
 
+# Primary function
 @h.exception(log)
 @h.timer(log)
 def run_template():
