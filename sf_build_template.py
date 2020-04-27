@@ -8,9 +8,6 @@ import logging
 
 import tools.helpers as h
 
-# Logging setup
-h.setup_logging()
-
 # Logging statements for each module:
 log = logging.getLogger(__name__)
 log.debug('Logging is configured.')
@@ -135,6 +132,7 @@ def get_object_data(source, obj_list):
 
 # Run main program
 if __name__ == '__main__':
+    h.setup_logging()
     results = create_template(source='./config/prs.prd.json',
                               operations_list='./data/operations-list.json',
                               output=f'./output/{h.datestamp()}.json')
