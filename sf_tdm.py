@@ -9,9 +9,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import tools.helpers as h
 
-# Logging setup
-h.setup_logging()
-
 # Logging statements for each module:
 log = logging.getLogger(__name__)
 log.debug(f'{__name__} logging is configured.')
@@ -314,5 +311,6 @@ def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
 # Run main program
 if __name__ == '__main__':
     MAKE_CHANGES = True
+    h.setup_logging()
     results = run_template(tdm_config='./jobs/template.json')
     log.info(f'{results}\n')
