@@ -2,7 +2,7 @@
   "source": "TRN",
   "target": "DEV190326",
   "data": [{
-    "operation": "refresh",
+    "operation": "upsert",
     "type": "sobject",
     "object": "User",
     "primaryKey": "Id",
