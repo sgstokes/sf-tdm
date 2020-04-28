@@ -8,9 +8,6 @@ import logging
 
 import tools.helpers as h
 
-# Logging setup
-h.setup_logging(level=logging.DEBUG)
-
 # Logging statements for each module:
 log = logging.getLogger(__name__)
 log.debug('Logging is configured.')
@@ -46,4 +43,5 @@ def do_query():
 
 # Run main program
 if __name__ == '__main__':
+    h.setup_logging(level=logging.DEBUG)
     log.info(do_query())
