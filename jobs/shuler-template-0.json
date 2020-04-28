@@ -6,8 +6,8 @@
     "type": "sobject",
     "object": "User",
     "primaryKey": "Id",
-    "externalId": "Pentegra_ID__c",
-    "fields": ["Username", "LastName", "FirstName", "MiddleName", "Suffix", "CompanyName", "Division", "Department", "Title", "Street", "City", "State", "PostalCode", "Country", "Latitude", "Longitude", "GeocodeAccuracy", "Email", "EmailPreferencesAutoBcc", "EmailPreferencesAutoBccStayInTouch", "EmailPreferencesStayInTouchReminder", "SenderEmail", "SenderName", "Signature", "StayInTouchSubject", "StayInTouchSignature", "StayInTouchNote", "Phone", "Fax", "MobilePhone", "Alias", "CommunityNickname", "IsActive", "TimeZoneSidKey", "LocaleSidKey", "ReceivesInfoEmails", "ReceivesAdminInfoEmails", "EmailEncodingKey", "LanguageLocaleKey", "EmployeeNumber", "ManagerId", "UserPermissionsMarketingUser", "UserPermissionsOfflineUser", "UserPermissionsAvantgoUser", "UserPermissionsCallCenterAutoLogin", "UserPermissionsSFContentUser", "UserPermissionsKnowledgeUser", "UserPermissionsInteractionUser", "UserPermissionsSupportUser", "ForecastEnabled", "UserPreferencesActivityRemindersPopup", "UserPreferencesEventRemindersCheckboxDefault", "UserPreferencesTaskRemindersCheckboxDefault", "UserPreferencesReminderSoundOff", "UserPreferencesDisableAllFeedsEmail", "UserPreferencesDisableFollowersEmail", "UserPreferencesDisableProfilePostEmail", "UserPreferencesDisableChangeCommentEmail", "UserPreferencesDisableLaterCommentEmail", "UserPreferencesDisProfPostCommentEmail", "UserPreferencesApexPagesDeveloperMode", "UserPreferencesReceiveNoNotificationsAsApprover", "UserPreferencesReceiveNotificationsAsDelegatedApprover", "UserPreferencesHideCSNGetChatterMobileTask", "UserPreferencesDisableMentionsPostEmail", "UserPreferencesDisMentionsCommentEmail", "UserPreferencesHideCSNDesktopTask", "UserPreferencesHideChatterOnboardingSplash", "UserPreferencesHideSecondChatterOnboardingSplash", "UserPreferencesDisCommentAfterLikeEmail", "UserPreferencesDisableLikeEmail", "UserPreferencesSortFeedByComment", "UserPreferencesDisableMessageEmail", "UserPreferencesDisableBookmarkEmail", "UserPreferencesDisableSharePostEmail", "UserPreferencesEnableAutoSubForFeeds", "UserPreferencesDisableFileShareNotificationsForApi", "UserPreferencesShowTitleToExternalUsers", "UserPreferencesShowManagerToExternalUsers", "UserPreferencesShowEmailToExternalUsers", "UserPreferencesShowWorkPhoneToExternalUsers", "UserPreferencesShowMobilePhoneToExternalUsers", "UserPreferencesShowFaxToExternalUsers", "UserPreferencesShowStreetAddressToExternalUsers", "UserPreferencesShowCityToExternalUsers", "UserPreferencesShowStateToExternalUsers", "UserPreferencesShowPostalCodeToExternalUsers", "UserPreferencesShowCountryToExternalUsers", "UserPreferencesShowProfilePicToGuestUsers", "UserPreferencesShowTitleToGuestUsers", "UserPreferencesShowCityToGuestUsers", "UserPreferencesShowStateToGuestUsers", "UserPreferencesShowPostalCodeToGuestUsers", "UserPreferencesShowCountryToGuestUsers", "UserPreferencesPipelineViewHideHelpPopover", "UserPreferencesHideS1BrowserUI", "UserPreferencesDisableEndorsementEmail", "UserPreferencesPathAssistantCollapsed", "UserPreferencesCacheDiagnostics", "UserPreferencesShowEmailToGuestUsers", "UserPreferencesShowManagerToGuestUsers", "UserPreferencesShowWorkPhoneToGuestUsers", "UserPreferencesShowMobilePhoneToGuestUsers", "UserPreferencesShowFaxToGuestUsers", "UserPreferencesShowStreetAddressToGuestUsers", "UserPreferencesLightningExperiencePreferred", "UserPreferencesPreviewLightning", "UserPreferencesLightningConsolePreferred", "UserPreferencesHideEndUserOnboardingAssistantModal", "UserPreferencesHideLightningMigrationModal", "UserPreferencesHideSfxWelcomeMat", "UserPreferencesHideBiggerPhotoCallout", "UserPreferencesGlobalNavBarWTShown", "UserPreferencesGlobalNavGridMenuWTShown", "UserPreferencesCreateLEXAppsWTShown", "UserPreferencesFavoritesWTShown", "UserPreferencesRecordHomeSectionCollapseWTShown", "UserPreferencesRecordHomeReservedWTShown", "UserPreferencesFavoritesShowTopFavorites", "UserPreferencesExcludeMailAppAttachments", "UserPreferencesSuppressTaskSFXReminders", "UserPreferencesSuppressEventSFXReminders", "UserPreferencesPreviewCustomTheme", "UserPreferencesHasCelebrationBadge", "UserPreferencesUserDebugModePref", "UserPreferencesSRHOverrideActivities", "UserPreferencesNewLightningReportRunPageEnabled", "UserPreferencesNativeEmailClient", "ContactId", "Extension", "User_ID__c"],
+    "externalId": "User_ID__c",
+    "fields": ["Username", "LastName", "FirstName", "MiddleName", "Suffix", "CompanyName", "Division", "Department", "Title", "Street", "City", "State", "PostalCode", "Country", "Phone", "Fax", "MobilePhone", "Alias", "IsActive", "EmployeeNumber", "ManagerId", "ContactId", "Extension", "User_ID__c"],
     "where": "",
     "orderby": "",
     "limit": 0,
@@ -15,7 +15,7 @@
       "object": "User",
       "relationshipName": "Manager",
       "field": "ManagerId",
-      "externalId": "Pentegra_ID__c"
+      "externalId": "User_ID__c"
     }, {
       "object": "Contact",
       "relationshipName": "Contact",
@@ -37,7 +37,7 @@
       "object": "User",
       "relationshipName": "Owner",
       "field": "OwnerId",
-      "externalId": "Pentegra_ID__c"
+      "externalId": "User_ID__c"
     }],
     "masks": {}
   }]

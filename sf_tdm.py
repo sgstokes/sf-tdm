@@ -194,7 +194,7 @@ def do_upsert(sf_rest_source,
 
 def get_self_reln_fields_where(where, relationships, externalID):
     _flds = [externalID]
-    _where = [where]
+    _where = ([where] if len(where) > 0 else [])
     for rel in relationships:
         _flds.append(f'{rel["relationshipName"]}.{rel["externalId"]}')
         _where.append(f'{rel["field"]} != null')
