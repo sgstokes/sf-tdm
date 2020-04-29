@@ -35,14 +35,8 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
     source = _tdm_config['source']
     target = _tdm_config['target']
     data = _tdm_config['data']
-    # Get connections to Salesforce.
-
-    source_config = env_path+env_map[source]
-    target_config = env_path+env_map[target]
-    
-    sf_rest_source = h.get_sf_rest_connection(env_path+env_map[source])
-    sf_rest_target = h.get_sf_rest_connection(env_path+env_map[target])
-    sf_bulk_target = h.get_sf_bulk_connection(env_path+env_map[target])
+    sf_cfg_source = env_path+env_map[source]
+    sf_cfg_target = env_path+env_map[target]
 
     for row in data:
         row_start_time = h.dtm()
@@ -66,15 +60,15 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
             continue
         # Perform delete portion of refresh operation and deleteAll operation.
         if operation in ['refresh', 'deleteAll']:
-            delete_data = get_data(sf_rest_target, obj, [primaryKey])
+            delete_data = get_data(sf_cfg_target, obj, [primaryKey])
             if delete_data:
-                do_bulk_job(sf_bulk=sf_bulk_target,
+                do_bulk_job(sf_cfg_target=sf_cfg_target,
                             job_type='Delete',
                             object_name=obj,
                             data=delete_data,
                             thread=thread)
         # Perform upsert portion of refresh operation and insert operation.
-        if operation in ['refresh', 'insert', 'upsert']:
+        if operation in ['refresh', 'upsert']:
             # Split relationships into two lists: self and other.
             self_relationships = []
             if relationships:
@@ -88,8 +82,8 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
             log.debug(f'Other relationships: {relationships}')
             log.debug(f'fields after removing self_relationships: {fields}')
             # Upsert without self-relationships.
-            do_upsert(sf_rest_source=sf_rest_source,
-                      sf_bulk_target=sf_bulk_target,
+            do_upsert(sf_cfg_source=sf_cfg_source,
+                      sf_cfg_target=sf_cfg_target,
                       relationships=relationships,
                       externalID=externalID,
                       object_name=obj,
@@ -103,8 +97,8 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
             if len(self_relationships) > 0:
                 _flds, _where = get_self_reln_fields_where(
                     where, self_relationships, externalID)
-                do_upsert(sf_rest_source=sf_rest_source,
-                          sf_bulk_target=sf_bulk_target,
+                do_upsert(sf_cfg_source=sf_cfg_source,
+                          sf_cfg_target=sf_cfg_target,
                           relationships=self_relationships,
                           externalID=externalID,
                           object_name=obj,
@@ -115,16 +109,12 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                           masks=masks,
                           thread=thread)
             # Get record count of target object.
-            target_data = get_data(sf_rest_target, obj, [
+            target_data = get_data(sf_cfg_target, obj, [
                                    f'count({primaryKey}) Ct'])
             log.debug(f'{obj} final count: {target_data}')
         row_end_time = h.dtm()
         log.info(
             f'{operation} -- {source}>>{target} -- {obj} completed - run time: {row_end_time-row_start_time}')
-
-    # Close sf_rest connections.
-    sf_rest_source.close_connection()
-    sf_rest_target.close_connection()
 
     return f'Completed {tdm_config} template run.'
 
@@ -172,8 +162,8 @@ def fix_flattened_fields(relationships, fields, data):
 
 @h.exception(log)
 @h.timer(log)
-def do_upsert(sf_rest_source,
-              sf_bulk_target,
+def do_upsert(sf_cfg_source,
+              sf_cfg_target,
               relationships,
               externalID,
               object_name,
@@ -189,7 +179,7 @@ def do_upsert(sf_rest_source,
         log.debug(
             f'Fields after replacing relationships with externalIDs: {fields}')
     # Get data from source to upsert to target.
-    source_data = get_data(sf_rest=sf_rest_source,
+    source_data = get_data(sf_cfg_source=sf_cfg_source,
                            obj=object_name,
                            fields=fields,
                            where=where,
@@ -202,7 +192,7 @@ def do_upsert(sf_rest_source,
         source_data = fix_flattened_fields(relationships, fields, source_data)
     # Upsert source data into target.
     if source_data:
-        do_bulk_job(sf_bulk=sf_bulk_target,
+        do_bulk_job(sf_cfg_target=sf_cfg_target,
                     job_type='Upsert',
                     object_name=object_name,
                     data=source_data,
@@ -224,12 +214,14 @@ def get_self_reln_fields_where(where, relationships, externalID):
 
 @h.exception(log)
 @h.timer(log)
-def get_data(sf_rest, obj, fields, where='', orderby='', limit=0, masks={}):
+def get_data(sf_cfg_source, obj, fields, where='', orderby='', limit=0, masks={}):
     query = build_soql(obj, fields, where, orderby, limit)
     _masks = masks
 
     soql_start_time = h.dtm()
+    sf_rest = h.get_sf_rest_connection(sf_cfg_source)
     records = sf_rest.soql_query(query)
+    sf_rest.close_connection()
     soql_end_time = h.dtm()
     log.info(
         f'get_data result count: {len(records)} - run time: {soql_end_time-soql_start_time}.')
@@ -262,7 +254,7 @@ def build_soql(sobject, fields, where='', orderby='', limit=0):
 
 @h.exception(log)
 @h.timer(log)
-def do_bulk_job(sf_bulk, job_type, object_name, data, thread=True, primary_key=''):
+def do_bulk_job(sf_cfg_target, job_type, object_name, data, thread=True, primary_key=''):
     # Split records into batches by thread count.
     # min_batch based on Salesforce processing details.
     min_batch = 200
@@ -276,7 +268,7 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, thread=True, primary_key='
     batches = h.chunk_records(data, chunk_size)
 
     with ThreadPoolExecutor(max_workers=thread_count) as executor:
-        futures = [executor.submit(do_bulk_job_thread, sf_bulk, job_type,
+        futures = [executor.submit(do_bulk_job_thread, sf_cfg_target, job_type,
                                    object_name, batch, primary_key) for batch in batches]
 
     n_success = 0
@@ -295,7 +287,7 @@ def do_bulk_job(sf_bulk, job_type, object_name, data, thread=True, primary_key='
 
 @h.exception(log)
 @h.timer(log)
-def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
+def do_bulk_job_thread(sf_cfg_target, job_type, object_name, data, primary_key):
     log.debug(
         f'do_bulk_job_thread {job_type} on {object_name} - batch size: {len(data)}')
     n_success = 0
@@ -305,10 +297,10 @@ def do_bulk_job_thread(sf_bulk, job_type, object_name, data, primary_key):
     # Bypass if global is set to False.
     if MAKE_CHANGES:
         if job_type == 'Delete':
-            batch_results = sf_bulk.create_and_run_delete_job(
+            batch_results = h.get_sf_bulk_connection(sf_cfg_target).create_and_run_delete_job(
                 object_name=object_name, data=data)
         else:
-            batch_results = sf_bulk.create_and_run_bulk_job(
+            batch_results = h.get_sf_bulk_connection(sf_cfg_target).create_and_run_bulk_job(
                 job_type=job_type,
                 object_name=object_name,
                 primary_key=primary_key,

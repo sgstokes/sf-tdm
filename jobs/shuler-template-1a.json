@@ -2,7 +2,7 @@
   "source": "PRD",
   "target": "DEV190326",
   "data": [{
-    "operation": "insert",
+    "operation": "upsert",
     "type": "sobject",
     "object": "Contact",
     "bulk_thread": false,

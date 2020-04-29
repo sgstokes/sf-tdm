@@ -26,5 +26,10 @@ def run_template():
 # Run main program
 if __name__ == '__main__':
     h.setup_logging()
-    results = run_template()
-    log.info(f'{results}\n')
+    conf = h.confirm(
+        prompt='Has UUID_Utils been run and RecordTypes provisioned?', resp=False)
+    if conf == False:
+        'Please complete those steps and return.'
+    else:
+        results = run_template()
+        log.info(f'{results}\n')

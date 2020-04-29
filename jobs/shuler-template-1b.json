@@ -1,0 +1,53 @@
+{
+  "source": "PRD",
+  "target": "DEV190326",
+  "data": [{
+    "operation": "refresh",
+    "type": "sobject",
+    "object": "Plan__c",
+    "bulk_thread": false,
+    "primaryKey": "Id",
+    "externalId": "UUID__c",
+    "fields": ["Name", "Business_Area__c", "Description__c", "Last_Update_Date__c", "Last_Update_User__c", "Parent_Plan_Code__c", "PlanName__c", "ProductLine_Name__c", "Status__c", "Type__c", "BIS_External_ID__c", "DTP_Data_Quality__c", "BIS_Plan_Code__c", "Actuary__c", "Compliance_Analyst__c", "Consultant__c", "Pension_Analyst__c", "Regional_Director__c", "Relationship_Manager__c", "UUID__c"],
+    "where": "",
+    "orderby": "",
+    "limit": 0,
+    "relationships": [{
+      "object": "Plan__c",
+      "relationshipName": "Parent_Plan_Code__r",
+      "field": "Parent_Plan_Code__c",
+      "externalId": "UUID__c"
+    }, {
+      "object": "User",
+      "relationshipName": "Actuary__r",
+      "field": "Actuary__c",
+      "externalId": "UUID__c"
+    }, {
+      "object": "User",
+      "relationshipName": "Compliance_Analyst__r",
+      "field": "Compliance_Analyst__c",
+      "externalId": "UUID__c"
+    }, {
+      "object": "User",
+      "relationshipName": "Consultant__r",
+      "field": "Consultant__c",
+      "externalId": "UUID__c"
+    }, {
+      "object": "User",
+      "relationshipName": "Pension_Analyst__r",
+      "field": "Pension_Analyst__c",
+      "externalId": "UUID__c"
+    }, {
+      "object": "User",
+      "relationshipName": "Regional_Director__r",
+      "field": "Regional_Director__c",
+      "externalId": "UUID__c"
+    }, {
+      "object": "User",
+      "relationshipName": "Relationship_Manager__r",
+      "field": "Relationship_Manager__c",
+      "externalId": "UUID__c"
+    }],
+    "masks": {}
+  }]
+}
