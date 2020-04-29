@@ -6,8 +6,8 @@
     "type": "sobject",
     "object": "User",
     "primaryKey": "Id",
-    "externalId": "User_ID__c",
-    "fields": ["Username", "LastName", "FirstName", "MiddleName", "Suffix", "CompanyName", "Division", "Department", "Title", "Street", "City", "State", "PostalCode", "Country", "Phone", "Fax", "MobilePhone", "Alias", "IsActive", "EmployeeNumber", "ManagerId", "ContactId", "Extension", "User_ID__c"],
+    "externalId": "UUID__c",
+    "fields": ["Username", "LastName", "FirstName", "MiddleName", "Suffix", "CompanyName", "Division", "Department", "Title", "Street", "City", "State", "PostalCode", "Country", "Phone", "Fax", "MobilePhone", "Alias", "IsActive", "EmployeeNumber", "ManagerId", "ContactId", "Extension"],
     "where": "",
     "orderby": "",
     "limit": 0,
@@ -15,7 +15,7 @@
       "object": "User",
       "relationshipName": "Manager",
       "field": "ManagerId",
-      "externalId": "User_ID__c"
+      "externalId": "UUID__c"
     }, {
       "object": "Contact",
       "relationshipName": "Contact",
@@ -29,7 +29,7 @@
     "object": "Role_Master__c",
     "primaryKey": "Id",
     "externalId": "UUID__c",
-    "fields": ["OwnerId", "Contact_Type_Assignable__c", "Externally_Visible__c", "Role_Type__c", "Role__c", "Sub_Role__c", "UUID__c"],
+    "fields": ["OwnerId", "Contact_Type_Assignable__c", "Externally_Visible__c", "Role_Type__c", "Role__c", "Sub_Role__c"],
     "where": "",
     "orderby": "",
     "limit": 0,
@@ -37,7 +37,7 @@
       "object": "User",
       "relationshipName": "Owner",
       "field": "OwnerId",
-      "externalId": "User_ID__c"
+      "externalId": "UUID__c"
     }],
     "masks": {}
   }]
