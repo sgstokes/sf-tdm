@@ -51,6 +51,7 @@ def create_template(source, operations_list, output, fields=None):
             'operation': rec['operation'],
             'type': 'sobject',
             'object': _obj,
+            'bulk_thread': (rec['bulk_thread'] if 'bulk_thread' in rec else True),
             'primaryKey': 'Id',
             'externalId': ext_id[_obj],
             'fields': _flds,
@@ -86,7 +87,8 @@ def get_object_data(source, obj_list, fields=None):
 
     fields = []
     for fld in all_fields:
-        if fld['updateable'] == True or fld['nillable'] == False:
+        # FIXME Correct filter logic.
+        if fld['updateable'] or not fld['nillable']:
             fields.append(fld)
 
     for fld in fields:
