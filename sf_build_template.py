@@ -16,7 +16,7 @@ log.debug(f'{__name__} logging is configured.')
 # Primary function
 @h.exception(log)
 @h.timer(log)
-def create_template(source, operations_list, output):
+def create_template(source, operations_list, output, fields=None):
     log.info(f'source: {source} > output: {output}')
 
     ext_id = h.get_config('./data/ext-id.json')
@@ -28,7 +28,7 @@ def create_template(source, operations_list, output):
     obj_list = list(dict.fromkeys([d['object']
                                    for d in opr_list['operations']]))
 
-    all_fields = get_object_data(source, obj_list)
+    all_fields = get_object_data(source, obj_list, fields)
     fields = []
 
     for fld in all_fields:
@@ -39,7 +39,7 @@ def create_template(source, operations_list, output):
 
     for rec in opr_list['operations']:
         _obj = rec['object']
-        _flds = [f['name'] for f in fields if f['sobject'] == _obj]
+        _flds = (rec['fields'] if 'fields' in rec else [f['name'] for f in fields if f['sobject'] == _obj])
         _relns = [{'object': f['referenceTo'],
                    'relationshipName': f['relationshipName'],
                    'field': f['name'],
@@ -63,7 +63,7 @@ def create_template(source, operations_list, output):
 
         template_data.append(_template)
 
-    log.debug(f'template: {template_data}')
+    # log.debug(f'template: {template_data}')
 
     with open(output, 'w') as json_file:
         json.dump(template_data, json_file)
@@ -74,31 +74,19 @@ def create_template(source, operations_list, output):
 # Functions
 @h.exception(log)
 @h.timer(log)
-def do_mass_describe(sf_rest, obj_list):
-    results = []
-
-    for obj in obj_list:
-        results.extend(sf_rest.describe_fields(obj))
-
-    log.info('do_mass_describe completed.')
-    return results
-
-
-@h.exception(log)
-@h.timer(log)
-def get_object_data(source, obj_list):
+def get_object_data(source, obj_list, fields=None):
     sf_rest = h.get_sf_rest_connection(source)
 
     # Mass describe
-    all_fields = do_mass_describe(sf_rest, obj_list)
+    all_fields = (h.get_config(fields) if fields else [sf_rest.describe_fields(obj)[0] for obj in obj_list])
+    # log.debug(all_fields)
     log.info(f'do_mass_describe returned {len(all_fields)} records.')
-    # log.debug(records)
     with open('./output/sttmp.json', 'w') as json_file:
         json.dump(all_fields, json_file)
 
     fields = []
     for fld in all_fields:
-        if fld['updateable'] == True:
+        if fld['updateable'] == True or fld['nillable'] == False:
             fields.append(fld)
 
     for fld in fields:
@@ -109,7 +97,7 @@ def get_object_data(source, obj_list):
         else:
             fld['referenceTo'] = (None if len(ref_to) < 1 else ''.join(ref_to))
 
-    # log.debug(records)
+    # log.debug(fields)
     with open('./output/fntmp.json', 'w') as json_file:
         json.dump(fields, json_file)
 
@@ -124,5 +112,6 @@ if __name__ == '__main__':
     h.setup_logging()
     results = create_template(source='./config/prs.prd.json',
                               operations_list='./data/operations-list.json',
-                              output=f'./output/{h.datestamp()}.json')
+                              output=f'./output/{h.datestamp()}.json',
+                              fields='./data/fields.json')
     log.info(f'{results}\n')

@@ -72,7 +72,8 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                     if relationship['object'] == obj:
                         self_relationships.append(relationship)
                         relationships.remove(relationship)
-                        fields.remove(relationship['field'])
+                        if relationship['field'] in fields:
+                            fields.remove(relationship['field'])
             log.debug(f'Self relationships: {self_relationships}')
             log.debug(f'Other relationships: {relationships}')
             log.debug(f'fields after removing self_relationships: {fields}')
