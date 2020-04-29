@@ -102,23 +102,12 @@ def get_object_data(source, obj_list):
             fields.append(fld)
 
     for fld in fields:
-        if len(fld['referenceTo']) < 1:
+        ref_to = fld['referenceTo']
+        if (len(ref_to) > 1) or ('RecordType' in ref_to):
             fld['referenceTo'] = None
+            fld['relationshipName'] = None
         else:
-            for ref in fld['referenceTo']:
-                log.debug(
-                    f'for loop {fld["sobject"]}.{fld["name"]} - referenceTo - {ref} in {fld["referenceTo"]}')
-                if ref == 'RecordType':
-                    fld['referenceTo'] = None
-                    fld['relationshipName'] = None
-                    break
-                if ref == 'User':
-                    fld['referenceTo'] = ref
-                    break
-                if len(fld['referenceTo']) == 1:
-                    fld['referenceTo'] = ref
-                    break
-                fld['referenceTo'] = ref
+            fld['referenceTo'] = (None if len(ref_to) < 1 else ''.join(ref_to))
 
     # log.debug(records)
     with open('./output/fntmp.json', 'w') as json_file:
