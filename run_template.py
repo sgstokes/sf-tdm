@@ -27,7 +27,7 @@ def run_template():
 if __name__ == '__main__':
     h.setup_logging()
     conf = h.confirm(
-        prompt='Has UUID_Utils been run and RecordTypes provisioned?', resp=False)
+        prompt='Have RecordTYpes been provisioned and UUID_Utils executed?', resp=False)
     if conf == False:
         'Please complete those steps and return.'
     else:

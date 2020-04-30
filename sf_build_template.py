@@ -43,7 +43,7 @@ def create_template(source, operations_list, output, fields=None):
         _relns = [{'object': f['referenceTo'],
                    'relationshipName': f['relationshipName'],
                    'field': f['name'],
-                   'externalId': ext_id[f['referenceTo']]}
+                   'externalId': (ext_id[f['referenceTo']] if f['referenceTo'] in ext_id  else 'UUID__c')}
                   for f in fields
                   if f['sobject'] == _obj and f['referenceTo'] != None]
 

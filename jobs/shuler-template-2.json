@@ -1,0 +1,28 @@
+{
+  "source": "PRD",
+  "target": "DEV190326",
+  "data": [{
+    "operation": "deleteAll",
+    "type": "sobject",
+    "object": "Party_Contact__c",
+    "bulk_thread": false,
+    "primaryKey": "Id",
+    "externalId": "UUID__c",
+    "fields": ["Party__c", "Contact__c", "BIS_External_ID__c", "Last_Update_Date__c", "Last_Update_User__c", "Role__c", "UUID__c"],
+    "where": "",
+    "orderby": "",
+    "limit": 0,
+    "relationships": [{
+      "object": "Account",
+      "relationshipName": "Party__r",
+      "field": "Party__c",
+      "externalId": "UUID__c"
+    }, {
+      "object": "Contact",
+      "relationshipName": "Contact__r",
+      "field": "Contact__c",
+      "externalId": "UUID__c"
+    }],
+    "masks": {}
+  }]
+}
