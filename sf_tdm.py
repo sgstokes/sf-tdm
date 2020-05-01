@@ -45,12 +45,12 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
         thread = (row['bulk_thread'] if 'bulk_thread' in row else True)
         primaryKey = row['primaryKey']
         externalID = row['externalId']
-        fields = row['fields']
-        where = row['where']
-        orderby = row['orderby']
-        limit = row['limit']
-        relationships = row['relationships']
-        masks = row['masks']
+        fields = (row['fields'] if 'fields' in row else [])
+        where = (row['where'] if 'where' in row else '')
+        orderby = (row['orderby'] if 'orderby' in row else '')
+        limit = (row['limit'] if 'limit' in row else '')
+        relationships = (row['relationships'] if 'relationships' in row else [])
+        masks = (row['masks'] if 'masks' in row else {})
 
         log.info(f'{obj} {operation} -- {source}>>{target} started...')
         # Continue if future operations are specified.
