@@ -1,0 +1,212 @@
+{
+  "source": "PRD",
+  "target": "DEV190326",
+  "data": [{
+      "operation": "upsert",
+      "type": "sobject",
+      "object": "User",
+      "primaryKey": "Id",
+      "externalId": "UUID__c",
+      "fields": ["LastName", "ContactId"],
+      "where": "",
+      "orderby": "",
+      "limit": 0,
+      "relationships": [{
+        "object": "Contact",
+        "relationshipName": "Contact",
+        "field": "ContactId",
+        "externalId": "UUID__c"
+      }],
+      "masks": {}
+    },
+    {
+      "operation": "refresh",
+      "type": "sobject",
+      "object": "Plan__c",
+      "bulk_thread": false,
+      "primaryKey": "Id",
+      "externalId": "UUID__c",
+      "fields": ["Name", "Business_Area__c", "Description__c", "Last_Update_Date__c", "Last_Update_User__c", "Parent_Plan_Code__c", "PlanName__c", "ProductLine_Name__c", "Status__c", "Type__c", "BIS_External_ID__c", "DTP_Data_Quality__c", "BIS_Plan_Code__c", "Actuary__c", "Compliance_Analyst__c", "Consultant__c", "Pension_Analyst__c", "Regional_Director__c", "Relationship_Manager__c", "UUID__c"],
+      "where": "",
+      "orderby": "",
+      "limit": 0,
+      "relationships": [{
+        "object": "Plan__c",
+        "relationshipName": "Parent_Plan_Code__r",
+        "field": "Parent_Plan_Code__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "User",
+        "relationshipName": "Actuary__r",
+        "field": "Actuary__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "User",
+        "relationshipName": "Compliance_Analyst__r",
+        "field": "Compliance_Analyst__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "User",
+        "relationshipName": "Consultant__r",
+        "field": "Consultant__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "User",
+        "relationshipName": "Pension_Analyst__r",
+        "field": "Pension_Analyst__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "User",
+        "relationshipName": "Regional_Director__r",
+        "field": "Regional_Director__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "User",
+        "relationshipName": "Relationship_Manager__r",
+        "field": "Relationship_Manager__c",
+        "externalId": "UUID__c"
+      }],
+      "masks": {}
+    },
+    {
+      "operation": "refresh",
+      "type": "sobject",
+      "object": "Party_Division__c",
+      "bulk_thread": false,
+      "primaryKey": "Id",
+      "externalId": "",
+      "fields": ["Description__c", "End_Date__c", "Party_Division_Code__c", "Party_Division_Name__c", "Party__c", "Start_Date__c", "UUID__c"],
+      "where": "",
+      "orderby": "",
+      "limit": 0,
+      "relationships": [{
+        "object": "Account",
+        "relationshipName": "Party__r",
+        "field": "Party__c",
+        "externalId": "UUID__c"
+      }],
+      "masks": {}
+    }, {
+      "operation": "refresh",
+      "type": "sobject",
+      "object": "Party_Division_Contact__c",
+      "bulk_thread": false,
+      "primaryKey": "Id",
+      "externalId": "UUID__c",
+      "fields": ["Party_Division__c", "Contact__c", "UUID__c"],
+      "where": "",
+      "orderby": "",
+      "limit": 0,
+      "relationships": [{
+        "object": "Party_Division__c",
+        "relationshipName": "Party_Division__r",
+        "field": "Party_Division__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "Contact",
+        "relationshipName": "Contact__r",
+        "field": "Contact__c",
+        "externalId": "UUID__c"
+      }],
+      "masks": {}
+    }, {
+      "operation": "refresh",
+      "type": "sobject",
+      "object": "Party_Party__c",
+      "bulk_thread": false,
+      "primaryKey": "Id",
+      "externalId": "UUID__c",
+      "fields": ["Party__c", "BIS_External_ID__c", "Last_Update_Date__c", "Last_Update_User__c", "Reciprocal_Role__c", "Related_Party__c", "Role__c", "UUID__c"],
+      "where": "",
+      "orderby": "",
+      "limit": 0,
+      "relationships": [{
+        "object": "Account",
+        "relationshipName": "Party__r",
+        "field": "Party__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "Party_Party__c",
+        "relationshipName": "Reciprocal_Role__r",
+        "field": "Reciprocal_Role__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "Account",
+        "relationshipName": "Related_Party__r",
+        "field": "Related_Party__c",
+        "externalId": "UUID__c"
+      }],
+      "masks": {}
+    }, {
+      "operation": "refresh",
+      "type": "sobject",
+      "object": "Plan_Contact__c",
+      "bulk_thread": false,
+      "primaryKey": "Id",
+      "externalId": "UUID__c",
+      "fields": ["Plan_Code__c", "Contact_Name__c", "Plan_Role__c", "DTP_Data_Quality__c", "BIS_External_ID__c", "BIS_Contact_Role_IDs__c", "Last_Update_User__c", "Role_Description__c", "Role_ID__c", "Role__c", "Sub_Role__c", "UUID__c"],
+      "where": "",
+      "orderby": "",
+      "limit": 0,
+      "relationships": [{
+        "object": "Plan__c",
+        "relationshipName": "Plan_Code__r",
+        "field": "Plan_Code__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "Contact",
+        "relationshipName": "Contact_Name__r",
+        "field": "Contact_Name__c",
+        "externalId": "UUID__c"
+      }],
+      "masks": {}
+    },
+    {
+      "operation": "refresh",
+      "type": "sobject",
+      "object": "Plan_Party__c",
+      "bulk_thread": false,
+      "primaryKey": "Id",
+      "externalId": "UUID__c",
+      "fields": ["Party_Name__c", "Plan_Code__c", "Plan_Role__c", "Other_Party_Services__c", "DTP_Data_Quality__c", "Plan_Status__c", "BIS_External_ID__c", "Secondary_Plan_Role__c", "Last_Update_User__c", "Direct_Contact__c", "Role__c", "Sub_Role__c", "UUID__c"],
+      "where": "",
+      "orderby": "",
+      "limit": 0,
+      "relationships": [{
+        "object": "Account",
+        "relationshipName": "Party_Name__r",
+        "field": "Party_Name__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "Plan__c",
+        "relationshipName": "Plan_Code__r",
+        "field": "Plan_Code__c",
+        "externalId": "UUID__c"
+      }],
+      "masks": {}
+    },
+    {
+      "operation": "refresh",
+      "type": "sobject",
+      "object": "Plan_User__c",
+      "bulk_thread": false,
+      "primaryKey": "Id",
+      "externalId": "UUID__c",
+      "fields": ["BIS_External_ID__c", "DTP_Data_Quality__c", "Last_Update_Date__c", "Last_Update_User__c", "Plan__c", "Plan_Roles__c", "User__c", "UUID__c"],
+      "where": "",
+      "orderby": "",
+      "limit": 0,
+      "relationships": [{
+        "object": "Plan__c",
+        "relationshipName": "Plan__r",
+        "field": "Plan__c",
+        "externalId": "UUID__c"
+      }, {
+        "object": "User",
+        "relationshipName": "User__r",
+        "field": "User__c",
+        "externalId": "UUID__c"
+      }],
+      "masks": {}
+    }]
+}
