@@ -32,7 +32,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
     log.info(
         f'Successfully read config files: {tdm_config}')
 
-    source = _tdm_config['source']
+    source = (_tdm_config['source'] if 'source' in _tdm_config else '')
     target = _tdm_config['target']
     data = _tdm_config['data']
     sf_cfg_source = env_path+env_map[source]
@@ -43,8 +43,8 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
         operation = row['operation']
         obj = row['object']
         thread = (row['bulk_thread'] if 'bulk_thread' in row else True)
-        primaryKey = row['primaryKey']
-        externalID = row['externalId']
+        primary_key = (row['primary_key'] if 'primary_key' in row else 'Id')
+        external_id = (row['external_id'] if 'external_id' in row else 'UUID__c')
         fields = (row['fields'] if 'fields' in row else [])
         where = (row['where'] if 'where' in row else '')
         orderby = (row['orderby'] if 'orderby' in row else '')
@@ -60,7 +60,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
             continue
         # Perform delete portion of refresh operation and deleteAll operation.
         if operation in ['refresh', 'deleteAll']:
-            delete_data = get_data(sf_cfg_target, obj, [primaryKey])
+            delete_data = get_data(sf_cfg_target, obj, [primary_key])
             if delete_data:
                 do_bulk_job(sf_cfg_target=sf_cfg_target,
                             job_type='Delete',
@@ -85,7 +85,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
             do_upsert(sf_cfg_source=sf_cfg_source,
                       sf_cfg_target=sf_cfg_target,
                       relationships=relationships,
-                      externalID=externalID,
+                      external_id=external_id,
                       object_name=obj,
                       fields=fields,
                       where=where,
@@ -96,11 +96,11 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
             # Upsert self relationships.
             if len(self_relationships) > 0:
                 _flds, _where = get_self_reln_fields_where(
-                    where, self_relationships, externalID)
+                    where, self_relationships, external_id)
                 do_upsert(sf_cfg_source=sf_cfg_source,
                           sf_cfg_target=sf_cfg_target,
                           relationships=self_relationships,
-                          externalID=externalID,
+                          external_id=external_id,
                           object_name=obj,
                           fields=_flds,
                           where=_where,
@@ -110,7 +110,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                           thread=thread)
             # Get record count of target object.
             target_data = get_data(sf_cfg_target, obj, [
-                                   f'count({primaryKey}) Ct'])
+                                   f'count({primary_key}) Ct'])
             log.debug(f'{obj} final count: {target_data}')
         row_end_time = h.dtm()
         log.info(
@@ -123,7 +123,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
 def replace_field_external_ids(relationships, fields, separator='.'):
     for rel in relationships:
         fields = replace_item_in_list(source=rel['field'],
-                                      target=f'{rel["relationshipName"]}{separator}{rel["externalId"]}',
+                                      target=f'{rel["relationshipName"]}{separator}{rel["external_id"]}',
                                       _list=fields)
 
     return fields
@@ -143,17 +143,17 @@ def replace_item_in_list(source, target, _list):
 def fix_flattened_fields(relationships, fields, data):
     log.debug(f'Fields before fix_flattened_fields: {fields}')
     for rel in relationships:
-        fields.append(f'{rel["relationshipName"]}_{rel["externalId"]}')
+        fields.append(f'{rel["relationshipName"]}_{rel["external_id"]}')
 
     for rec in data:
         {rec.pop(key) for key in list(rec.keys())
          if key not in fields}
 
         for rel in relationships:
-            reln_underscore_reference = f'{rel["relationshipName"]}_{rel["externalId"]}'
-            reln_dot_reference = f'{rel["relationshipName"]}.{rel["externalId"]}'
+            reln_underscore_reference = f'{rel["relationshipName"]}_{rel["external_id"]}'
+            reln_dot_reference = f'{rel["relationshipName"]}.{rel["external_id"]}'
             if reln_underscore_reference in rec:
-                rec[f'{rel["relationshipName"]}.{rel["externalId"]}'] = rec.pop(
+                rec[f'{rel["relationshipName"]}.{rel["external_id"]}'] = rec.pop(
                     reln_underscore_reference)
             if reln_dot_reference not in rec:
                 rec.update({reln_dot_reference: None})
@@ -165,7 +165,7 @@ def fix_flattened_fields(relationships, fields, data):
 def do_upsert(sf_cfg_source,
               sf_cfg_target,
               relationships,
-              externalID,
+              external_id,
               object_name,
               fields,
               where='',
@@ -173,11 +173,11 @@ def do_upsert(sf_cfg_source,
               limit=0,
               masks='',
               thread=True):
-    # Replace field with relationship.externalId reference.
+    # Replace field with relationship.external_id reference.
     if len(relationships) > 0:
         fields = replace_field_external_ids(relationships, fields)
         log.debug(
-            f'Fields after replacing relationships with externalIDs: {fields}')
+            f'Fields after replacing relationships with external_ids: {fields}')
     # Get data from source to upsert to target.
     source_data = get_data(sf_cfg_source=sf_cfg_source,
                            obj=object_name,
@@ -196,17 +196,17 @@ def do_upsert(sf_cfg_source,
                     job_type='Upsert',
                     object_name=object_name,
                     data=source_data,
-                    primary_key=externalID,
+                    primary_key=external_id,
                     thread=thread)
 
     return f'do_upsert completed.'
 
 
-def get_self_reln_fields_where(where, relationships, externalID):
-    _flds = [externalID]
+def get_self_reln_fields_where(where, relationships, external_id):
+    _flds = [external_id]
     _where = ([where] if len(where) > 0 else [])
     for rel in relationships:
-        _flds.append(f'{rel["relationshipName"]}.{rel["externalId"]}')
+        _flds.append(f'{rel["relationshipName"]}.{rel["external_id"]}')
         _where.append(f'{rel["field"]} != null')
 
     return _flds, ' and '.join(_where)
