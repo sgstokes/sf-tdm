@@ -280,7 +280,7 @@ def do_bulk_job(sf_cfg_target, job_type, object_name, data, thread=True, primary
         log.info(
             f'do_bulk_job_thread {job_type} completed with {_n_success} successes and {_n_error} failures.')
     log.info(
-        f'do_bulk_job {job_type} {object_name} completed with {n_success} successes and {n_error} failures.')
+        f'do_bulk_job {object_name} {job_type} completed with {n_success} successes and {n_error} failures.')
 
     return f'do_bulk_job completed.'
 
