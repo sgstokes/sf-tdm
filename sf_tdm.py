@@ -44,12 +44,14 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
         obj = row['object']
         thread = (row['bulk_thread'] if 'bulk_thread' in row else True)
         primary_key = (row['primary_key'] if 'primary_key' in row else 'Id')
-        external_id = (row['external_id'] if 'external_id' in row else 'UUID__c')
+        external_id = (row['external_id']
+                       if 'external_id' in row else 'UUID__c')
         fields = (row['fields'] if 'fields' in row else [])
         where = (row['where'] if 'where' in row else '')
         orderby = (row['orderby'] if 'orderby' in row else '')
         limit = (row['limit'] if 'limit' in row else '')
-        relationships = (row['relationships'] if 'relationships' in row else [])
+        relationships = (row['relationships']
+                         if 'relationships' in row else [])
         masks = (row['masks'] if 'masks' in row else {})
 
         log.info(f'{obj} {operation} -- {source}>>{target} started...')

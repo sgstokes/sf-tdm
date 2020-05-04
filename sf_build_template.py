@@ -39,13 +39,17 @@ def create_template(source, operations_list, output, fields=None):
 
     for rec in opr_list['operations']:
         _obj = rec['object']
-        _flds = (rec['fields'] if 'fields' in rec else [f['name'] for f in fields if f['sobject'] == _obj])
-        _relns = [{'object': f['referenceTo'],
-                   'relationshipName': f['relationshipName'],
-                   'field': f['name'],
-                   'externalId': (ext_id[f['referenceTo']] if f['referenceTo'] in ext_id  else 'UUID__c')}
-                  for f in fields
-                  if f['sobject'] == _obj and f['referenceTo'] != None]
+        _flds = (rec['fields'] if 'fields' in rec else [f['name']
+                                                        for f in fields if f['sobject'] == _obj])
+        _relns = [
+            {
+                'object': f['referenceTo'],
+                'relationshipName': f['relationshipName'],
+                'field': f['name'],
+                'externalId': (ext_id[f['referenceTo']] if f['referenceTo'] in ext_id else 'UUID__c')
+            }
+            for f in fields
+            if f['sobject'] == _obj and f['referenceTo'] != None]
 
         _template = {
             'operation': rec['operation'],
@@ -79,7 +83,8 @@ def get_object_data(source, obj_list, fields=None):
     sf_rest = h.get_sf_rest_connection(source)
 
     # Mass describe
-    all_fields = (h.get_config(fields) if fields else [sf_rest.describe_fields(obj)[0] for obj in obj_list])
+    all_fields = (h.get_config(fields) if fields else [
+                  sf_rest.describe_fields(obj)[0] for obj in obj_list])
     # log.debug(all_fields)
     log.info(f'do_mass_describe returned {len(all_fields)} records.')
     with open('./output/sttmp.json', 'w') as json_file:
