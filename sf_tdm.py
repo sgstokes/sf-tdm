@@ -32,7 +32,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
     log.info(
         f'Successfully read config files: {tdm_config}')
 
-    source = (_tdm_config['source'] if 'source' in _tdm_config else '')
+    source = (_tdm_config['source'] if 'source' in _tdm_config else 'PRD')
     target = _tdm_config['target']
     data = _tdm_config['data']
     sf_cfg_source = env_path+env_map[source]
