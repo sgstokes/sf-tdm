@@ -53,7 +53,6 @@ def create_template(source, operations_list, output, fields=None):
 
         _template = {
             'operation': rec['operation'],
-            'type': 'sobject',
             'object': _obj,
             'bulk_thread': (rec['bulk_thread'] if 'bulk_thread' in rec else True),
             'primaryKey': 'Id',
