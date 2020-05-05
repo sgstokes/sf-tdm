@@ -88,6 +88,7 @@ class Connection(object):
                 'calculated',
                 'compoundFieldName',
                 'controllerName',
+                'createable',
                 'custom',
                 'externalId',
                 'label',
