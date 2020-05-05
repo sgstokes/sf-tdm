@@ -91,8 +91,8 @@ def get_object_data(source, obj_list, fields=None):
 
     fields = []
     for fld in all_fields:
-        # FIXME Correct filter logic.
-        if (fld['updateable'] or not fld['nillable']) and not fld['calculated']:
+        # TODO Verify filter.
+        if fld['createable']:
             fields.append(fld)
 
     for fld in fields:
