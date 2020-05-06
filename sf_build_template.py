@@ -16,10 +16,10 @@ log.debug(f'{__name__} logging is configured.')
 # Primary function
 @h.exception(log)
 @h.timer(log)
-def create_template(source, operations_list, output, fields=None):
-    log.info(f'source: {source} > output: {output}')
+def create_template(source_org, operations_list, output, ext_id_file, fields=None):
+    log.info(f'source: {source_org} > output: {output}')
 
-    ext_id = h.get_config('./data/ext-id.json')
+    ext_id = h.get_config(ext_id_file)
     log.debug(f'ext_id: {ext_id}')
 
     opr_list = h.get_config(operations_list)
@@ -28,15 +28,14 @@ def create_template(source, operations_list, output, fields=None):
     obj_list = list(dict.fromkeys([d['object']
                                    for d in opr_list['operations']]))
 
-    all_fields = get_object_data(source, obj_list, fields)
-    fields = []
+    all_fields = get_object_data(source_org, obj_list, fields)
 
+    fields = []
     for fld in all_fields:
         if (not fld['referenceTo']) or (fld['referenceTo'] and fld['relationshipName'] and fld['referenceTo'] in ext_id):
             fields.append(fld)
 
     template_data = []
-
     for rec in opr_list['operations']:
         _obj = rec['object']
         _flds = (rec['fields'] if 'fields' in rec else [f['name']
@@ -56,7 +55,7 @@ def create_template(source, operations_list, output, fields=None):
             'object': _obj,
             'bulk_thread': (rec['bulk_thread'] if 'bulk_thread' in rec else True),
             'primaryKey': 'Id',
-            'externalId': ext_id[_obj],
+            'externalId': (ext_id[_obj] if _obj in ext_id else 'UUID__c'),
             'fields': _flds,
             'where': '',
             'orderby': '',
@@ -78,15 +77,19 @@ def create_template(source, operations_list, output, fields=None):
 # Functions
 @h.exception(log)
 @h.timer(log)
-def get_object_data(source, obj_list, fields=None):
-    sf_rest = h.get_sf_rest_connection(source)
+def get_object_data(source_org, obj_list, fields=None):
+    sf_rest = h.get_sf_rest_connection(source_org)
 
     # Mass describe
-    all_fields = (h.get_config(fields) if fields else [
-                  sf_rest.describe_fields(obj)[0] for obj in obj_list])
+    if fields:
+        all_fields = h.get_config(fields)
+    else:
+        for obj in obj_list:
+            all_fields.extend(sf_rest.describe_fields(obj))
+
     # log.debug(all_fields)
     log.info(f'do_mass_describe returned {len(all_fields)} records.')
-    with open('./output/sttmp.json', 'w') as json_file:
+    with open('./output/fields_0.json', 'w') as json_file:
         json.dump(all_fields, json_file)
 
     fields = []
@@ -104,7 +107,7 @@ def get_object_data(source, obj_list, fields=None):
             fld['referenceTo'] = (None if len(ref_to) < 1 else ''.join(ref_to))
 
     # log.debug(fields)
-    with open('./output/fntmp.json', 'w') as json_file:
+    with open('./output/fields_1.json', 'w') as json_file:
         json.dump(fields, json_file)
 
     sf_rest.close_connection()
@@ -116,8 +119,9 @@ def get_object_data(source, obj_list, fields=None):
 # Run main program
 if __name__ == '__main__':
     h.setup_logging()
-    results = create_template(source='./config/prs.prd.json',
+    results = create_template(source_org='./config/prs.prd.json',
                               operations_list='./data/operations-list.json',
                               output=f'./output/{h.datestamp()}.json',
-                              fields='./data/fields.json')
+                              ext_id_file='./data/ext-id.json',
+                              fields='./data/fields_0.json')
     log.info(f'{results}\n')
