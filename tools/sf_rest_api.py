@@ -53,7 +53,7 @@ class Connection(object):
         try:
             # Encode and execute soql query
             raw_query = self.base_url + f'/query/?q={query_string}'
-            enc_query = r.utils.requote_uri(raw_query)
+            enc_query = raw_query #r.utils.requote_uri(raw_query)
             self.log.debug(enc_query)
             results = self.session.get(enc_query).json()
             if int(results['totalSize']) > 0:
