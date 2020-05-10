@@ -69,7 +69,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Plan__c",
     "bulk_thread": false,
     "fields": ["Name", "Business_Area__c", "Description__c", "Last_Update_Date__c", "Last_Update_User__c", "Parent_Plan_Code__c", "PlanName__c", "ProductLine_Name__c", "Status__c", "Type__c", "BIS_External_ID__c", "DTP_Data_Quality__c", "BIS_Plan_Code__c", "Actuary__c", "Compliance_Analyst__c", "Consultant__c", "Pension_Analyst__c", "Regional_Director__c", "Relationship_Manager__c", "UUID__c"],
@@ -111,7 +111,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Party_Division__c",
     "bulk_thread": false,
     "externalId": "",
@@ -124,7 +124,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Client_Transition_DC__c",
     "bulk_thread": true,
     "fields": ["OwnerId", "Name", "RecordTypeId", "AA_or_Resolution_Drafted__c", "AA_or_Resolution_Received__c", "ACA__c", "Account_Rep__c", "Account__c", "Accountant__c", "Actuary__c", "Add_New_Funds_to_Setup_Sheet__c", "Add_fund_to_New_Fund_Spreadsheet__c", "Add_to_Fee_Repository__c", "Add_to_New_Fund_Spreadsheet__c", "Admin_Fees_Paid_By__c", "Administration__c", "Advice_Plus_Agreement_Drafted__c", "Advice_Plus_Agreement_Received__c", "Advisor_Survey_Contact_Email_Address__c", "Advisor_Survey_Contact__c", "Advisor__c", "All_Discovery_Documents_Received__c", "All_Discovery_Documents_Reviewed__c", "All_Paperwork_Returned_Actual__c", "All_Pentegra_Generated_Docs_Rec_d__c", "All_participant_paperwork_to_client_Actu__c", "All_plan_paperwork_to_client_Actual__c", "Annual_Funding_Notice_Pentegra__c", "Annual_Funding_Notice_Prior__c", "Annual_Funding_Notice__c", "Anticipated_Record_Date__c", "Anticipated_Wire_Date__c", "Asset_Direction__c", "Asset_Transfer__c", "Assigned_Administrator__c", "Assigned_Office__c", "Attorney__c", "Auto_Rebalance__c", "BIS_Setup__c", "BIS_Shell_Setup__c", "BIS_Trading_Completed__c", "Benefit_Statements_Pentegra__c", "Benefit_Statements_Prior__c", "Benefit_Statements__c", "Billing_Fee_Notes__c", "Billing_Spreadsheet_Updated__c", "Billing_Start__c", "Billing_Timing__c", "Billing__c", "Blackout_Begins_Actual__c", "Blackout_Begins__c", "Blackout_End_Actual__c", "Blackout_End_Date__c", "Blackout_Notice_Actual__c", "CD_Fund__c", "CD_Revenue__c", "CSR_Notice_Sent__c", "CTM_Assigned__c", "CTM__c", "Client_Sent_RK_Letter_Actual__c", "Client_Survey_Contact_Email_Address__c", "Client_Survey_Contact__c", "Client_Survey_Results__c", "Client__c", "Complete_BIS_Trading_Actual__c", "Compliance_Rep__c", "Conduct_Employee_Meetings_Actual__c", "Conduct_Enrollment_Meetings__c", "Conduct_Payroll_Call_Actual__c", "Conduct_Plan_Design_Call_Actual__c", "Consultant__c", "Contact__c", "Content__c", "Conversion_Assets_Amount__c", "Conversion_Assets_Posted__c", "Conversion_Data_Received_Actual__c", "Conversion_Type__c", "Corporate_Resolution_Drafted__c", "Corporate_Resolution_Received__c", "Countersigned_documents_to_client_Actual__c", "Custodial_Agreement_Drafted__c", "Custodial_Agreement_Received__c", "Custodian_Ticker_Cusip_Received__c", "DB_Form_5500_Sch_B__c", "DB_Form_5500__c", "DC_Advantage_Call__c", "Data_Analyst__c", "Data_Approved_and_Signed_Off__c", "Data_Reconciled__c", "Days_before_Effective_for_Final_Setup__c", "Days_before_Effective_for_Initial_Setup__c", "Deadlines_to_Exclude_from_Calendar__c", "Deferral_Report__c", "Discovery_Call_Completed__c", "Discovery_Meeting_Date__c", "Distribute_Blackout_Notice_Actual__c", "Distribution_Fee__c", "Doc_Fee_Paid_By__c", "Doc_Fee__c", "Document_Type__c", "EBN_Link__c", "ERISA_FAS_Val_Pentegra__c", "ERISA_FAS_Val_Prior__c", "ERISA_FAS_Val__c", "ESIF_Cusodian_Approval_Received__c", "ESIF_Drafted__c", "ESIF_sent_to_Custodian__c", "Effective_Date_Actual__c", "Effective_Date__c", "Employer_Type__c", "Enrollment_Materials_Available_on_Web__c", "Entity_Type__c", "FAS_Disclosure_Pentegra__c", "FAS_Disclosure_Prior__c", "FAS_Disclosure__c", "Fee_Disclosure_Delivered__c", "Final_Monthly_Payments_by_Prior__c", "Final_NCNF_Sent__c", "Final_Plan_Review_Completed__c", "Finalized_Paperwork_sent_to_Prudential__c", "Fiscal_Year_End__c", "Fiscal_Year__c", "Form_5500_Pentegra__c", "Form_5500_Prior__c", "Form_5500_Sch_B_Pentegra__c", "Form_5500_Sch_B_Prior__c", "From_Custodian__c", "Fund_Approval_Received__c", "Fund_Mapping_Document_Drafted__c", "Fund_Mapping_Document_Received__c", "Fund_Mapping_Req_Act__c", "Funding_Method__c", "Funds_in_good_order_actual__c", "Fwd_Stock_info_to_Trading_for_Newkirk__c", "Fwd_Stock_info_to_trading_for_SRT__c", "Handoff_Plan_to_Rep__c", "Hardship_Suspension__c", "IMP_Agreement_Authorization_drafted__c", "IPM_Agreement_Authorization_Received__c", "IPS_FAS87_Call_Complete__c", "Internal_Notes__c", "Internal_Plan_Design_Mtg_Actual__c", "Intro_Call_Actual__c", "Introduce_Client_Service_Actual__c", "Investment_Election_Form_Drafted__c", "Investment_Election_Form_Received__c", "Investment_Model__c", "Issue_Log__c", "Issues_Update__c", "Legacy_ID__c", "Legacy_Plan_Code__c", "Loan_Amounts__c", "Loan_Maintenance_Fee__c", "Loan_Origination_Fee__c", "Loans__c", "MVA_CDSC_Illiquid_Assets__c", "Mail_PIN_Letters_Actual__c", "Menus__c", "Misc__c", "Mr_Conversion_Backdate__c", "Mutual_Fund_Revenue__c", "Mutual_Funds__c", "New_Advisor__c", "Newkirk_Ptp_Fee_Disclosure_Act__c", "Notes__c", "Number_Actives__c", "Number_Retiree_s__c", "Number_Term_Vesteds__c", "Number_of_831_s__c", "Number_of_Loans__c", "Number_of_PArticipants__c", "Online_Enrollment_Agreement_Drafted__c", "Online_Enrollment_Agreement_Received__c", "Online_Enrollment__c", "Opportunity_Reporting__c", "Opportunity__c", "Optional_Plan_Feature_Checklist_Received__c", "Optional_Plan_Feature_Checklist__c", "Other_Contact__c", "Other_Custodian__c", "PBGC_Form_1_ES_500_lives__c", "PBGC_Form_1_ES_Pentegra__c", "PBGC_Form_1_ES_Prior__c", "PBGC_Form_1_Sch_A_Pentegra__c", "PBGC_Form_1_Sch_A_Prior__c", "PBGC_Form_1_Sch_A__c", "PCRA__c", "PIN_Notes__c", "PTC_Resolution_Drafted__c", "PTC_Resolution_Received__c", "PYE__c", "Paperless_Distributions__c", "Paperwork_Received_from_Prudential__c", "Paperwork_received_from_Client__c", "Part_Joinder_Agreement_to_MEP_drafted__c", "Part_Joinder_Agreement_to_MEP_rec_d__c", "Participant_Notices__c", "Partner_Name__c", "Payroll_Frequency__c", "Payroll_Setup__c", "Pentegra_Contact_Curr_Prov_for_Docs__c", "Pentegra_Req_Onboard_Missing_Info__c", "Plan_Audit_Required__c", "Plan_Document__c", "Plan_Name_VOX__c", "Plan_Name__c", "Plan_Setup_Verified__c", "Plan_Status__c", "Plan_Type_2__c", "Plan_Type__c", "Plan_Year_End__c", "Plan__c", "Plan_info_returned_from_Custodian_Actual__c", "Plan_info_to_Custodian_Actual__c", "Post_Mortem_Meeting_Complete__c", "Prior_RK_Call_Actual__c", "Project_Type__c", "Provide_AA_Elect_Funds_Sched_A_Actual__c", "Provide_Contribution_Layout_Actual__c", "Provide_Inv_Elections_Actual__c", "Provide_Plan_Comparison_Actual__c", "Provide_Prior_RK_Letter_Act__c", "Provide_Test_Contribution_File_Actual__c", "Prs_Opportunity_Product__c", "Prudential_Questionnaire_to_Prudential__c", "QDIA_FUND__c", "QDIA__c", "RMD_s_Received__c", "RMD_s_sent_to_DCS__c", "RTC_Acct_Info_Rec_d__c", "RTC_Acct_Setup_Form__c", "Receive_Prior_Plan_Loan_Amortizations__c", "Request_Estimated_Fund_Balances__c", "Resolution_to_adopt_MEP_drafted__c", "Resolution_to_adopt_MEP_received__c", "Retrofit_Loans__c", "Return_Bene_Forms_to_Pentegra_Actual__c", "Revenue_Notes__c", "Revenue_Recognition_Year__c", "Review_Contribution_Spreadsheet__c", "Review_SRT_for_fund_Setup__c", "Roth__c", "SRT_Setup__c", "Safe_Harbor__c", "Sale_Type__c", "Salesperson__c", "Scanning_Mailing_of_Documents_Act__c", "Schedule_A__c", "Send_New_Plan_and_Sales_Notice__c", "Send_funds_to_Custodian_for_Scrubbing__c", "Service_Agreement_Drafted__c", "Service_Agreement_Received__c", "Service_Type__c", "Setup_Fee_Paid_by__c", "Setup_Fee__c", "Skin_Type__c", "Sponsor_Pin_Mailings__c", "Start_Date__c", "Start_Monthly_Payments_at_Pentegra__c", "Statement_Frequency__c", "Stock_Fund_Revenue__c", "Stock_Fund__c", "Stock_Trustee__c", "Submit_1st_Payroll_File_Actual__c", "Submit_1st_Payroll_file__c", "Survey_Results__c", "TF_Admin_Training_Call_with_Client__c", "TF_Completed_AA_Summary__c", "TF_Deconversion_pkg_Rec_d__c", "TF_Introduces_CTM__c", "TF_Pent_Warm_Discovery_Call__c", "TF_Provides_Onboarding_Info__c", "TPA_Installation_Subsidy_Handling__c", "TPA_Ongoing_Subsidy_Handling__c", "Terminiated_Loans_Allowed__c", "Test_Data_Received_Actual__c", "Test_Web_VRU__c", "Ticker_Cusip_received_from_Prudential__c", "To_Custodian__c", "Top_Hat_Plan_Exemption_Statement__c", "Total_Participant_Count__c", "Trading_Notified_of_IPM__c", "Trust_Agreement_Received__c", "Trust_Agreements_Drafted__c", "Trust_Docs_Rec_d__c", "Trust_ID_Number__c", "Trustee__c", "Trutina_Intro_Meeting_Email__c", "Trutina_Plan_Design_Meeting__c", "Trutina_Welcome_Email__c", "Unitization_Agreement_Drafted__c", "Unitization_Agreement_Received__c", "Web_VRU_Setup_Email__c", "Wire_Assets_to_Pentegra_Actual__c", "Workflow__c", "X15_Day_Deadline_Actual__c", "X1st_5500_Year__c", "X1st_Part_Statement_for_Daily_Plans__c", "X1st_Testing_Year_PYE__c", "X30_Day_Deadline_Actual__c", "X45_Day_Deadline_Actual__c", "UUID__c"],
@@ -211,13 +211,13 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Proposed_Plan_Transition__c",
     "bulk_thread": true,
     "fields": ["OwnerId", "Name", "ACB_Fee_Payable__c", "Advisor_MEDC_Offset__c", "Annual_Acct_Maint_per_part__c", "Annual_Admin_Base_Payment_Method__c", "Annual_Administrative_Base_Fee__c", "Annual_Doc_Maint_Payment_Method__c", "Asset_Base_Fee_Payment_Method__c", "Asset_Base_Fee_Pentegra_Retains__c", "Asset_Base_Fee_TPA_Pass_Through__c", "Asset_Based_Fees__c", "Asset_Based_Tier__c", "Association_Fee__c", "Base_Fee_Pentegra_Retains__c", "Base_Fee_TPA_Pass_Through__c", "CD_Custodian_Base__c", "CD_Fee__c", "CD_Trustee_Base__c", "Consulting_Option__c", "Custodian_bps__c", "Custody_Fee__c", "Daily_or_TPA__c", "Date_Terminated__c", "ER_Stk_CD__c", "Education_DC_ADV__c", "Estimate_Target_Revenue__c", "Fee_Minimum__c", "Fee_Notes__c", "Fidelity_Bond__c", "Fiduciary_Insurance_Premium__c", "IPM__c", "If_Yes_give_league_name__c", "Investment_Advice_Tool__c", "Investment_Lineup__c", "Legacy_ID__c", "Life_Insurance__c", "Local_Advisor_Fee_Payment_Method__c", "Local_Advisor_Fee_Remainder__c", "Local_Advisor_Fee__c", "MEP_Advisor_Fee_Payment_Method__c", "MEP_Advisor_Fee_Remainder__c", "MEP_Advisor_Fee__c", "One_Time_Base__c", "One_Time_Doc__c", "One_Time_Fees__c", "One_Time_Install_Fee_Pay_Method__c", "One_Time_Per_Ppt__c", "Ongoing_Rev_Share__c", "Other_Known_Fees__c", "Other_Pertinent_Information__c", "Other_Recurring_Fees_Description__c", "Other_Recurring_Fees_Payment_Method__c", "PCRA__c", "Participant_Call_Center__c", "Participant_Fee_Pentegra_Retains__c", "Participant_Fee_TPA_Pass_Through__c", "Per_Participant_Fee__c", "Personal_Ppt_Advice__c", "Plan_Document_Info__c", "Plan_code__c", "Ppt_Above_Tier_Fee__c", "Ppt_Above_Tier__c", "Ppt_Blend_Fee__c", "Ppt_Fee_Disclosure__c", "Ppt_Fee_Payment_Method__c", "Ppt_Tier_1_Fee__c", "Ppt_Tier_1__c", "Ppt_Tier_2_Fee__c", "Ppt_Tier_2__c", "Ppt_Tier_3_Fee__c", "Ppt_Tier_3__c", "Pricing_Structure__c", "Proposed_Plan_ID__c", "Recurring_Admin_Fees__c", "Revenue_Sharing__c", "Safe_Harbor_Plan__c", "Servicing_Location__c", "Sponsor_Fee_Disclosure__c", "Standard_Optional_Services__c", "State_League_Fee__c", "Stock_Accounting_Method__c", "Stock_BPS__c", "Stock_Custodian_Base__c", "Stock_Trustee_Base__c", "Structure__c", "TPA_Installation_Allowance__c", "Trust_Accounting_Required__c", "Trustee_Fee_Schedule__c", "X1st_Service_Year__c", "X3_16_Asset_Base_Fee_Payment_Method__c", "X3_16_Asset_Base_Fee_TPA__c", "X3_16_Doc_Delivery_Payment_Method__c", "X3_16_Doc_Delivery__c", "X3_16_NonContrib_Elig_Doc_Delivery__c", "X3_21_ADVISOR_FEE_PAYMENT_METHOD__c", "X3_21_Advisor_Fee_Remainder__c", "X3_21_Advisor_Fee__c", "X3_38_Advisor_Account__c", "X3_38_Advisor_Fee_Remainder__c", "X3_38_Advisor_Fee__c", "X3_38_Advisor_Payment_Method__c", "Yr_1_Rev_Share__c", "UUID__c"],
     "where": ""
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Prs_Opportunity_Product__c",
     "bulk_thread": true,
     "fields": ["OwnerId", "Name", "Actuary__c", "Amount_TK_1__c", "BOLI_SalesPerson__c", "Board_Name__c", "Business_Area__c", "CTM__c", "Client_Transition_DC__c", "Client_Transition_Manager__c", "Compliance_Analyst__c", "Consultant__c", "Conversion_Type__c", "DB_or_DC_or_403b__c", "Eligible_Employees__c", "Internal_Sales_Consultant__c", "Legacy_ID__c", "Legal__c", "MEP_Base_Opportunity_Product__c", "MEP_Base_Plan__c", "MEP_Sub_Product__c", "MEP_Type__c", "NB_Amount_1__c", "NB_Amount_2__c", "NB_Amount_3__c", "NB_Amount_4__c", "NB_Participants_2__c", "NB_Participants_4__c", "NB_Particpants_3__c", "NB_Parts_1__c", "New_Business_Ins_Comp_1__c", "New_Business_Ins_Company_2__c", "New_Business_Ins_Company_3__c", "New_Business_Ins_Company_4__c", "No_of_Participants__c", "Non_Contributing_Eligibles__c", "Opportunity_Record_Type__c", "Pangburn_Fee_New_Business__c", "Pangburn_Fee_Takeover__c", "Pension_Analyst__c", "Plan_Assets__c", "Plan_Code__c", "Plan_Consulting__c", "Product_Abbrev__c", "Product_Category__c", "Product_Sub_Category__c", "Proposal_Type__c", "Proposed_Plan__c", "Regional_Director__c", "Relationship_Manager__c", "Sales_Location__c", "Self_Directed_Accts__c", "TK1_Num_of_Participants__c", "TK2_Num_of_Participants__c", "TK3_NUM_of_Participants__c", "TK4_NUM_of_Participants__c", "TK4_NUM_of_Pooled_Accounts__c", "TK_Amount_2__c", "TK_Amount_3__c", "TK_Amount_4__c", "Take_Insurance_Company_1__c", "Takeover_Insurance_Company_2__c", "Takeover_Insurance_Company_3__c", "Takeover_Insurance_Company_4__c", "Terminated_Participants__c", "Tier__c", "Who_Pays_New_Business_Fees__c", "Who_Pays_Takeover_Fees__c", "of_Pooled_Accounts__c", "of_Self_Direct_Accts__c", "UUID__c"],
@@ -289,7 +289,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Opportunity",
     "bulk_thread": true,
     "fields": ["AccountId", "RecordTypeId", "IsPrivate", "Name", "Description", "StageName", "Amount", "Probability", "TotalOpportunityQuantity", "CloseDate", "Type", "NextStep", "LeadSource", "ForecastCategoryName", "OwnerId", "SourceId", "Budget_Confirmed__c", "Discovery_Completed__c", "ROI_Analysis_Completed__c", "Business_Committed__c", "FinServ__ReferredByContact__c", "FinServ__ReferredByUser__c", "FinServ__Household__c", "dftlytime__Billable_Amount__c", "dftlytime__Fully_Loaded_Cost__c", "dftlytime__Hours_Worked__c", "Business_Booked__c", "Contact__c", "Current_Trustee_Company__c", "Current_Trustee_Email__c", "Current_Trustee_Name__c", "Current_Trustee_Phone__c", "Division__c", "Legacy_ID__c", "Legal_Contact_Address__c", "Legal_Contact_Company__c", "Legal_Contact_Email__c", "Legal_Contact_Name__c", "Legal_Contact_Phone__c", "Local_Advisor_Account__c", "Local_Advisor_Contact__c", "Loss_Reason__c", "MEP_Advisor_Account__c", "MEP_Advisor_Contact__c", "Market_Segment_New__c", "New_Custodian__c", "Opportunity_Product__c", "Opportunity_Reporting__c", "Product_Type__c", "Record_Keeper_Company_Name__c", "Record_Keeper_Contact__c", "Recordkeeper_Email__c", "Recordkeeper_Phone__c", "TPA_Company__c", "TPA_Contact_Info__c", "To_Custodian__c", "Trustee_CD_Fund__c", "Trustee_Core__c", "Trustee_Stock__c", "X3_21_Advisor_Account__c", "X3_21_Advisor_Contact__c", "X3_38_Advisor_Account__c", "X3_38_Advisor_Contact__c", "LID__CurrentGenerators__c", "LID__DeliveryInstallationStatus__c", "LID__Is_Influenced__c", "LID__LinkedIn_Company_Id__c", "LID__MainCompetitors__c", "LID__My_DateTime__c", "LID__My_Geolocation__Latitude__s", "LID__My_Geolocation__Longitude__s", "LID__OrderNumber__c", "LID__TrackingNumber__c", "Date_Proposal_Delivered__c", "Proposal_Requested__c", "UUID__c", "Verbal_Commitment__c"],
@@ -376,7 +376,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Opportunity_Addendum__c",
     "bulk_thread": true,
     "fields": ["OwnerId", "Name", "Action_item_needed__c", "Allied_Solution_Region__c", "Asset_BPS__c", "Attorney_Fee__c", "Attorney__c", "Awaiting_Board_Mtg_Decision__c", "BPS_Used_to_Pay_Admin_Fees__c", "Base_or_Asset_Fee__c", "Broker_Revenue__c", "Business_Booked__c", "Business_Committed__c", "Client_email_address__c", "Commission__c", "Convert_All_DB_Assets__c", "Custodian_CD_Fund__c", "Custodian_Core_Funds__c", "Custodian_Platform_Product__c", "Custodian_Stock_Fund__c", "DB_NCNF_Generate__c", "DC_NCNF_Generate__c", "Date_Proposal_Delivered__c", "DirectvsAdvisor__c", "Document_Fee__c", "Document_Preparation__c", "Draft_NCNF__c", "Engagement_Type_ABG__c", "Est_Annual_Flow__c", "Est_Ongoing_Subsidy_Amt__c", "Est_Yr_1_Subsidy_Amt__c", "Exclude_from_Plan_Count__c", "Existing_Plans_with_Pentegra__c", "Expected_Yr_1_Revenue__c", "Fee_Schedule__c", "Fee_Split__c", "From_Custodian__c", "Group__c", "IRS_Form_5500_Filing__c", "Impact_Calls_Last_Week__c", "IndOpptActivity7Days__c", "Initial_Doc_Pkg_Sent__c", "Insurance_Commission__c", "Legacy_ID__c", "MVA_CDSC_Illiquid_Assets__c", "NCNF_Generate__c", "Notes__c", "Ongoing_Subsidy_Amt_Used_to_Offset_Fees__c", "Opportunity_Reporting__c", "Opportunity__c", "Other_Custodians__c", "PSI_401k_ELITE_Fees__c", "Partner_Revenue__c", "Per_Part_Fee_1__c", "Per_Part_Fee_2__c", "Per_Part_Fee_Level_2__c", "Plan_Year_End__c", "Proposal_Mtg_Scheduled__c", "Proposal_Request__c", "Proposal_Requested_Generated__c", "Proposal_Requested__c", "Proposal_mtg_Complete__c", "Referral_Amount__c", "Referral_Name__c", "Ret_Committe_Mtg_Held__c", "Ret_Committee_Mtg_Scheduled__c", "Sale_Source__c", "Service_Type_ABG__c", "Setup_Fee__c", "Startup_Plan_Origination_Fee__c", "Stock_Fee__c", "TPA_Ongoing_Subsidy_BPS__c", "To_Custodian__c", "Total_Yr_1_Fees_Waived__c", "Trustee_Fees__c", "Verbal_Commitment__c", "Working_with_Partner__c", "Yr_1_Subsidy_Used_to_Offset_Fees__c", "mh_Current_Volume__c", "UUID__c"],
@@ -398,7 +398,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Document_Tracker__c",
     "bulk_thread": true,
     "fields": ["OwnerId", "RecordTypeId", "ACH_Form__c", "AE_Optional_Features__c", "AFTAP_Certification__c", "Admin_Forms__c", "Adoption_Agreement__c", "Advisor_3_38_Agreement_w_Board__c", "All_Docs_In_Good_Order__c", "Amortization_Schedule__c", "Annual_Fund_Notice_and_Cover_Letter__c", "Blackout_Notice__c", "Board_Secretary_Electronic_Signature__c", "By_Laws__c", "CT_Adoption_Agreement__c", "Check__c", "Compensation_Summary__c", "Compliance_Tests__c", "Current_Funds_and_Mapping__c", "Current_Provider_Termination_Letter__c", "Custodial_Agreement__c", "Custodian_Application__c", "Document_Uploaded_TPA__c", "Document_Uploaded__c", "ERISA_Valuation_Report__c", "ER_Stock_Custodian__c", "ESIF__c", "FAS87_Valuation_Report__c", "FAS_Disclosure__c", "Fee_Disclosure_Participant__c", "Fee_Disclosure_Sponsor__c", "Filter_Picklists__c", "Form_5310_A__c", "Form_5500__c", "History_JSON__c", "History__c", "IPM_Agreements__c", "IPS__c", "IRS_Determination_Letter__c", "Investment_Information_Workbook__c", "Joinder_Participation_Agreement__c", "Legacy_Rec_Unique_Id__c", "Letter_Agreement__c", "Licence_Agreement__c", "Loan_Agreement__c", "Loan_Policy__c", "Millenium_Agreement__c", "National_Life_Workbook__c", "New_Advisor_Setup_Package__c", "Notes__c", "Opportunity_Reporting__c", "Opportunity__c", "PAAAS_Agreements__c", "PBGC_Filings__c", "PCRA__c", "PPA_Plan_Document__c", "Plan_Conversion_Questionnaire__c", "Plan_Documents__c", "Plan_Name__c", "Plan_Provision_Checklist__c", "Plan_Specific_Amendments__c", "Plan_Sponsor_Web_Access_Form__c", "Promissory_Loan_Note__c", "QDIA_Notice__c", "Regulatory_Amendments__c", "Resolution_Appointing_Board__c", "Resolution_Establishing_MEP__c", "Resolution_for_Participation_for_AE__c", "Restrict_Preconversion_Picklist_Values__c", "SSGA_Schedule_A__c", "Sample_Benefits_Calculations__c", "Service_Agreement__c", "Stable_Value_Agreement__c", "Summary_Plan_Description__c", "Test_Payroll_and_Contribution_File__c", "Top_Hat_Exemption__c", "Trust_Agreement__c", "Trust_Document__c", "Trust_Statements__c", "Unitization_Agreement__c"],
@@ -410,7 +410,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Plan_Withdrawals__c",
     "bulk_thread": true,
     "fields": ["OwnerId", "Name", "Activate_Plan_Complete__c", "Additional_Contact_Addr__c", "Additional_Contact_Comp__c", "Additional_Contact_Email__c", "Additional_Contact_Phone__c", "Additional_Contact_Title__c", "Additional_Contact__c", "Advisor_or_Direct_Sold__c", "Assets_Transferred_Out__c", "BONY_Mellon_Notification__c", "Blackout_Date__c", "CTA_User__c", "CTM_User__c", "CTM__c", "Compliance_Rep__c", "Confirm_Asset_Transfer_Liq_Complete__c", "Confirm_PCRA_Liq_Complete__c", "Consultant__c", "Determination_Letter_Filed__c", "Distribute_Withdrawal_Notification_Comp__c", "Email_Final_Records_Complete__c", "Email_Finance_DCS_Complete__c", "Estimated_Revenue_Lost__c", "Fees_Deducted__c", "Fund_Withdrawal__c", "Internal_Notification__c", "Invoice_Paid_Forms_In_Complete__c", "Legacy_ID__c", "Liquidate_Plan_Assets_Complete__c", "Mail_Withdrawal_Pkg_Complete__c", "Mr_Conversion_Backdate__c", "New_Provider__c", "Notes__c", "Notify_Trustee_of_Blk_Liq_Comp__c", "Number_of_Participants__c", "Partner__c", "Pentegra_Commencement_Date__c", "Plan_Name__c", "Plan_Termination_Date__c", "Plan_Type__c", "Prepare_Final_Records_Complete__c", "Prepare_W_D_Letter_Complete__c", "Provide_PRS_All_Docs_Complete__c", "Provide_Transfer_Amt_Complete__c", "Qualified_Successor_Plan__c", "Reason_for_Withdrawal__c", "Receive_W_D_Pkg_Complete__c", "Reminder_Email_Complete__c", "Req_W_D_Invoice_Comp__c", "Request_5310_A_Complete__c", "Revenue_Lost__c", "Run_Reports_Complete__c", "Send_Initial_Email__c", "Send_Withdrawal_Notice__c", "Status__c", "Stock_Trustee__c", "Take_Out_10_fee__c", "W_D_Contact_Address__c", "W_D_Contact_Email__c", "W_D_Contact_Phone__c", "W_D_Contact_Title__c", "Web_SRT_Inquiry_Only_Complete__c", "Wire_Assets_Complete__c", "Wiring_Ins_Breakdown_LH_complete__c", "Withdrawal_Contact__c", "Withdrawal_Date__c", "Withdrawal_Type__c", "Withdrawal_fees__c", "UUID__c"],
@@ -437,7 +437,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Party_Division_Contact__c",
     "bulk_thread": false,
     "fields": ["Party_Division__c", "Contact__c", "UUID__c"],
@@ -454,7 +454,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Party_Party__c",
     "bulk_thread": false,
     "fields": ["Party__c", "BIS_External_ID__c", "Last_Update_Date__c", "Last_Update_User__c", "Reciprocal_Role__c", "Related_Party__c", "Role__c", "UUID__c"],
@@ -476,7 +476,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Plan_Contact__c",
     "bulk_thread": false,
     "fields": ["Plan_Code__c", "Contact_Name__c", "Plan_Role__c", "DTP_Data_Quality__c", "BIS_External_ID__c", "BIS_Contact_Role_IDs__c", "Last_Update_User__c", "Role_Description__c", "Role_ID__c", "Role__c", "Sub_Role__c", "UUID__c"],
@@ -493,7 +493,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Plan_Party__c",
     "bulk_thread": false,
     "fields": ["Party_Name__c", "Plan_Code__c", "Plan_Role__c", "Other_Party_Services__c", "DTP_Data_Quality__c", "Plan_Status__c", "BIS_External_ID__c", "Secondary_Plan_Role__c", "Last_Update_User__c", "Direct_Contact__c", "Role__c", "Sub_Role__c", "UUID__c"],
@@ -510,7 +510,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Plan_User__c",
     "bulk_thread": false,
     "fields": ["BIS_External_ID__c", "DTP_Data_Quality__c", "Last_Update_Date__c", "Last_Update_User__c", "Plan__c", "Plan_Roles__c", "User__c", "UUID__c"],
@@ -527,7 +527,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Prs_Opportunity_Product_Contact__c",
     "bulk_thread": false,
     "fields": ["Name", "Prs_Opportunity_Product__c", "Contact__c", "BIS_External_ID__c", "Role__c", "Secretary_of_Board__c", "Sub_Role__c", "UUID__c"],
@@ -544,7 +544,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Prs_Opportunity_Product_Party__c",
     "bulk_thread": false,
     "fields": ["Name", "Prs_Opportunity_Product__c", "Party__c", "Association_Name__c", "BIS_External_ID__c", "Group__c", "Legal_Contact_Company__c", "Local_Advisor__c", "MEP_Advisor__c", "New_Custodian__c", "Party_Role__c", "Record_Keeper_Company_Name__c", "Record_Keeper_Contact__c", "Recordkeeper_Email__c", "Recordkeeper_Phone__c", "Role__c", "Sub_Role__c", "TPA_Company__c", "X3_21_Edu_Advice_Mgr__c", "X3_38_Investment_Mgr__c", "UUID__c"],
@@ -576,7 +576,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Prs_Opportunity_Product_Plan__c",
     "bulk_thread": false,
     "fields": ["Name", "Prs_Opportunity_Product__c", "Plan__c", "Current_Trustee_Company__c", "Current_Trustee_Email__c", "Current_Trustee_Name__c", "Current_Trustee_Phone__c", "UUID__c"],
@@ -593,7 +593,7 @@
       "externalId": "UUID__c"
     }]
   }, {
-    "operation": "refresh",
+    "operation": "upsert",
     "object": "Prs_Opportunity_Product_User__c",
     "bulk_thread": false,
     "fields": ["Name", "Prs_Opportunity_Product__c", "User_Role__c", "User__c", "UUID__c"],
