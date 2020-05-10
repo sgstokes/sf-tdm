@@ -9,8 +9,8 @@ __pycache__
 logs/*
 data/*
 output/*
-jobs/prs.*
-config/prs.*
+jobs/prs*
+config/prs*
 .vscode/*
 *.code-workspace
 # Byte-compiled / optimized / DLL files
