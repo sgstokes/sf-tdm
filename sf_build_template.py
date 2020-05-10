@@ -57,11 +57,11 @@ def create_template(source_org, operations_list, output, ext_id_file, fields=Non
             'primary_key': 'Id',
             'external_id': (ext_id[_obj] if _obj in ext_id else 'UUID__c'),
             'fields': _flds,
-            'where': '',
-            'order_by': '',
-            'limit': 0,
+            'where': (rec['where'] if 'where' in rec else ''),
+            'order_by': (rec['order_by'] if 'order_by' in rec else ''),
+            'limit': (rec['limit'] if 'limit' in rec else 0),
             'relationships': _relns,
-            'masks': rec['masks']
+            'masks': (rec['masks'] if 'masks' in rec else {})
         }
 
         template_data.append(_template)
