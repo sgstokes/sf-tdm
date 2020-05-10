@@ -16,7 +16,7 @@ log.debug('Logging is configured.')
 # Primary function
 @h.timer(log)
 def do_query():
-    sf_rest = h.get_sf_rest_connection('./config/prs.stg.json')
+    sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
 
     # query = 'select Id, Name, RecordType.Name, ParentId, Parent.Legacy_ID__c, EIN__c from Account'
     # query = 'select Id, Name, SobjectType from RecordType where SobjectType = \'Account\''
@@ -45,7 +45,7 @@ def do_query():
     # query = 'SELECT Opportunity.AccountId FROM Opportunity WHERE Opportunity.AccountId != null'
     # query = "SELECT Id, Name FROM Account WHERE Name like 'A%' or name like 'B%' or name like 'C%'"
     # query = "SELECT Id, Name, StageName FROM Opportunity WHERE Name like 'A%' or name like 'B%' or name like 'C%'"
-    query = "select Id, UUID__c from User"
+    query = "select CreatedDate, Id, UUID__c, Opportunity_Product__r.UUID__c from opportunity ORDER BY CreatedDate DESC"
   
     results = sf_rest.soql_query(query)
     # print(results)
