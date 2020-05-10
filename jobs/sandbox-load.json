@@ -8,31 +8,31 @@
     "where": "",
     "relationships": [{
       "object": "User",
-      "relationshipName": "Manager",
+      "relationship_name": "Manager",
       "field": "ManagerId",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
     "object": "Account",
     "bulk_thread": false,
     "fields": ["Name", "Type", "ParentId", "BillingStreet", "BillingCity", "BillingState", "BillingPostalCode", "BillingCountry", "BillingLatitude", "BillingLongitude", "BillingGeocodeAccuracy", "ShippingStreet", "ShippingCity", "ShippingState", "ShippingPostalCode", "ShippingCountry", "ShippingLatitude", "ShippingLongitude", "ShippingGeocodeAccuracy", "Phone", "Fax", "AccountNumber", "Website", "Sic", "Industry", "AnnualRevenue", "NumberOfEmployees", "Ownership", "TickerSymbol", "Description", "Rating", "Site", "BIS_External_ID__c", "Controlled_Grp__c", "EIN__c", "Fiscal_Year_End__c", "Last_Update_User__c", "NAICS_Code__c", "Client_External_ID__c", "DTP_Data_Quality__c", "Direct_Contact__c", "Acts_as_an_Advisor_Firm__c", "Partner_External_ID__c", "Custodian_External_ID__c", "Trading_Partner_External_ID__c", "Advisor_External_ID__c", "Last_Update_Date__c", "Employer_Division_Restriction__c", "Holding_Company__c", "Legacy_ID__c", "Market_Segment__c", "Membership__c", "Notes__c", "Number_of_Locations__c", "Party_Brand__c", "Selling_Agreement_Status__c", "Vanity_URL__c", "Web_Address__c", "LID__LinkedIn_Company_Id__c", "UUID__c"],
-    "where": "Legacy_ID__c = null",
+    "where": "Id IN (SELECT Opportunity.AccountId FROM Opportunity WHERE Opportunity.AccountId != null)",
     "relationships": [{
       "object": "Account",
-      "relationshipName": "Parent",
+      "relationship_name": "Parent",
       "field": "ParentId",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Owner",
+      "relationship_name": "Owner",
       "field": "OwnerId",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Party_Brand__c",
-      "relationshipName": "Party_Brand__r",
+      "relationship_name": "Party_Brand__r",
       "field": "Party_Brand__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }],
     "masks": {
       "Email": "fake.ein"
@@ -42,17 +42,17 @@
     "object": "Contact",
     "bulk_thread": false,
     "fields": ["AccountId", "LastName", "FirstName", "Salutation", "MiddleName", "Suffix", "OtherStreet", "OtherCity", "OtherState", "OtherPostalCode", "OtherCountry", "OtherLatitude", "OtherLongitude", "OtherGeocodeAccuracy", "MailingStreet", "MailingCity", "MailingState", "MailingPostalCode", "MailingCountry", "MailingLatitude", "MailingLongitude", "MailingGeocodeAccuracy", "Phone", "Fax", "MobilePhone", "HomePhone", "OtherPhone", "AssistantPhone", "ReportsToId", "Email", "Title", "Department", "AssistantName", "LeadSource", "Birthdate", "Description", "HasOptedOutOfEmail", "HasOptedOutOfFax", "DoNotCall", "EmailBouncedReason", "EmailBouncedDate", "Jigsaw", "BIS_IndivId__c", "Confidential_Correspondence__c", "Last_Update_Date__c", "Last_Update_User__c", "Salaries__c", "DTP_Data_Quality__c", "Do_Not_Contact__c", "iContactforSF__iContact_Contact_Id__c", "Acumatica_NoteID__c", "Advisor_Status__c", "Is_Billing_Contact__c", "Legacy_ID__c", "Passcode__c", "LID__Languages__c", "LID__Level__c", "LID__LinkedIn_Company_Id__c", "LID__LinkedIn_Member_Token__c", "LID__No_longer_at_Company__c", "UUID__c"],
-    "where": "Legacy_ID__c = null",
+    "where": "AccountId IN (SELECT Opportunity.AccountId FROM Opportunity WHERE Opportunity.AccountId != null)",
     "relationships": [{
       "object": "Account",
-      "relationshipName": "Account",
+      "relationship_name": "Account",
       "field": "AccountId",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "ReportsTo",
+      "relationship_name": "ReportsTo",
       "field": "ReportsToId",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }],
     "masks": {
       "Email": "fake.email"
@@ -64,9 +64,9 @@
     "where": "",
     "relationships": [{
       "object": "Contact",
-      "relationshipName": "Contact",
+      "relationship_name": "Contact",
       "field": "ContactId",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -76,52 +76,51 @@
     "where": "",
     "relationships": [{
       "object": "Plan__c",
-      "relationshipName": "Parent_Plan_Code__r",
+      "relationship_name": "Parent_Plan_Code__r",
       "field": "Parent_Plan_Code__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Actuary__r",
+      "relationship_name": "Actuary__r",
       "field": "Actuary__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Compliance_Analyst__r",
+      "relationship_name": "Compliance_Analyst__r",
       "field": "Compliance_Analyst__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Consultant__r",
+      "relationship_name": "Consultant__r",
       "field": "Consultant__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Pension_Analyst__r",
+      "relationship_name": "Pension_Analyst__r",
       "field": "Pension_Analyst__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Regional_Director__r",
+      "relationship_name": "Regional_Director__r",
       "field": "Regional_Director__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Relationship_Manager__r",
+      "relationship_name": "Relationship_Manager__r",
       "field": "Relationship_Manager__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
     "object": "Party_Division__c",
     "bulk_thread": false,
-    "externalId": "",
     "fields": ["Description__c", "End_Date__c", "Party_Division_Code__c", "Party_Division_Name__c", "Party__c", "Start_Date__c", "UUID__c"],
     "where": "",
     "relationships": [{
       "object": "Account",
-      "relationshipName": "Party__r",
+      "relationship_name": "Party__r",
       "field": "Party__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -131,84 +130,84 @@
     "where": "",
     "relationships": [{
       "object": "User",
-      "relationshipName": "Account_Rep__r",
+      "relationship_name": "Account_Rep__r",
       "field": "Account_Rep__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "Account__r",
+      "relationship_name": "Account__r",
       "field": "Account__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Accountant__r",
+      "relationship_name": "Accountant__r",
       "field": "Accountant__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Actuary__r",
+      "relationship_name": "Actuary__r",
       "field": "Actuary__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Advisor__r",
+      "relationship_name": "Advisor__r",
       "field": "Advisor__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Attorney__r",
+      "relationship_name": "Attorney__r",
       "field": "Attorney__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "CTM__r",
+      "relationship_name": "CTM__r",
       "field": "CTM__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Compliance_Rep__r",
+      "relationship_name": "Compliance_Rep__r",
       "field": "Compliance_Rep__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Consultant__r",
+      "relationship_name": "Consultant__r",
       "field": "Consultant__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Contact__r",
+      "relationship_name": "Contact__r",
       "field": "Contact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Data_Analyst__r",
+      "relationship_name": "Data_Analyst__r",
       "field": "Data_Analyst__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Opportunity",
-      "relationshipName": "Opportunity__r",
+      "relationship_name": "Opportunity__r",
       "field": "Opportunity__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Other_Contact__r",
+      "relationship_name": "Other_Contact__r",
       "field": "Other_Contact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Plan__c",
-      "relationshipName": "Plan__r",
+      "relationship_name": "Plan__r",
       "field": "Plan__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Prs_Opportunity_Product__c",
-      "relationshipName": "Prs_Opportunity_Product__r",
+      "relationship_name": "Prs_Opportunity_Product__r",
       "field": "Prs_Opportunity_Product__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Salesperson__r",
+      "relationship_name": "Salesperson__r",
       "field": "Salesperson__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -224,156 +223,156 @@
     "where": "",
     "relationships": [{
       "object": "User",
-      "relationshipName": "Actuary__r",
+      "relationship_name": "Actuary__r",
       "field": "Actuary__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Client_Transition_DC__c",
-      "relationshipName": "Client_Transition_DC__r",
+      "relationship_name": "Client_Transition_DC__r",
       "field": "Client_Transition_DC__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Client_Transition_Manager__r",
+      "relationship_name": "Client_Transition_Manager__r",
       "field": "Client_Transition_Manager__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Compliance_Analyst__r",
+      "relationship_name": "Compliance_Analyst__r",
       "field": "Compliance_Analyst__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Consultant__r",
+      "relationship_name": "Consultant__r",
       "field": "Consultant__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Internal_Sales_Consultant__r",
+      "relationship_name": "Internal_Sales_Consultant__r",
       "field": "Internal_Sales_Consultant__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Legal__r",
+      "relationship_name": "Legal__r",
       "field": "Legal__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Prs_Opportunity_Product__c",
-      "relationshipName": "MEP_Base_Opportunity_Product__r",
+      "relationship_name": "MEP_Base_Opportunity_Product__r",
       "field": "MEP_Base_Opportunity_Product__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Plan__c",
-      "relationshipName": "MEP_Base_Plan__r",
+      "relationship_name": "MEP_Base_Plan__r",
       "field": "MEP_Base_Plan__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Pension_Analyst__r",
+      "relationship_name": "Pension_Analyst__r",
       "field": "Pension_Analyst__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Proposed_Plan_Transition__c",
-      "relationshipName": "Proposed_Plan__r",
+      "relationship_name": "Proposed_Plan__r",
       "field": "Proposed_Plan__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Regional_Director__r",
+      "relationship_name": "Regional_Director__r",
       "field": "Regional_Director__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Relationship_Manager__r",
+      "relationship_name": "Relationship_Manager__r",
       "field": "Relationship_Manager__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
     "object": "Opportunity",
     "bulk_thread": true,
     "fields": ["AccountId", "RecordTypeId", "IsPrivate", "Name", "Description", "StageName", "Amount", "Probability", "TotalOpportunityQuantity", "CloseDate", "Type", "NextStep", "LeadSource", "ForecastCategoryName", "OwnerId", "SourceId", "Budget_Confirmed__c", "Discovery_Completed__c", "ROI_Analysis_Completed__c", "Business_Committed__c", "FinServ__ReferredByContact__c", "FinServ__ReferredByUser__c", "FinServ__Household__c", "dftlytime__Billable_Amount__c", "dftlytime__Fully_Loaded_Cost__c", "dftlytime__Hours_Worked__c", "Business_Booked__c", "Contact__c", "Current_Trustee_Company__c", "Current_Trustee_Email__c", "Current_Trustee_Name__c", "Current_Trustee_Phone__c", "Division__c", "Legacy_ID__c", "Legal_Contact_Address__c", "Legal_Contact_Company__c", "Legal_Contact_Email__c", "Legal_Contact_Name__c", "Legal_Contact_Phone__c", "Local_Advisor_Account__c", "Local_Advisor_Contact__c", "Loss_Reason__c", "MEP_Advisor_Account__c", "MEP_Advisor_Contact__c", "Market_Segment_New__c", "New_Custodian__c", "Opportunity_Product__c", "Opportunity_Reporting__c", "Product_Type__c", "Record_Keeper_Company_Name__c", "Record_Keeper_Contact__c", "Recordkeeper_Email__c", "Recordkeeper_Phone__c", "TPA_Company__c", "TPA_Contact_Info__c", "To_Custodian__c", "Trustee_CD_Fund__c", "Trustee_Core__c", "Trustee_Stock__c", "X3_21_Advisor_Account__c", "X3_21_Advisor_Contact__c", "X3_38_Advisor_Account__c", "X3_38_Advisor_Contact__c", "LID__CurrentGenerators__c", "LID__DeliveryInstallationStatus__c", "LID__Is_Influenced__c", "LID__LinkedIn_Company_Id__c", "LID__MainCompetitors__c", "LID__My_DateTime__c", "LID__My_Geolocation__Latitude__s", "LID__My_Geolocation__Longitude__s", "LID__OrderNumber__c", "LID__TrackingNumber__c", "Date_Proposal_Delivered__c", "Proposal_Requested__c", "UUID__c", "Verbal_Commitment__c"],
-    "where": "",
+    "where": "AccountId != null",
     "relationships": [{
       "object": "Account",
-      "relationshipName": "Account",
+      "relationship_name": "Account",
       "field": "AccountId",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Owner",
+      "relationship_name": "Owner",
       "field": "OwnerId",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "FinServ__ReferredByContact__r",
+      "relationship_name": "FinServ__ReferredByContact__r",
       "field": "FinServ__ReferredByContact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "FinServ__ReferredByUser__r",
+      "relationship_name": "FinServ__ReferredByUser__r",
       "field": "FinServ__ReferredByUser__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "FinServ__Household__r",
+      "relationship_name": "FinServ__Household__r",
       "field": "FinServ__Household__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Contact__r",
+      "relationship_name": "Contact__r",
       "field": "Contact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "Local_Advisor_Account__r",
+      "relationship_name": "Local_Advisor_Account__r",
       "field": "Local_Advisor_Account__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Local_Advisor_Contact__r",
+      "relationship_name": "Local_Advisor_Contact__r",
       "field": "Local_Advisor_Contact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "MEP_Advisor_Account__r",
+      "relationship_name": "MEP_Advisor_Account__r",
       "field": "MEP_Advisor_Account__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "MEP_Advisor_Contact__r",
+      "relationship_name": "MEP_Advisor_Contact__r",
       "field": "MEP_Advisor_Contact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Prs_Opportunity_Product__c",
-      "relationshipName": "Opportunity_Product__r",
+      "relationship_name": "Opportunity_Product__r",
       "field": "Opportunity_Product__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "To_Custodian__r",
+      "relationship_name": "To_Custodian__r",
       "field": "To_Custodian__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "X3_21_Advisor_Account__r",
+      "relationship_name": "X3_21_Advisor_Account__r",
       "field": "X3_21_Advisor_Account__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "X3_21_Advisor_Contact__r",
+      "relationship_name": "X3_21_Advisor_Contact__r",
       "field": "X3_21_Advisor_Contact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "X3_38_Advisor_Account__r",
+      "relationship_name": "X3_38_Advisor_Account__r",
       "field": "X3_38_Advisor_Account__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "X3_38_Advisor_Contact__r",
+      "relationship_name": "X3_38_Advisor_Contact__r",
       "field": "X3_38_Advisor_Contact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -383,19 +382,19 @@
     "where": "",
     "relationships": [{
       "object": "Contact",
-      "relationshipName": "Attorney__r",
+      "relationship_name": "Attorney__r",
       "field": "Attorney__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Opportunity",
-      "relationshipName": "Opportunity__r",
+      "relationship_name": "Opportunity__r",
       "field": "Opportunity__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Referral_Name__r",
+      "relationship_name": "Referral_Name__r",
       "field": "Referral_Name__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -405,9 +404,9 @@
     "where": "",
     "relationships": [{
       "object": "Opportunity",
-      "relationshipName": "Opportunity__r",
+      "relationship_name": "Opportunity__r",
       "field": "Opportunity__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -417,24 +416,24 @@
     "where": "",
     "relationships": [{
       "object": "User",
-      "relationshipName": "CTA_User__r",
+      "relationship_name": "CTA_User__r",
       "field": "CTA_User__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "CTM_User__r",
+      "relationship_name": "CTM_User__r",
       "field": "CTM_User__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Compliance_Rep__r",
+      "relationship_name": "Compliance_Rep__r",
       "field": "Compliance_Rep__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "Consultant__r",
+      "relationship_name": "Consultant__r",
       "field": "Consultant__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -444,14 +443,14 @@
     "where": "",
     "relationships": [{
       "object": "Party_Division__c",
-      "relationshipName": "Party_Division__r",
+      "relationship_name": "Party_Division__r",
       "field": "Party_Division__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Contact__r",
+      "relationship_name": "Contact__r",
       "field": "Contact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -461,19 +460,19 @@
     "where": "",
     "relationships": [{
       "object": "Account",
-      "relationshipName": "Party__r",
+      "relationship_name": "Party__r",
       "field": "Party__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Party_Party__c",
-      "relationshipName": "Reciprocal_Role__r",
+      "relationship_name": "Reciprocal_Role__r",
       "field": "Reciprocal_Role__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "Related_Party__r",
+      "relationship_name": "Related_Party__r",
       "field": "Related_Party__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -483,14 +482,14 @@
     "where": "",
     "relationships": [{
       "object": "Plan__c",
-      "relationshipName": "Plan_Code__r",
+      "relationship_name": "Plan_Code__r",
       "field": "Plan_Code__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Contact_Name__r",
+      "relationship_name": "Contact_Name__r",
       "field": "Contact_Name__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -500,14 +499,14 @@
     "where": "",
     "relationships": [{
       "object": "Account",
-      "relationshipName": "Party_Name__r",
+      "relationship_name": "Party_Name__r",
       "field": "Party_Name__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Plan__c",
-      "relationshipName": "Plan_Code__r",
+      "relationship_name": "Plan_Code__r",
       "field": "Plan_Code__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -517,14 +516,14 @@
     "where": "",
     "relationships": [{
       "object": "Plan__c",
-      "relationshipName": "Plan__r",
+      "relationship_name": "Plan__r",
       "field": "Plan__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "User__r",
+      "relationship_name": "User__r",
       "field": "User__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -534,14 +533,14 @@
     "where": "",
     "relationships": [{
       "object": "Prs_Opportunity_Product__c",
-      "relationshipName": "Prs_Opportunity_Product__r",
+      "relationship_name": "Prs_Opportunity_Product__r",
       "field": "Prs_Opportunity_Product__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Contact",
-      "relationshipName": "Contact__r",
+      "relationship_name": "Contact__r",
       "field": "Contact__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -551,29 +550,29 @@
     "where": "",
     "relationships": [{
       "object": "Prs_Opportunity_Product__c",
-      "relationshipName": "Prs_Opportunity_Product__r",
+      "relationship_name": "Prs_Opportunity_Product__r",
       "field": "Prs_Opportunity_Product__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "Party__r",
+      "relationship_name": "Party__r",
       "field": "Party__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "MEP_Advisor__r",
+      "relationship_name": "MEP_Advisor__r",
       "field": "MEP_Advisor__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "X3_21_Edu_Advice_Mgr__r",
+      "relationship_name": "X3_21_Edu_Advice_Mgr__r",
       "field": "X3_21_Edu_Advice_Mgr__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Account",
-      "relationshipName": "X3_38_Investment_Mgr__r",
+      "relationship_name": "X3_38_Investment_Mgr__r",
       "field": "X3_38_Investment_Mgr__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -583,14 +582,14 @@
     "where": "",
     "relationships": [{
       "object": "Prs_Opportunity_Product__c",
-      "relationshipName": "Prs_Opportunity_Product__r",
+      "relationship_name": "Prs_Opportunity_Product__r",
       "field": "Prs_Opportunity_Product__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "Plan__c",
-      "relationshipName": "Plan__r",
+      "relationship_name": "Plan__r",
       "field": "Plan__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }, {
     "operation": "upsert",
@@ -600,14 +599,14 @@
     "where": "",
     "relationships": [{
       "object": "Prs_Opportunity_Product__c",
-      "relationshipName": "Prs_Opportunity_Product__r",
+      "relationship_name": "Prs_Opportunity_Product__r",
       "field": "Prs_Opportunity_Product__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }, {
       "object": "User",
-      "relationshipName": "User__r",
+      "relationship_name": "User__r",
       "field": "User__c",
-      "externalId": "UUID__c"
+      "external_id": "UUID__c"
     }]
   }]
 }

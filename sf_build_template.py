@@ -43,9 +43,9 @@ def create_template(source_org, operations_list, output, ext_id_file, fields=Non
         _relns = [
             {
                 'object': f['referenceTo'],
-                'relationshipName': f['relationshipName'],
+                'relationship_name': f['relationshipName'],
                 'field': f['name'],
-                'externalId': (ext_id[f['referenceTo']] if f['referenceTo'] in ext_id else 'UUID__c')
+                'external_id': (ext_id[f['referenceTo']] if f['referenceTo'] in ext_id else 'UUID__c')
             }
             for f in fields
             if f['sobject'] == _obj and f['referenceTo'] != None]
@@ -54,11 +54,11 @@ def create_template(source_org, operations_list, output, ext_id_file, fields=Non
             'operation': rec['operation'],
             'object': _obj,
             'bulk_thread': (rec['bulk_thread'] if 'bulk_thread' in rec else True),
-            'primaryKey': 'Id',
-            'externalId': (ext_id[_obj] if _obj in ext_id else 'UUID__c'),
+            'primary_key': 'Id',
+            'external_id': (ext_id[_obj] if _obj in ext_id else 'UUID__c'),
             'fields': _flds,
             'where': '',
-            'orderby': '',
+            'order_by': '',
             'limit': 0,
             'relationships': _relns,
             'masks': rec['masks']

@@ -21,7 +21,9 @@ MAKE_CHANGES = True
 # Primary function
 @h.exception(log)
 @h.timer(log)
-def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
+def run_template(tdm_config, env_path='./config/', env_config='env.map.json', make_changes=True, target=None):
+    global MAKE_CHANGES
+    MAKE_CHANGES = make_changes
     conf = h.confirm(
         prompt='Are the target Org email settings correct?', resp=False)
     if conf == False:
@@ -33,7 +35,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
         f'Successfully read config files: {tdm_config}')
 
     source = (_tdm_config['source'] if 'source' in _tdm_config else 'PRD')
-    target = _tdm_config['target']
+    target = (_tdm_config['target'] if not target else target)
     data = _tdm_config['data']
     sf_cfg_source = env_path+env_map[source]
     sf_cfg_target = env_path+env_map[target]
@@ -48,8 +50,8 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                        if 'external_id' in row else 'UUID__c')
         fields = (row['fields'] if 'fields' in row else [])
         where = (row['where'] if 'where' in row else '')
-        orderby = (row['orderby'] if 'orderby' in row else '')
-        limit = (row['limit'] if 'limit' in row else '')
+        order_by = (row['order_by'] if 'order_by' in row else '')
+        limit = (row['limit'] if 'limit' in row else 0)
         relationships = (row['relationships']
                          if 'relationships' in row else [])
         masks = (row['masks'] if 'masks' in row else {})
@@ -91,7 +93,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                       object_name=obj,
                       fields=fields,
                       where=where,
-                      orderby=orderby,
+                      order_by=order_by,
                       limit=limit,
                       masks=masks,
                       thread=thread)
@@ -106,7 +108,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
                           object_name=obj,
                           fields=_flds,
                           where=_where,
-                          orderby=orderby,
+                          order_by=order_by,
                           limit=limit,
                           masks=masks,
                           thread=thread)
@@ -125,7 +127,7 @@ def run_template(tdm_config, env_path='./config/', env_config='env.map.json'):
 def replace_field_external_ids(relationships, fields, separator='.'):
     for rel in relationships:
         fields = replace_item_in_list(source=rel['field'],
-                                      target=f'{rel["relationshipName"]}{separator}{rel["external_id"]}',
+                                      target=f'{rel["relationship_name"]}{separator}{rel["external_id"]}',
                                       _list=fields)
 
     return fields
@@ -145,17 +147,17 @@ def replace_item_in_list(source, target, _list):
 def fix_flattened_fields(relationships, fields, data):
     log.debug(f'Fields before fix_flattened_fields: {fields}')
     for rel in relationships:
-        fields.append(f'{rel["relationshipName"]}_{rel["external_id"]}')
+        fields.append(f'{rel["relationship_name"]}_{rel["external_id"]}')
 
     for rec in data:
         {rec.pop(key) for key in list(rec.keys())
          if key not in fields}
 
         for rel in relationships:
-            reln_underscore_reference = f'{rel["relationshipName"]}_{rel["external_id"]}'
-            reln_dot_reference = f'{rel["relationshipName"]}.{rel["external_id"]}'
+            reln_underscore_reference = f'{rel["relationship_name"]}_{rel["external_id"]}'
+            reln_dot_reference = f'{rel["relationship_name"]}.{rel["external_id"]}'
             if reln_underscore_reference in rec:
-                rec[f'{rel["relationshipName"]}.{rel["external_id"]}'] = rec.pop(
+                rec[f'{rel["relationship_name"]}.{rel["external_id"]}'] = rec.pop(
                     reln_underscore_reference)
             if reln_dot_reference not in rec:
                 rec.update({reln_dot_reference: None})
@@ -171,7 +173,7 @@ def do_upsert(sf_cfg_source,
               object_name,
               fields,
               where='',
-              orderby='',
+              order_by='',
               limit=0,
               masks='',
               thread=True):
@@ -185,7 +187,7 @@ def do_upsert(sf_cfg_source,
                            obj=object_name,
                            fields=fields,
                            where=where,
-                           orderby=orderby,
+                           order_by=order_by,
                            limit=limit,
                            masks=masks)
     # Flatten and remove extraneous fields.
@@ -208,7 +210,7 @@ def get_self_reln_fields_where(where, relationships, external_id):
     _flds = [external_id]
     _where = ([where] if len(where) > 0 else [])
     for rel in relationships:
-        _flds.append(f'{rel["relationshipName"]}.{rel["external_id"]}')
+        _flds.append(f'{rel["relationship_name"]}.{rel["external_id"]}')
         _where.append(f'{rel["field"]} != null')
 
     return _flds, ' and '.join(_where)
@@ -216,8 +218,8 @@ def get_self_reln_fields_where(where, relationships, external_id):
 
 @h.exception(log)
 @h.timer(log)
-def get_data(sf_cfg_source, obj, fields, where='', orderby='', limit=0, masks={}):
-    query = build_soql(obj, fields, where, orderby, limit)
+def get_data(sf_cfg_source, obj, fields, where='', order_by='', limit=0, masks={}):
+    query = build_soql(obj, fields, where, order_by, limit)
     _masks = masks
 
     soql_start_time = h.dtm()
@@ -241,14 +243,14 @@ def get_data(sf_cfg_source, obj, fields, where='', orderby='', limit=0, masks={}
     return records
 
 
-def build_soql(sobject, fields, where='', orderby='', limit=0):
+def build_soql(sobject, fields, where='', order_by='', limit=0):
     select = 'select ' + ', '.join(fields)
     _from = f' from {sobject}'
-    where = (f' where {where}' if len(where) > 0 else '')
-    orderby = (f' order by {orderby}' if len(orderby) > 0 else '')
-    limit = (f' limit {str(limit)}' if limit > 0 else '')
+    _where = (f' where {where}' if len(where) > 0 else '')
+    _order_by = (f' order by {order_by}' if len(order_by) > 0 else '')
+    _limit = (f' limit {str(limit)}' if limit > 0 else '')
 
-    q = select + _from + where + orderby + limit
+    q = select + _from + _where + _order_by + _limit
     log.debug(f'build_soql: {q}')
 
     return q
@@ -324,7 +326,7 @@ def do_bulk_job_thread(sf_cfg_target, job_type, object_name, data, primary_key):
 
 # Run main program
 if __name__ == '__main__':
-    MAKE_CHANGES = True
     h.setup_logging()
-    results = run_template(tdm_config='./jobs/template.json')
+    results = run_template(tdm_config='./jobs/sandbox-load.json',
+                           make_changes=False, target='DEV190326')
     log.info(f'{results}\n')

@@ -19,8 +19,14 @@ log.debug(f'{__name__} logging is configured.')
 @h.timer(log)
 def run_template():
     config = sys.argv[1]
-    results = tdm.run_template(tdm_config=config)
+    make_changes = (str2bool(sys.argv[2]) if sys.argv[2] else True)
+    target = (sys.argv[3] if sys.argv[3] else None)
+    results = tdm.run_template(tdm_config=config, make_changes=make_changes, target=target)
     return results
+
+
+def str2bool(v):
+    return v.lower() in ("yes", "true", "t", "1")
 
 
 # Run main program
