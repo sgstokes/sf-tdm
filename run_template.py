@@ -33,7 +33,7 @@ def str2bool(v):
 if __name__ == '__main__':
     h.setup_logging()
     conf = h.confirm(
-        prompt='Have RecordTYpes been provisioned and UUID_Utils executed?', resp=False)
+        prompt='Have RecordTypes been provisioned and UUID_Utils executed?', resp=False)
     if conf == False:
         'Please complete those steps and return.'
     else:
