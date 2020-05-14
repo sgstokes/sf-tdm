@@ -16,7 +16,7 @@ log.debug('Logging is configured.')
 # Primary function
 @h.timer(log)
 def do_query():
-    sf_rest = h.get_sf_rest_connection('./config/prs.dev191020.json')
+    sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
 
     # query = 'select Id, Name, RecordType.Name, ParentId, Parent.Legacy_ID__c, EIN__c from Account'
     # query = 'select Id, Name, SobjectType from RecordType where SobjectType = \'Account\''
@@ -50,12 +50,12 @@ def do_query():
     # results = sf_rest.soql_query(query)
     # print(results)
 
-    # results = sf_rest.describe_fields('Contact')
+    results = sf_rest.describe_fields('Role_Master__c')
     # print(results)
 
     # url = '/tooling/executeAnonymous/?anonymousBody=Database.executeBatch(new BatchSyncOpportunityReporting());'
-    url = '/tooling/executeAnonymous/?anonymousBody=Database.executeBatch(new UuidUtils());'
-    results = sf_rest.get_response(url).json()
+    # url = '/tooling/executeAnonymous/?anonymousBody=Database.executeBatch(new UuidUtils());'
+    # results = sf_rest.get_response(url).json()
 
     with open('./output/query.json', 'w') as json_file:
         json.dump(results, json_file)

@@ -81,6 +81,7 @@ def get_object_data(source_org, obj_list, fields=None):
     sf_rest = h.get_sf_rest_connection(source_org)
 
     # Mass describe
+    all_fields = []
     if fields:
         all_fields = h.get_config(fields)
     else:
@@ -120,8 +121,7 @@ def get_object_data(source_org, obj_list, fields=None):
 if __name__ == '__main__':
     h.setup_logging()
     results = create_template(source_org='./config/prs.prd.json',
-                              operations_list='./data/operations-list.json',
+                              operations_list='./data/control-list.json',
                               output=f'./output/{h.datestamp()}.json',
-                              ext_id_file='./data/ext-id.json',
-                              fields='./data/fields_0.json')
+                              ext_id_file='./data/ext-id.json')
     log.info(f'{results}\n')
