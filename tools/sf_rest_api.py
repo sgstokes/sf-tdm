@@ -28,7 +28,7 @@ class Connection(object):
         login = self.session.post(
             login_url,
             data=payload,
-            headers={'Content_Type': 'application/x-www-form-urlencoded'},
+            headers={'Content-Type': 'application/x-www-form-urlencoded'},
             timeout=None
         ).json()
         # upon successful authentication, get instance URL and access token from the login response JSON.
