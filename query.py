@@ -16,17 +16,17 @@ log.debug('Logging is configured.')
 # Primary function
 @h.timer(log)
 def do_query():
-    sf_rest = h.get_sf_rest_connection('./config/prs.prd.json')
+    sf_rest = h.get_sf_rest_connection('./config/prs.dev.json')
 
-    query = "select Id, Name, UUID__c from account ORDER BY CreatedDate DESC"
-    results = sf_rest.soql_query(query)
+    # query = "select Id, Name, UUID__c from account ORDER BY CreatedDate DESC"
+    # results = sf_rest.soql_query(query)
 
     # results = sf_rest.describe_fields('Contact')
 
     # apexBody = 'new BatchSyncOpportunityReporting()'
-    # apexBody = 'new UuidUtils()'
-    # url = f'/tooling/executeAnonymous/?anonymousBody=Database.executeBatch({apexBody});'
-    # results = sf_rest.get_response(url).json()
+    apexBody = 'new UuidUtils()'
+    url = f'/tooling/executeAnonymous/?anonymousBody=Database.executeBatch({apexBody});'
+    results = sf_rest.get_response(url).json()
 
     with open('./output/query.json', 'w') as json_file:
         json.dump(results, json_file)
