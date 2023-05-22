@@ -1,4 +1,4 @@
-requests==2.22.0
+requests==2.31.0
 salesforce_bulk==2.1.0
 simple-salesforce==0.70
 Faker==4.0.2
